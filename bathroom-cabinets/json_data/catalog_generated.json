@@ -1,0 +1,1744 @@
+[
+  {
+    "categorie": "Maison",
+    "menu": "Menuiserie",
+    "name": "Serrure de portes",
+    "type": "catalog",
+    "catalogPath": "/images/Maison/Menuiserie/Serrure-de-portes/output-products",
+    "totalProducts": 52,
+    "image": [
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-3-product-1.png",
+        "description": "Serrure à levier",
+        "price": "249€",
+        "reference": "SER-008"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-3-product-2.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-4-product-1.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-4-product-2.png",
+        "description": "Serrure à gorges",
+        "price": "59€",
+        "reference": "SER-002"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-5-product-1.png",
+        "description": "Serrure électronique",
+        "price": "129€",
+        "reference": "SER-005"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-5-product-2.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-6-product-1.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-6-product-2.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-7-product-1.png",
+        "description": "Cylindre européen",
+        "price": "199€",
+        "reference": "SER-007"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-7-product-2.png",
+        "description": "Serrure encastrée",
+        "price": "79€",
+        "reference": "SER-003"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-8-product-1.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-8-product-2.png",
+        "description": "Serrure encastrée",
+        "price": "79€",
+        "reference": "SER-003"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-9-product-1.png",
+        "description": "Serrure à levier",
+        "price": "249€",
+        "reference": "SER-008"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-9-product-2.png",
+        "description": "Serrure à gorges",
+        "price": "59€",
+        "reference": "SER-002"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-10-product-1.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-10-product-2.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-11-product-1.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-11-product-2.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-12-product-1.png",
+        "description": "Serrure à gorges",
+        "price": "59€",
+        "reference": "SER-002"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-12-product-2.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-13-product-1.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-13-product-2.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-14-product-1.png",
+        "description": "Serrure à gorges",
+        "price": "59€",
+        "reference": "SER-002"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-14-product-2.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-15-product-1.png",
+        "description": "Cylindre européen",
+        "price": "199€",
+        "reference": "SER-007"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-15-product-2.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-16-product-1.png",
+        "description": "Serrure à gorges",
+        "price": "59€",
+        "reference": "SER-002"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-16-product-2.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-17-product-1.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-17-product-2.png",
+        "description": "Cylindre européen",
+        "price": "199€",
+        "reference": "SER-007"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-18-product-1.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-18-product-2.png",
+        "description": "Serrure à levier",
+        "price": "249€",
+        "reference": "SER-008"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-19-product-1.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-19-product-2.png",
+        "description": "Serrure électronique",
+        "price": "129€",
+        "reference": "SER-005"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-20-product-1.png",
+        "description": "Serrure électronique",
+        "price": "129€",
+        "reference": "SER-005"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-20-product-2.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-21-product-1.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-21-product-2.png",
+        "description": "Serrure à levier",
+        "price": "249€",
+        "reference": "SER-008"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-22-product-1.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-22-product-2.png",
+        "description": "Cylindre européen",
+        "price": "199€",
+        "reference": "SER-007"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-23-product-1.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-23-product-2.png",
+        "description": "Serrure de sécurité",
+        "price": "159€",
+        "reference": "SER-006"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-24-product-1.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-24-product-2.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-25-product-1.png",
+        "description": "Serrure encastrée",
+        "price": "79€",
+        "reference": "SER-003"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-25-product-2.png",
+        "description": "Verrouillage multipoints",
+        "price": "99€",
+        "reference": "SER-004"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-26-product-1.png",
+        "description": "Serrure 3 points",
+        "price": "39€",
+        "reference": "SER-001"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-26-product-2.png",
+        "description": "Serrure encastrée",
+        "price": "79€",
+        "reference": "SER-003"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-27-product-1.png",
+        "description": "Serrure à levier",
+        "price": "249€",
+        "reference": "SER-008"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-27-product-2.png",
+        "description": "Serrure à gorges",
+        "price": "59€",
+        "reference": "SER-002"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-28-product-1.png",
+        "description": "Serrure à gorges",
+        "price": "59€",
+        "reference": "SER-002"
+      },
+      {
+        "url": "/images/Maison/Menuiserie/Serrure-de-portes/output-products/page-28-product-2.png",
+        "description": "Serrure électronique",
+        "price": "129€",
+        "reference": "SER-005"
+      }
+    ]
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salle de bain",
+    "name": "Meubles de douches",
+    "type": "catalog",
+    "catalogPath": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products",
+    "totalProducts": 48,
+    "image": [
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-1.png",
+        "description": "Meuble TV salle de bain",
+        "price": "459€",
+        "reference": "MDB-006"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-2.png",
+        "description": "Meuble sous vasque 1 porte",
+        "price": "349€",
+        "reference": "MDB-004"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-3.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-4.png",
+        "description": "Étagère salle de bain en verre",
+        "price": "499€",
+        "reference": "MDB-007"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-5.png",
+        "description": "Meuble salle de bain 3 portes",
+        "price": "249€",
+        "reference": "MDB-002"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-6.png",
+        "description": "Colonne de rangement salle de bain",
+        "price": "299€",
+        "reference": "MDB-003"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-7.png",
+        "description": "Meuble TV salle de bain",
+        "price": "459€",
+        "reference": "MDB-006"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-1-product-8.png",
+        "description": "Étagère salle de bain en verre",
+        "price": "499€",
+        "reference": "MDB-007"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-1.png",
+        "description": "Étagère salle de bain en verre",
+        "price": "499€",
+        "reference": "MDB-007"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-2.png",
+        "description": "Meuble sous vasque 1 porte",
+        "price": "349€",
+        "reference": "MDB-004"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-3.png",
+        "description": "Meuble TV salle de bain",
+        "price": "459€",
+        "reference": "MDB-006"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-4.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-5.png",
+        "description": "Colonne de rangement salle de bain",
+        "price": "299€",
+        "reference": "MDB-003"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-6.png",
+        "description": "Armoire miroir lumineuse",
+        "price": "399€",
+        "reference": "MDB-005"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-7.png",
+        "description": "Meuble sous vasque 1 porte",
+        "price": "349€",
+        "reference": "MDB-004"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-2-product-8.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-1.png",
+        "description": "Meuble lavabo 2 vasques",
+        "price": "599€",
+        "reference": "MDB-008"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-2.png",
+        "description": "Meuble sous vasque 1 porte",
+        "price": "349€",
+        "reference": "MDB-004"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-3.png",
+        "description": "Armoire miroir lumineuse",
+        "price": "399€",
+        "reference": "MDB-005"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-4.png",
+        "description": "Meuble salle de bain 3 portes",
+        "price": "249€",
+        "reference": "MDB-002"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-5.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-6.png",
+        "description": "Meuble TV salle de bain",
+        "price": "459€",
+        "reference": "MDB-006"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-7.png",
+        "description": "Colonne de rangement salle de bain",
+        "price": "299€",
+        "reference": "MDB-003"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-3-product-8.png",
+        "description": "Meuble sous vasque 1 porte",
+        "price": "349€",
+        "reference": "MDB-004"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-1.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-2.png",
+        "description": "Étagère salle de bain en verre",
+        "price": "499€",
+        "reference": "MDB-007"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-3.png",
+        "description": "Meuble TV salle de bain",
+        "price": "459€",
+        "reference": "MDB-006"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-4.png",
+        "description": "Colonne de rangement salle de bain",
+        "price": "299€",
+        "reference": "MDB-003"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-5.png",
+        "description": "Meuble sous vasque 1 porte",
+        "price": "349€",
+        "reference": "MDB-004"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-6.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-7.png",
+        "description": "Armoire miroir lumineuse",
+        "price": "399€",
+        "reference": "MDB-005"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-4-product-8.png",
+        "description": "Meuble lavabo 2 vasques",
+        "price": "599€",
+        "reference": "MDB-008"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-1.png",
+        "description": "Armoire miroir lumineuse",
+        "price": "399€",
+        "reference": "MDB-005"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-2.png",
+        "description": "Meuble salle de bain 3 portes",
+        "price": "249€",
+        "reference": "MDB-002"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-3.png",
+        "description": "Colonne de rangement salle de bain",
+        "price": "299€",
+        "reference": "MDB-003"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-4.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-5.png",
+        "description": "Étagère salle de bain en verre",
+        "price": "499€",
+        "reference": "MDB-007"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-6.png",
+        "description": "Meuble TV salle de bain",
+        "price": "459€",
+        "reference": "MDB-006"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-7.png",
+        "description": "Armoire miroir lumineuse",
+        "price": "399€",
+        "reference": "MDB-005"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-5-product-8.png",
+        "description": "Armoire miroir lumineuse",
+        "price": "399€",
+        "reference": "MDB-005"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-1.png",
+        "description": "Armoire miroir lumineuse",
+        "price": "399€",
+        "reference": "MDB-005"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-2.png",
+        "description": "Meuble vasque suspendu 2 tiroirs",
+        "price": "199€",
+        "reference": "MDB-001"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-3.png",
+        "description": "Meuble salle de bain 3 portes",
+        "price": "249€",
+        "reference": "MDB-002"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-4.png",
+        "description": "Étagère salle de bain en verre",
+        "price": "499€",
+        "reference": "MDB-007"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-5.png",
+        "description": "Meuble lavabo 2 vasques",
+        "price": "599€",
+        "reference": "MDB-008"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-6.png",
+        "description": "Meuble sous vasque 1 porte",
+        "price": "349€",
+        "reference": "MDB-004"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-7.png",
+        "description": "Meuble TV salle de bain",
+        "price": "459€",
+        "reference": "MDB-006"
+      },
+      {
+        "url": "/images/Maison/Salle-de-bain/Meubles-de-douches/output-products/page-6-product-8.png",
+        "description": "Meuble salle de bain 3 portes",
+        "price": "249€",
+        "reference": "MDB-002"
+      }
+    ]
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salon & salles à manger",
+    "name": "Tablettes",
+    "type": "catalog",
+    "catalogPath": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products",
+    "totalProducts": 104,
+    "image": [
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-4-product-1.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-4-product-2.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-4-product-3.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-5-product-1.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-5-product-2.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-5-product-3.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-6-product-1.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-6-product-2.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-6-product-3.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-7-product-1.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-7-product-2.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-7-product-3.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-8-product-1.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-8-product-2.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-8-product-3.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-9-product-1.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-9-product-2.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-9-product-3.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-10-product-1.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-10-product-2.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-10-product-3.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-11-product-1.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-11-product-2.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-11-product-3.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-12-product-1.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-12-product-2.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-12-product-3.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-13-product-1.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-13-product-2.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-13-product-3.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-14-product-1.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-14-product-2.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-14-product-3.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-22-product-1.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-22-product-2.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-22-product-3.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-25-product-1.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-25-product-2.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-25-product-3.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-1.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-2.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-3.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-4.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-5.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-6.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-7.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-8.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-9.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-10.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-11.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-12.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-13.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-14.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-26-product-15.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-1.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-2.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-3.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-4.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-5.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-6.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-7.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-8.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-9.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-10.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-11.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-12.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-13.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-14.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-15.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-16.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-17.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-18.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-19.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-20.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-21.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-22.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-23.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-24.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-25.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-26.png",
+        "description": "Table d'appoint ronde",
+        "price": "159€",
+        "reference": "TAB-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-27.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-28.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-29.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-27-product-30.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-1.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-2.png",
+        "description": "Table de salon en verre",
+        "price": "129€",
+        "reference": "TAB-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-3.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-4.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-5.png",
+        "description": "Table de salle à manger 6 places",
+        "price": "299€",
+        "reference": "TAB-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-6.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-7.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-8.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-9.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-10.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-11.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-12.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-13.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-14.png",
+        "description": "Console d'entrée",
+        "price": "249€",
+        "reference": "TAB-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-15.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-16.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-17.png",
+        "description": "Table basse en bois massif",
+        "price": "89€",
+        "reference": "TAB-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-18.png",
+        "description": "Table de jardin",
+        "price": "499€",
+        "reference": "TAB-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-19.png",
+        "description": "Table de bout carrée",
+        "price": "199€",
+        "reference": "TAB-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Tablettes/output-products/page-28-product-20.png",
+        "description": "Table extensible 8 places",
+        "price": "399€",
+        "reference": "TAB-007"
+      }
+    ]
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salon & salles à manger",
+    "name": "Canapés",
+    "type": "catalog",
+    "catalogPath": "/images/Maison/Salon-salles-a-manger/Canapes/output-products",
+    "totalProducts": 38,
+    "image": [
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-2-product-1.png",
+        "description": "Canapé lit 2 places",
+        "price": "1999€",
+        "reference": "CAN-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-2-product-2.png",
+        "description": "Canapé d'angle convertible",
+        "price": "999€",
+        "reference": "CAN-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-3-product-1.png",
+        "description": "Méridienne",
+        "price": "1799€",
+        "reference": "CAN-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-3-product-2.png",
+        "description": "Canapé 2 places en tissu",
+        "price": "799€",
+        "reference": "CAN-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-4-product-1.png",
+        "description": "Canapé modulable",
+        "price": "1499€",
+        "reference": "CAN-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-4-product-2.png",
+        "description": "Fauteuil club vintage",
+        "price": "1299€",
+        "reference": "CAN-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-5-product-1.png",
+        "description": "Fauteuil club vintage",
+        "price": "1299€",
+        "reference": "CAN-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-5-product-2.png",
+        "description": "Canapé modulable",
+        "price": "1499€",
+        "reference": "CAN-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-6-product-1.png",
+        "description": "Canapé lit 2 places",
+        "price": "1999€",
+        "reference": "CAN-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-6-product-2.png",
+        "description": "Méridienne",
+        "price": "1799€",
+        "reference": "CAN-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-7-product-1.png",
+        "description": "Fauteuil club vintage",
+        "price": "1299€",
+        "reference": "CAN-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-7-product-2.png",
+        "description": "Canapé d'angle convertible",
+        "price": "999€",
+        "reference": "CAN-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-8-product-1.png",
+        "description": "Canapé modulable",
+        "price": "1499€",
+        "reference": "CAN-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-8-product-2.png",
+        "description": "Méridienne",
+        "price": "1799€",
+        "reference": "CAN-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-9-product-1.png",
+        "description": "Méridienne",
+        "price": "1799€",
+        "reference": "CAN-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-9-product-2.png",
+        "description": "Fauteuil club vintage",
+        "price": "1299€",
+        "reference": "CAN-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-10-product-1.png",
+        "description": "Banquette d'entrée",
+        "price": "2499€",
+        "reference": "CAN-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-10-product-2.png",
+        "description": "Canapé lit 2 places",
+        "price": "1999€",
+        "reference": "CAN-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-11-product-1.png",
+        "description": "Banquette d'entrée",
+        "price": "2499€",
+        "reference": "CAN-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-11-product-2.png",
+        "description": "Méridienne",
+        "price": "1799€",
+        "reference": "CAN-006"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-14-product-1.png",
+        "description": "Canapé 2 places en tissu",
+        "price": "799€",
+        "reference": "CAN-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-14-product-2.png",
+        "description": "Canapé lit 2 places",
+        "price": "1999€",
+        "reference": "CAN-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-16-product-1.png",
+        "description": "Canapé 2 places en tissu",
+        "price": "799€",
+        "reference": "CAN-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-16-product-2.png",
+        "description": "Canapé lit 2 places",
+        "price": "1999€",
+        "reference": "CAN-007"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-17-product-1.png",
+        "description": "Banquette d'entrée",
+        "price": "2499€",
+        "reference": "CAN-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-17-product-2.png",
+        "description": "Banquette d'entrée",
+        "price": "2499€",
+        "reference": "CAN-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-17-product-3.png",
+        "description": "Banquette d'entrée",
+        "price": "2499€",
+        "reference": "CAN-008"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-18-product-1.png",
+        "description": "Canapé modulable",
+        "price": "1499€",
+        "reference": "CAN-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-19-product-1.png",
+        "description": "Canapé d'angle convertible",
+        "price": "999€",
+        "reference": "CAN-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-20-product-1.png",
+        "description": "Canapé 3 places en cuir",
+        "price": "599€",
+        "reference": "CAN-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-21-product-1.png",
+        "description": "Canapé modulable",
+        "price": "1499€",
+        "reference": "CAN-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-21-product-2.png",
+        "description": "Canapé d'angle convertible",
+        "price": "999€",
+        "reference": "CAN-003"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-23-product-1.png",
+        "description": "Canapé 3 places en cuir",
+        "price": "599€",
+        "reference": "CAN-001"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-24-product-1.png",
+        "description": "Fauteuil club vintage",
+        "price": "1299€",
+        "reference": "CAN-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-25-product-1.png",
+        "description": "Canapé modulable",
+        "price": "1499€",
+        "reference": "CAN-005"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-25-product-2.png",
+        "description": "Fauteuil club vintage",
+        "price": "1299€",
+        "reference": "CAN-004"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-26-product-1.png",
+        "description": "Canapé 2 places en tissu",
+        "price": "799€",
+        "reference": "CAN-002"
+      },
+      {
+        "url": "/images/Maison/Salon-salles-a-manger/Canapes/output-products/page-27-product-1.png",
+        "description": "Canapé modulable",
+        "price": "1499€",
+        "reference": "CAN-005"
+      }
+    ]
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Cuisine",
+    "name": "Evier & robinets",
+    "type": "catalog",
+    "catalogPath": "/images/Maison/Cuisine/Evier-robinets/output-products",
+    "totalProducts": 40,
+    "image": [
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-3-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-4-product-1.png",
+        "description": "Création artisanale",
+        "price": "299€",
+        "reference": "ART-004"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-5-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-5-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-6-product-1.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-6-product-2.png",
+        "description": "Création artisanale",
+        "price": "299€",
+        "reference": "ART-004"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-7-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-7-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-8-product-1.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-8-product-2.png",
+        "description": "Création artisanale",
+        "price": "299€",
+        "reference": "ART-004"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-9-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-9-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-10-product-1.png",
+        "description": "Produit de qualité",
+        "price": "99€",
+        "reference": "ART-001"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-10-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-11-product-1.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-11-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-12-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-12-product-2.png",
+        "description": "Création artisanale",
+        "price": "299€",
+        "reference": "ART-004"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-13-product-1.png",
+        "description": "Produit de qualité",
+        "price": "99€",
+        "reference": "ART-001"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-13-product-2.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-14-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-14-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-15-product-1.png",
+        "description": "Produit de qualité",
+        "price": "99€",
+        "reference": "ART-001"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-15-product-2.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-16-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-16-product-2.png",
+        "description": "Produit de qualité",
+        "price": "99€",
+        "reference": "ART-001"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-17-product-1.png",
+        "description": "Création artisanale",
+        "price": "299€",
+        "reference": "ART-004"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-17-product-2.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-18-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-18-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-19-product-1.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-19-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-20-product-1.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-20-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-21-product-1.png",
+        "description": "Produit de qualité",
+        "price": "99€",
+        "reference": "ART-001"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-21-product-2.png",
+        "description": "Produit de qualité",
+        "price": "99€",
+        "reference": "ART-001"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-22-product-1.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-22-product-2.png",
+        "description": "Création artisanale",
+        "price": "299€",
+        "reference": "ART-004"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-23-product-1.png",
+        "description": "Article design",
+        "price": "149€",
+        "reference": "ART-002"
+      },
+      {
+        "url": "/images/Maison/Cuisine/Evier-robinets/output-products/page-23-product-2.png",
+        "description": "Modèle contemporain",
+        "price": "199€",
+        "reference": "ART-003"
+      }
+    ]
+  }
+]

@@ -1,0 +1,101 @@
+{
+  "chapters": [
+    {
+      "title": "Guide utilisateur – Saisie des produits",
+      "description": "<p>Ce guide vous explique comment remplir correctement chaque champ du formulaire véhicule.Chaque règle correspond aux validations appliquées automatiquement lors de l’envoi du formulaire</p><hr/>",
+      "steps": [
+        {
+          "number": 1,
+          "title": "<span style='color:#0d47a1'>Liste des produits",
+          "instructions": [
+            "<ul>  <li>Vous devez saisir <strong>au moins un produit</strong>.</li><hr/>"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "<span style='color:#0d47a1'>Nom du produit",
+          "instructions": [
+            "<ul>  <li>Champ obligatoire</li>  <li>Texte entre <strong>2 et 200 caractères</strong></li>  <li>Exemples valides : “Chaise en bois”, “Ordinateur ortable Lenovo”</li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "<span style='color:#0d47a1'>Description",
+          "instructions": [
+            "<ul>  <li>Obligatoire pour les véhicules d’occasion</li>  <li>Doit être un <strong>nombre entier</strong></li> <li>Valeur autorisée : <strong>0 à 1 000 000 km</strong></li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "<span style='color:#0d47a1'>Dimensions (en cm)",
+          "instructions": [
+            "<p>Chaque dimension est optionnelle mais doit respecter les valeurs suivantes :</p><ul>  <li><strong>Longueur</strong> : 1 à 2000 cm</li>  <li><strong>Largeur</strong> : 1 à 2000 cm</li>  <li><strong>Hauteur</strong> : 1 à 2000 cm</li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "<span style='color:#0d47a1'>Poids (en kg)",
+          "instructions": [
+            "<ul>  <li>Optionnel</li>  <li>Doit être compris entre <strong>0.1 et 30000 kg</strong></li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "<span style='color:#0d47a1'>Quantité",
+          "instructions": [
+            "<ul>  <li>Champ obligatoire</li>  <li>Nombre entier entre <strong>1 et 9999</strong></li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "<span style='color:#0d47a1'>Nombre de colis (numberOfBox)",
+          "instructions": [
+            "<ul>  <li>Optionnel</li>  <li>Nombre entier entre <strong>1 et 9999</strong></li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 8,
+          "title": "<span style='color:#0d47a1'> Prix unitaire",
+          "instructions": [
+            "<ul>  <li>Champ obligatoire</li>  <li>Nombre décimal supérieur à <strong>0.01</strong></li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 9,
+          "title": "<span style='color:#0d47a1'> Devise",
+          "instructions": [
+            "<p>Valeurs autorisées :</p><ul>  <li>EUR</li>  <li>USD</li>  <li>CAD</li>  <li>CHF</li>  <li>GBP</li>  <li>XOF</li>  <li>XAF</li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 10,
+          "title": "<span style='color:#0d47a1'> Fret maritime (oceanFreight)",
+          "instructions": [
+            "<ul><li>Nombre positif</li>  <li>Valeur par défaut : <strong>0</strong></li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 11,
+          "title": "<span style='color:#0d47a1'> Assurance",
+          "instructions": [
+            "<ul><li>Nombre positif</li>  <li>Valeur par défaut : <strong>0</strong></li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 12,
+          "title": "<span style='color:#0d47a1'> Devise du shipping",
+          "instructions": [
+            "<p>Valeurs autorisées :</p><ul>  <li>EUR</li>  <li>USD</li>  <li>CAD</li>  <li>CHF</li>  <li>GBP</li>  <li>XOF</li></ul><hr/>"
+          ]
+        },
+        {
+          "number": 13,
+          "title": "<span style='color:#0d47a1'> Incoterm",
+          "instructions": [
+            "<p>Valeurs autorisées :</p><ul>  <li>EXW</li>  <li>FOB</li>  <li>CIF</li>  <li>CFR</li>  </ul><hr/>"
+          ]
+        }
+      ]
+    }
+  ]
+}

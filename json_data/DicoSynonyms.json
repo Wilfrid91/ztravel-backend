@@ -1,0 +1,37 @@
+{
+  "televiseur": [
+    "televiseur",
+    "televiseurs",
+    "television",
+    "tv",
+    "ecran",
+    "ecran plat",
+    "lcd",
+    "led",
+    "ecran lcd",
+    "ecran led",
+    "moniteur",
+    "moniteur video",
+    "moniteur lcd",
+    "moniteur led",
+    "appareil de reception",
+    "recepteur video",
+    "recepteur television",
+    "recepteur tv"
+  ],
+  "frigo": [
+    "frigo",
+    "refrigerateur",
+    "refrigerateurs",
+    "congelateur",
+    "congelateurs"
+  ],
+  "ordinateur": [
+    "ordinateur",
+    "ordinateurs",
+    "pc",
+    "laptop",
+    "portable",
+    "ordinateur portable"
+  ]
+}

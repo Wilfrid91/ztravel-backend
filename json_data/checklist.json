@@ -1,0 +1,342 @@
+{
+  "image": "/img/background-2.jpeg",
+  "title": "Guide pour voyager en Chine",
+  "sections": [
+    {
+      "id": 1,
+      "title": "Préparer son téléphone et Internet",
+      "anchor": "preparer-telephone-internet",
+      "subsections": [
+        {
+          "id": 1.1,
+          "title": "Installer, configurer et tester votre VPN",
+          "anchor": "installer-configurer-tester-vpn",
+          "description": "Imaginez : vous êtes la veille du départ, votre valise est presque bouclée, et votre téléphone repose sur la table, prêt à devenir votre meilleur allié en Chine. Mais avant de partir, il y a une dernière étape essentielle. Vous ouvrez l'App Store sur iPhone — ou le Google Play Store si vous êtes sur Android, téléchargez votre VPN, et en quelques secondes, une petite icône apparaît sur votre écran. Rien de spectaculaire en apparence… pourtant, c'est elle qui va vous ouvrir les portes d'Internet une fois en Chine. Un VPN, c'est un peu comme un passage discret que vous seul connaissez : il crée une connexion sécurisée entre votre téléphone et le reste du monde, et vous permet d'accéder aux sites et applications qui seraient autrement bloqués. Astrill fait partie des solutions les plus fiables pour les voyageurs en Chine, mais l'important n'est pas tant le nom de l'application que le fait de l'installer avant de partir. Car une fois sur place, sans VPN fonctionnel, impossible de télécharger quoi que ce soit. Alors vous activez la connexion, testez un serveur, vérifiez que tout fonctionne. Et là, vous pouvez souffler : votre voyage peut commencer, et votre téléphone est prêt à vous accompagner partout, sans surprise.",
+          "images": ["/img/AstrillSetup-1.1.jpg"],
+          "steps": [
+            {
+              "number": 1,
+              "title": "Télécharger Astrill",
+              "instructions": [
+                "Ouvrez l'App Store sur votre iPhone et téléchargez Astrill VPN Client.",
+                "Appuyez sur le bouton + en haut à droite pour créer un profil."
+              ]
+            },
+            {
+              "number": 2,
+              "title": "Créer un compte Astrill",
+              "instructions": [
+                "Inscrivez-vous sur astrill.com.",
+                "Un abonnement est nécessaire pour utiliser Astrill sur iPhone."
+              ]
+            },
+            {
+              "number": 3,
+              "title": "Ouvrir l'application et se connecter",
+              "instructions": [
+                "Connectez-vous avec vos identifiants Astrill.",
+                "Activez le mode 'Always On' pour rester protégé en permanence."
+              ]
+            },
+            {
+              "number": 4,
+              "title": "Choisir un serveur VPN",
+              "instructions": [
+                "Sélectionnez un serveur proche de la Chine pour une meilleure vitesse : Singapour, Taïwan ou Japon.",
+                "Le mode 'Smart Mode' permet d'exclure certains sites locaux du VPN."
+              ]
+            },
+            {
+              "number": 5,
+              "title": "Tester la connexion",
+              "instructions": [
+                "Testez la sécurité ou la vitesse directement dans l'application.",
+                "Astrill est payant mais propose une courte période d'essai."
+              ]
+            }
+          ]
+        },
+        {
+          "id": 1.2,
+          "title": "Alternatives au VPN classique",
+          "anchor": "alternatives-vpn-classique",
+          "description": "Certaines eSIM comme Holafly intègrent un VPN directement dans leur forfait. Cela évite d'installer un VPN séparé et simplifie la connexion dès l'arrivée en Chine.",
+          "remark": [
+            "Une vérification d'identité peut être demandée selon la région."
+          ]
+        },
+        {
+          "id": 1.3,
+          "title": "Connexion Internet dès l'atterrissage",
+          "anchor": "connexion-internet-des-l-atterrissage",
+          "description": "Après plusieurs heures de vol, un mélange de fatigue, de stress et d'excitation vous accompagne lorsque vous posez enfin le pied à l'aéroport. Et très vite, une réalité s'impose : en Chine, tout passe par le téléphone — taxi, train, paiement, réservations… Avoir Internet dès l'atterrissage n'est pas un confort, c'est une nécessité. La solution la plus simple consiste à acheter une eSIM avant le départ. Certaines incluent même un VPN intégré, ce qui vous évite toute configuration supplémentaire une fois sur place. Vous pouvez en acheter directement depuis l'application Trip.com, qui propose plusieurs forfaits adaptés à la durée de votre séjour et à la quantité de données dont vous aurez besoin. Avant de choisir, pensez à vérifier que votre téléphone est compatible avec les eSIM. Sur iPhone, il suffit de composer * #06# : si un ou plusieurs numéros IMEI apparaissent, votre appareil prend en charge l'eSIM. Vous pouvez également souscrire un pass Internet international auprès de votre opérateur mobile (selon votre pays d'origine). Sans cela, vos communications peuvent être facturées à des tarifs très élevés — parfois plusieurs dizaines d'euros par mégaoctet. Certains opérateurs proposent d'ailleurs des forfaits incluant la Chine, ce qui peut être une alternative pratique si vous préférez éviter les eSIM.",
+          "remark": [
+            "Évitez les VPN gratuits : beaucoup revendent vos données."
+          ],
+          "images": ["/img/Esim.jpeg"]
+        },
+        {
+          "id": 1.4,
+          "title": "Communiquer sans Internet avec l'app Traduire (iOS)",
+          "anchor": "communiquer-sans-internet-app-traduire",
+          "description": "Il peut arriver que votre forfait Internet soit épuisé ou que vous vous retrouviez sans réseau, alors même que vous devez communiquer. Dans ces situations, l'application Traduire d'iOS devient un véritable allié. Elle permet d'échanger en mandarin même hors ligne, à condition d'avoir téléchargé la langue avant votre départ. Vous pourrez écrire votre message dans votre langue, puis présenter la traduction à votre interlocuteur en cas de difficulté de compréhension. C'est une solution simple, rapide et très utile lorsque la connexion fait défaut. Les étapes ci‑dessous vous montrent comment télécharger le mandarin.",
+          "remark": ["Téléchargez les langues avant votre départ."],
+          "images": [
+            "/img/LanguageDownload-1.0.jpg",
+            "/img/Wi-FiOff-1.0.jpg",
+            "/img/CellularOff-1.0.jpg",
+            "/img/Translate-1.0.jpg"
+          ],
+          "steps": [
+            {
+              "number": 1,
+              "title": "Ouvrir l'app Traduire",
+              "instructions": [
+                "Ouvrez l'application Traduire sur votre iPhone."
+              ]
+            },
+            {
+              "number": 2,
+              "title": "Télécharger le Mandarin",
+              "instructions": [
+                "Allez dans Réglages → Apps → Traduire → Langues téléchargées.",
+                "Sélectionnez Chinois (Mandarin, Simplifié)."
+              ]
+            },
+            {
+              "number": 3,
+              "title": "Désactiver le Wi‑Fi",
+              "instructions": [
+                "Allez dans Réglages → Wi‑Fi → Désactivez le Wi‑Fi."
+              ]
+            },
+            {
+              "number": 4,
+              "title": "Désactiver les données cellulaires",
+              "instructions": [
+                "Allez dans Réglages → Données cellulaires → Désactivez le réseau cellulaire."
+              ]
+            },
+            {
+              "number": 5,
+              "title": "Tester la traduction hors ligne",
+              "instructions": [
+                "Ouvrez l'app Traduire et saisissez un texte en Français.",
+                "L'application le traduit en Mandarin même sans Internet."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Paiement et Communication",
+      "anchor": "paiement-communication",
+      "subsections": [
+        {
+          "id": 2.1,
+          "title": "Les apps indispensables pour payer et communiquer",
+          "anchor": "apps-indispensables-paiement-communication",
+          "description": "Alipay et WeChat sont des applications incontournables et massivement utilisées en Chine. Elles servent à la fois de messagerie et de méthodes de paiement, et permettent de payer, réserver, commander, acheter une eSIM, prendre un taxi, transférer de l'argent et bien plus encore. WeChat est généralement plus utilisée qu'Alipay, mais les deux sont indispensables pour un séjour en Chine. Elles sont disponibles sur l'App Store et le Google Play Store, et doivent être installées et configurées avant votre départ. Les étapes ci‑dessous vous montrent comment ajouter votre carte bancaire dans Alipay et WeChat.",
+          "remark": [
+            "Renseignez‑vous auprès de votre banque pour vérifier si votre carte bancaire est compatible avec ces méthodes de paiement.",
+            "WeChat est à la fois une application de messagerie et de réseaux sociaux, tandis que WeChat Pay est son système de paiement mobile. De leur côté, Alipay et WeChat Pay fonctionnent principalement via des paiements par QR code.",
+            "Le principe est simple : le commerçant affiche son QR code, vous le scannez avec la fonction Scan de l'application, vous validez le montant, le paiement est instantané. Ce système fonctionne même si vous êtes de retour dans votre pays, tant que votre compte WeChat Pay ou Alipay dispose encore d'un solde ou d'une carte bancaire valide.",
+            "Si vous devez payer un commerçant après votre retour, il peut simplement vous envoyer son QR code, que vous scannerez depuis l'application.",
+            "Alipay et WeChat sont des applications essentielles de la vie quotidienne en Chine. Elles intègrent des mini‑apps, c'est‑à‑dire de petites applications internes qui offrent des dizaines de fonctionnalités : paiement, réservation de taxis, achats en ligne, eSIM, transports, services administratifs, programmes de fidélité, et bien plus encore. Grâce à ces mini‑apps, Alipay et WeChat deviennent de véritables super‑applications, capables de remplacer plusieurs services du quotidien."
+          ],
+          "images": ["/img/Alipay-1.0.jpg", "/img/Wechat-1.1.jpg"],
+          "steps": [
+            {
+              "number": 1,
+              "title": "Télécharger Alipay ou WeChat",
+              "instructions": [
+                "Recherchez et téléchargez l'application Alipay/Wechat dans l'App Store ou Google Play Store."
+              ]
+            },
+            {
+              "number": 2,
+              "title": "Créer un compte",
+              "instructions": [
+                "Ouvrez l'application",
+                "Entrez votre numéro de téléphone",
+                "Recevez un code SMS pour valider votre identité",
+                "Complétez votre profil (nom, prénom, nationalité)"
+              ]
+            },
+            {
+              "number": 3,
+              "title": "Vérifier votre identité",
+              "instructions": [
+                "Pour utiliser Alipay/Wechat en tant que voyageur, vous devez effectuer une vérification d'identité :",
+                "Passeport",
+                "Reconnaissance faciale",
+                "Informations personnelles. Cette étape est obligatoire pour activer les paiements internationaux."
+              ]
+            },
+            {
+              "number": 4,
+              "title": "Ajouter une carte bancaire internationale (Visa, Mastercard, Amex) dans Alipay",
+              "instructions": [
+                "Allez dans votre profil > Moi",
+                "Allez dans Carte bancaire",
+                "Appuyez sur Ajouter la carte bancaire",
+                "Entrez ou scannez les informations de votre carte",
+                "Validez avec un code SMS de votre banque"
+              ]
+            },
+            {
+              "number": 5,
+              "title": "Ajouter une carte bancaire internationale (Visa, Mastercard, Amex) dans WeChat",
+              "instructions": [
+                "Allez dans votre profil > Moi",
+                "Allez dans Carte bancaire",
+                "Appuyez sur Ajouter la carte bancaire",
+                "Entrez ou scannez les informations de votre carte",
+                "Validez avec un code SMS de votre banque"
+              ]
+            },
+            {
+              "number": 6,
+              "title": "Tester un paiement",
+              "instructions": [
+                "Avant votre départ, testez :",
+                "Un petit paiement.",
+                "Ou un transfert symbolique. Cela vous assure que votre carte est bien acceptée."
+              ]
+            }
+          ]
+        },
+        {
+          "id": 2.3,
+          "title": "Informer sa banque avant le départ",
+          "anchor": "informer-banque-avant-depart",
+          "description": "Lors d'un paiement avec les wallets Alipay ou WeChat Pay, certains profils de risque — comme l'adresse IP de votre téléphone, votre position géographique, le montant, la devise ou encore des comportements inhabituels — peuvent déclencher une alerte dans le système antifraude de votre banque. Par mesure de sécurité, celle‑ci peut alors bloquer temporairement votre carte ou refuser la transaction. Pour éviter ces blocages, il est fortement recommandé de prévenir votre banque de votre voyage en Chine avant votre départ. Cela réduit considérablement les risques de refus de paiement sur Alipay ou WeChat Pay.",
+          "remark": [
+            "Gardez toujours un peu de cash sur vous, même si la majorité des paiements en Chine se font via Alipay ou WeChat Pay. Cela vous permettra de régler en cas de problème : absence de connexion Internet, batterie déchargée, terminal hors service ou paiement refusé par votre banque. Le cash reste une solution de secours fiable, notamment dans les petits commerces, les marchés ou certaines zones rurales."
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Préparer son matériel",
+      "anchor": "preparer-materiel",
+      "subsections": [
+        {
+          "id": 3.1,
+          "title": "Smartphone, batterie & prises électriques",
+          "anchor": "smartphone-batterie-prises-electriques",
+          "description": "Les applications essentielles de la vie quotidienne comme Alipay, WeChat et leurs mini‑programmes sollicitent fortement la batterie de votre téléphone. Entre les paiements, la navigation, les scans de QR codes, les traductions et les réservations, votre smartphone sera utilisé en continu. Une batterie externe est donc fortement recommandée pour éviter toute panne au mauvais moment. La Chine impose, pour les vols domestiques, que les batteries externes soient conformes à la norme China Compulsory Certification (CCC). Lors des contrôles de sécurité à l'aéroport, les agents vérifient systématiquement : la présence du logo CCC, la capacité de la batterie (généralement limitée à 100 Wh) et l'absence de batterie placée dans les bagages en soute.",
+          "remark": [
+            "Prise type A : deux broches plates.",
+            "Prise type C : deux broches rondes.",
+            "Prise type I : trois broches en V.",
+            "Des batteries en libre‑service sont disponibles partout."
+          ],
+          "images": ["/img/CCCNorm.jpg", "/img/ExternalBattery.jpg"]
+        },
+        {
+          "id": 3.2,
+          "title": "Prises électriques",
+          "anchor": "prises-electriques",
+          "description": "Les prises électriques en Chine sont différentes des standards utilisés en Europe ou en Afrique. Il est donc indispensable de prévoir des adaptateurs de prises électriques compatibles avec les formats 2 ou 3 broches utilisés sur place. Sans adaptateur, vous ne pourrez pas recharger votre téléphone, votre batterie externe ou vos appareils essentiels.",
+          "images": ["/img/ElectricSocket.jpg"]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Organiser son voyage",
+      "anchor": "organiser-voyage",
+      "subsections": [
+        {
+          "id": 4.1,
+          "title": "Réserver un hôtel ou un billet de train",
+          "anchor": "reserver-hotel-billet-train",
+          "description": "Vous pouvez réserver un hôtel ou acheter un billet de train avant votre départ via l'application Trip.com. Réserver ou acheter plusieurs semaines à l'avance permet de faire des économies, de gagner du temps et de voyager sans stress, surtout pendant les périodes de forte affluence en Chine.",
+          "remark": [
+            "Les billets de train peuvent être réservés jusqu'à 7 semaines à l'avance, ce qui vous permet d'obtenir de meilleurs tarifs et d'éviter les files d'attente une fois sur place.",
+            "Il est également essentiel d'avoir l'adresse de votre hôtel en chinois, car de nombreux chauffeurs de taxi, agents de gare ou personnels d'accueil ne lisent pas l'alphabet latin. Avoir l'adresse en caractères chinois facilite grandement vos déplacements.",
+            "Enfin, prévoyez votre passeport lors de votre enregistrement à l'hôtel : en Chine, il est systématiquement demandé pour vérifier votre identité et enregistrer votre séjour auprès des autorités locales."
+          ],
+          "images": ["/img/TrainOnPlateform-1.0.jpeg"]
+        },
+        {
+          "id": 4.2,
+          "title": "Rédiger un plan de voyage",
+          "anchor": "rediger-plan-voyage",
+          "description": "Planifier votre voyage vous permet d'optimiser votre temps, d'éviter des dépenses inutiles et de profiter pleinement de votre séjour. Le plan de voyage consiste à organiser vos journées en fonction des marchands, commerçants ou usines que vous souhaitez visiter. En préparant vos visites avant votre arrivée, vous gagnez du temps, vous limitez les imprévus et vous maximisez l'efficacité de votre déplacement.",
+          "remark": [
+            "Quelques mots utiles en Mandarin :",
+            "Désolé : douï‑bou‑tchi — Toilettes : tsè‑souo — Bonjour : Ni hǎo — Merci : Xiè xiè — Combien ? Douo shao qian — De rien : bù kè tchi — Celui‑là : Tchu gue — Je veux : bou yao — Délicieux : Hao tchu — Baisser le prix : dà dje ma — OK : hǎo de — Je ne comprends pas : Wǒ bou dǒng — Emmenez‑moi ici : Dài wǒ qù zhège dìzhǐ — Oui : Shi dâ — Non : Bou shi — Trop cher : Tai guelà — Baissez un peu : Pien yi dian — Hôtel : Djio djienne — Gare : Houo‑cheu‑djann — Aéroport : Dji‑tchang — Eau : Chouei — Manger : Tcheu — Pas trop épicé : Wǒ bù chī là de"
+          ],
+          "steps": [
+            {
+              "number": 1,
+              "title": "Définir vos objectifs de voyage",
+              "instructions": [
+                "Avant tout, identifiez clairement ce que vous souhaitez accomplir :",
+                "Rencontrer des fournisseurs",
+                "Visiter des usines",
+                "Découvrir des marchés spécifiques",
+                "Faire du repérage produit",
+                "Tourisme ou activités personnelles"
+              ]
+            },
+            {
+              "number": 2,
+              "title": "Lister les lieux à visiter",
+              "instructions": [
+                "Marchés (ex : Yiwu, Guangzhou, Foshan, Shenzhen)",
+                "Usines",
+                "Boutiques spécialisées"
+              ]
+            },
+            {
+              "number": 3,
+              "title": "Organiser vos journées par zones géographiques",
+              "instructions": [
+                "Pour éviter les allers‑retours inutiles, regroupez vos visites par quartier ou par ville, par exemple :",
+                "Matin : visites dans le même district",
+                "Après‑midi : marchés proches",
+                "Soir : retour à l'hôtel ou rendez‑vous"
+              ]
+            },
+            {
+              "number": 4,
+              "title": "Prévoir des marges de sécurité",
+              "instructions": [
+                "Les distances et contrôles peuvent être plus longs qu'en Europe. Laissez toujours :",
+                "30 à 60 minutes entre deux rendez‑vous",
+                "2 heures avant un train",
+                "3 heures avant un vol"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Résumé",
+      "anchor": "resume",
+      "subsections": [
+        {
+          "id": 5.1,
+          "title": "Pour finir",
+          "anchor": "pour-finir",
+          "description": "Nous arrivons à la fin de cette première partie. Vous avez appris à :",
+          "items": [
+            "Installer, configurer et tester un VPN",
+            "Configurer l'application de traduction",
+            "Installer et configurer Alipay et WeChat",
+            "Préparer les accessoires indispensables",
+            "Rédiger un plan de voyage"
+          ]
+        }
+      ]
+    }
+  ]
+}

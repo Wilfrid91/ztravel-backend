@@ -1,0 +1,140 @@
+[
+  {
+    "categorie": "Maison",
+    "menu": "Menuiserie",
+    "name": "Portes & Fenêtres en baie vitrée"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Menuiserie",
+    "name": "Portes & Fenêtres en bois"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Menuiserie",
+    "name": "Portes & Fenêtres aluminium"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Menuiserie",
+    "name": "Serrure de portes"
+  },
+
+  {
+    "categorie": "Maison",
+    "menu": "Salle de bain",
+    "name": "WC & Lavabo"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salle de bain",
+    "name": "Meubles de douches"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salle de bain",
+    "name": "Colonnes & robinets de douches"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salle de bain",
+    "name": "Porte-serviettes / savons / papiers hygiéniques"
+  },
+
+  {
+    "categorie": "Maison",
+    "menu": "Salon & salles à manger",
+    "name": "Tablettes"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salon & salles à manger",
+    "name": "Canapés"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salon & salles à manger",
+    "name": "Tables & chaises"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salon & salles à manger",
+    "name": "Bars de salon"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Salon & salles à manger",
+    "name": "Tapis"
+  },
+
+  {
+    "categorie": "Maison",
+    "menu": "Chambres à coucher",
+    "name": "Lits"
+  },
+  {
+    "categorie": "Maison",
+    "menu": "Chambres à coucher",
+    "name": "Matelas"
+  },
+
+  {
+    "categorie": "Maison",
+    "menu": "Cuisine",
+    "name": "Evier & robinets"
+  },
+
+  {
+    "categorie": "Électroménager",
+    "menu": "Cuisine",
+    "name": "TV"
+  },
+  {
+    "categorie": "Électroménager",
+    "menu": "Cuisine",
+    "name": "Réfrigérateur"
+  },
+  {
+    "categorie": "Électroménager",
+    "menu": "Cuisine",
+    "name": "Four"
+  },
+  {
+    "categorie": "Électroménager",
+    "name": "Climatiseurs"
+  },
+  {
+    "categorie": "Électroménager",
+    "name": "Groupe électrogène"
+  },
+  {
+    "categorie": "Construction",
+    "name": "Materiaux de construction"
+  },
+
+  {
+    "categorie": "Véhicules",
+    "menu": "Occasion",
+    "name": "4x4"
+  },
+  {
+    "categorie": "Véhicules",
+    "menu": "Occasion",
+    "name": "SUV"
+  },
+  {
+    "categorie": "Véhicules",
+    "menu": "Occasion",
+    "name": "Agricoles"
+  },
+  {
+    "categorie": "Véhicules",
+    "menu": "Occasion",
+    "name": "Chantiers"
+  },
+  {
+    "categorie": "Véhicules",
+    "menu": "Neuf",
+    "name": "SUV"
+  }
+]

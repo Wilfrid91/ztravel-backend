@@ -1,0 +1,323 @@
+{
+  "image": "/img/Touchtrans.png",
+  "title": "Guide d'importation au Bénin",
+  "anchor": "guide-importation-benin",
+  "sections": [
+    {
+      "id": 1,
+      "title": "Introduction",
+      "anchor": "introduction",
+      "description": "Avant toute importation de marchandises, il est essentiel de se renseigner auprès d’un transitaire sur les droits et taxes de douane applicables. Une mauvaise anticipation peut compromettre la rentabilité de votre projet. Ce guide présente de manière claire et structurée les étapes, acteurs et documents nécessaires pour importer en toute conformité.",
+      "remark": [
+        {
+          "type": "warning",
+          "text": "Faites appel à un transitaire agréé pour gérer les formalités douanières, le suivi et la réception de votre marchandise."
+        },
+        {
+          "type": "warning",
+          "text": "Vérifiez que votre transitaire est à jour vis-à-vis du FISC. S’il ne l’est pas, une pénalité de 10% de la valeur en douane peut être appliquée, en plus des taxes habituelles."
+        },
+        {
+          "type": "info",
+          "text": "Pour importer légalement, le transitaire (ou l’importateur lui-même) doit disposer d’une carte d’importateur liée à son IFU. Cette carte est indispensable pour toutes les formalités douanières et commerciales."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Organisation structurelle de la douane",
+      "anchor": "organisation-structurelle-douane",
+      "description": "Trois acteurs complémentaires interviennent dans le processus de dédouanement :",
+      "subsections": [
+        {
+          "id": 2.1,
+          "title": "Douane Béninoise",
+          "anchor": "douane-beninoise",
+          "description": "Réalise le dédouanement, accompagne Benin Control SA pendant les visites sommaires ou les dépotages à domicile, et confirme la libération des marchandises."
+        },
+        {
+          "id": 2.2,
+          "title": "Benin Control S.A",
+          "anchor": "benin-control-sa",
+          "description": "Société privée mandatée par l’État béninois. Elle est responsable du scan des conteneurs, de la sollicitation de la douane en cas de litige, de la vérification documentaire préalable (AVD) et de la détermination de la valeur en douane et des taxes applicables."
+        },
+        {
+          "id": 2.3,
+          "title": "Benin Manutention",
+          "anchor": "benin-manutention",
+          "description": "Facilite toutes les opérations physiques nécessaires au dédouanement : manutention, stockage, acheminement vers les zones de contrôle, sécurité et gestion des flux. Sans eux, la douane ne pourrait pas inspecter, scanner ou libérer les marchandises efficacement."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Attestation de Vérification Documentaire (AVD)",
+      "anchor": "attestation-verification-documentaire",
+      "description": "Au Bénin, les importations sont classées en deux catégories principales : les produits divers et les véhicules (neufs ou d’occasion). Chaque catégorie est soumise à un régime fiscal distinct. Ainsi, la valeur en douane établie par Bénin Control dans l’AVD varie selon la nature de la marchandise déclarée.",
+      "subsections": [
+        {
+          "id": 3.1,
+          "title": "Marchandises diverses",
+          "anchor": "marchandises-diverses",
+          "description": "La valeur en douane applicable aux marchandises diverses, telles que répertoriées dans le Système Harmonisé (SH), est déterminée en fonction du prix des produits, de leur classement tarifaire (code SH) et des différents droits et taxes applicables : PCS, PC, RS, PS, DD, RAU, TVA et AIB. L’attestation de Vérification Documentaire (AVD) délivrée par Bénin Control reflète ainsi une valeur en douane qui varie selon la nature et la catégorie tarifaire de la marchandise importée.",
+          "tax_table": [
+            {
+              "code": "PCS",
+              "signification": "Prélèvement Communautaire de Solidarité (UEMOA)",
+              "depend_du_produit": true,
+              "notes": "Varie selon la nature du produit"
+            },
+            {
+              "code": "PC",
+              "signification": "Prélèvement Communautaire (CEDEAO)",
+              "depend_du_produit": true,
+              "notes": "Dépend du type de marchandise"
+            },
+            {
+              "code": "RS",
+              "signification": "Redevance Statistique",
+              "depend_du_produit": true,
+              "notes": "Taux variable selon le produit"
+            },
+            {
+              "code": "PS",
+              "signification": "Prélèvement sur les Services",
+              "depend_du_produit": true,
+              "notes": "Variable selon la catégorie du produit"
+            },
+            {
+              "code": "DD",
+              "signification": "Droits de Douane",
+              "depend_du_produit": true,
+              "notes": "Dépend du type de marchandise importée"
+            },
+            {
+              "code": "RAU",
+              "signification": "Redevance d’Assistance et d’Utilisation",
+              "depend_du_produit": true,
+              "notes": "Fixée selon la nature du produit"
+            },
+            {
+              "code": "AIB",
+              "signification": "Acompte sur l’Impôt Bénéfices",
+              "depend_du_produit": true,
+              "notes": "Applicable selon le type de produit"
+            },
+            {
+              "code": "TVA",
+              "signification": "Taxe sur la Valeur Ajoutée",
+              "depend_du_produit": false,
+              "notes": "Taux fixe (18 %), sauf exonération légale"
+            }
+          ]
+        },
+        {
+          "id": 3.2,
+          "title": "Véhicules",
+          "anchor": "vehicules",
+          "description": "Les véhicules sont classés en deux principales catégories : véhicules neufs et véhicules d'occasion. Un véhicule est considéré comme neuf s'il a moins de 12 mois et moins de 6 000 km. Contrairement aux marchandises diverses, les véhicules ne sont pas soumis aux mêmes taxes et droits de douane. Leur régime fiscal est spécifique et dépend de leur état (neuf ou d'occasion).",
+          "vehicle_tax_tables": {
+            "neuf": {
+              "title": "Tableau des taxes – Véhicules NEUFS",
+              "taxes": [
+                {
+                  "taxe": "Droit de douane (DD)",
+                  "taux": "5 % à 20 %",
+                  "applicable": true,
+                  "notes": "Réduit selon la catégorie CEDEAO"
+                },
+                {
+                  "taxe": "TVA",
+                  "taux": "0 %",
+                  "applicable": false,
+                  "notes": "Exonération totale"
+                },
+                {
+                  "taxe": "Taxe statistique (TSTAT)",
+                  "taux": "1 %",
+                  "applicable": true,
+                  "notes": "Sur CIF"
+                },
+                {
+                  "taxe": "Timbre douanier (TD)",
+                  "taux": "0,5 %",
+                  "applicable": true,
+                  "notes": "Fixe"
+                },
+                {
+                  "taxe": "PCS / PC / PS / RAU / RS / AIB",
+                  "taux": "—",
+                  "applicable": false,
+                  "notes": "Jamais appliquées aux véhicules"
+                },
+                {
+                  "taxe": "Frais portuaires",
+                  "taux": "Variable",
+                  "applicable": true,
+                  "notes": "Facturés par le PAC"
+                }
+              ]
+            },
+            "occasion": {
+              "title": "Tableau des taxes – Véhicules d’OCCASION",
+              "taxes": [
+                {
+                  "taxe": "Droit de douane (DD)",
+                  "taux": "5 % à 35 %",
+                  "applicable": true,
+                  "notes": "Selon la catégorie CEDEAO"
+                },
+                {
+                  "taxe": "TVA",
+                  "taux": "18 %",
+                  "applicable": true,
+                  "notes": "Sur (CIF + DD)"
+                },
+                {
+                  "taxe": "Taxe statistique (TSTAT)",
+                  "taux": "1 %",
+                  "applicable": true,
+                  "notes": "Sur CIF"
+                },
+                {
+                  "taxe": "Timbre douanier (TD)",
+                  "taux": "0,5 %",
+                  "applicable": true,
+                  "notes": "Fixe"
+                },
+                {
+                  "taxe": "PCS / PC / PS / RAU / RS / AIB",
+                  "taux": "—",
+                  "applicable": false,
+                  "notes": "Jamais appliquées aux véhicules"
+                },
+                {
+                  "taxe": "Frais portuaires",
+                  "taux": "Variable",
+                  "applicable": true,
+                  "notes": "Facturés par le PAC"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Comment la douane, Benin Control SA et Benin Manutention travaillent ensemble ?",
+      "anchor": "comment-douane-benin-control-travaillent",
+      "description": "Étapes du processus de dédouanement .",
+      "steps": [
+        {
+          "number": 1,
+          "title": "Soumission de la Déclaration Anticipée (DA)",
+          "instructions": ["L’importateur soumet une DA via le GUCE."]
+        },
+        {
+          "number": 2,
+          "title": "Transmission automatique",
+          "instructions": [
+            "La DA est transmise automatiquement à Benin Control."
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Analyse et émission de l’AVD",
+          "instructions": [
+            "Benin Control analyse les documents et délivre l’AVD."
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Déclaration en douane via SydoniaWorld",
+          "instructions": [
+            "L’importateur utilise l’AVD pour créer une déclaration dans SydoniaWorld avec les informations suivantes :",
+            "Informations générales : Importateur, Transitaire, Pays d’origine",
+            "Documents : Connaissement (BL), Facture commerciale, Liste de colisage, AVD, BAD (Bon à Délivrer)",
+            "Désignation des marchandises",
+            "Code SH (tarif douanier)",
+            "Valeur FOB / CAF",
+            "Poids, quantités…"
+          ],
+          "description": [
+            "Sydonia vérifie la cohérence des données et calcule automatiquement :",
+            "Droits de Douane (DD)",
+            "TVA",
+            "PCS",
+            "PC",
+            "RS",
+            "PS",
+            "RAU",
+            "AIB"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "Libération de la marchandise",
+          "description": "Vérification de cohérence entre AVD et déclaration Sydonia.",
+          "scenarios": [
+            {
+              "title": "Déclarations cohérentes",
+              "steps": [
+                "La valeur AVD correspond à la valeur déclarée dans Sydonia.",
+                "La Douane émet un BAD (Bon à Délivrer).",
+                "Le conteneur ou les marchandises sont liquidés et autorisés à sortir."
+              ]
+            },
+            {
+              "title": "Déclarations différentes",
+              "steps": [
+                "La Douane constate une différence entre l’AVD et la déclaration Sydonia.",
+                "Elle demande un scan du conteneur.",
+                "Si le scanner révèle des zones d’ombre ou de doute : une visite sommaire est effectuée au port par Benin Control et la Douane. Des frais de visite sommaire sont facturés au client par Benin Manutention, selon le tonnage du conteneur."
+              ]
+            },
+            {
+              "title": "Conteneur non inspectable au port",
+              "steps": [
+                "Si le conteneur ne peut pas être inspecté au port (ex. fausse déclaration, etc.) :",
+                "Un rapport d’incident est émis.",
+                "Le dépottage se fait à domicile, aux frais de l’importateur.",
+                "Un dépôt de garantie doit être fourni à la Douane."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Connaissement / Bill of Lading (BL)",
+      "anchor": "connaissement-bill-of-lading",
+      "description": "À l'arrivée du navire, le consignataire (CMA CGM, MAERSK, MSC…) émet le Bon à Délivrer (BAD). Pour obtenir le BAD, il faut présenter le connaissement soit en original ou telex release.",
+      "remark": [
+        {
+          "type": "info",
+          "text": "Le BL est délivré par le transitaire du pays d’exportation et contient toutes les informations relatives à l’expédition."
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Documents obligatoires pour la déclaration en douane",
+      "anchor": "documents-obligatoires-declaration-douane",
+      "description": "Les documents nécessaires pour la déclaration en douane.",
+      "remark": [
+        {
+          "type": "info",
+          "text": "Liste des documents obligatoires :",
+          "details": {
+            "list": [
+              "Connaissement (BL)",
+              "AVD",
+              "Facture commerciale",
+              "Liste de colisage",
+              "BAD"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

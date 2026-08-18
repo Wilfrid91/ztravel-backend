@@ -1,0 +1,47 @@
+{
+  "chapters": [
+    {
+      "title": "Introduction",
+      "description": "<div class='interligne15'><p>Avant d'entrer dans le vif du sujet et simuler vos droits de douane, il est important de rappeler ou de comprendre les incotermes globalement utilisées par les douanes ainsi que les transitaires.<br/> Après s'être familiarisé avec les incoterms, rendez-vous dans le menu <strong>Générer la liste des produits</strong> pour démarrer.</p></div>",
+      "images": [],
+      "remark": [
+        {
+          "type": "info",
+          "text": "💡Règle de base : la douane calcule toujours une valeur CIF quelque soit l'incorterm du fournisseur EXW, FOB, FCA, CFR. La douane doit reconstituer la valeur CIF pour obtenir la valeur en douane (AVD)."
+        }
+      ],
+      "steps": [
+        {
+          "number": 1,
+          "title": "Incoterm EXW (Ex Works)",
+          "instructions": [
+            "Cet incoterm signifie que le fournisseur ne prend rien en charge, pour le calcul, La douane ajoute, le transport interne jusqu’au port d’export, les frais de manutention export, le fret international et l'assurance internationale."
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Incoterm FOB (Free On Board)",
+          "instructions": [
+            "Cet incoterm signifie que le fournisseur couvre tout jusqu’au chargement sur le navire, pour le calcul, La douane ajoute le fret international et l'assurance internationale."
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Incoterm CFR (Cost and Freight)",
+          "instructions": [
+            "Cet incoterm signifie que le fournisseur couvre le FOB et le fret international. La douane ajoute l'assurance internationale (si non incluse)."
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Incoterm CIF",
+          "instructions": ["Tout est déjà inclus, la douane n'ajoute rien."]
+        }
+      ],
+      "quote": "",
+      "table": "",
+      "video": "",
+      "code": ""
+    }
+  ]
+}

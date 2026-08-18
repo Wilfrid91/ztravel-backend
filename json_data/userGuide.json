@@ -1,0 +1,110 @@
+{
+  "chapters": [
+    {
+      "title": "Simulateur d’Achats Chine : Calculez vos Frais de Douane",
+      "description": "Ce simulateur s’appuie sur le document officiel BJ‑Tarif‑Douanier‑SH2022‑à‑jour_2.0, publié par la Direction Générale des Douanes du Bénin. Il intègre l’ensemble des droits et taxes applicables aux marchandises importées ou exportées au Bénin, conformément au classement du Système Harmonisé (SH 2022). Bien qu’il soit édité par les autorités béninoises, ce document reprend les dernières mises à jour du Tarif Extérieur Commun (TEC) de la CEDEAO. Le simulateur peut donc être utilisé par toute personne, entreprise ou transitaire opérant au sein de l’espace CEDEAO et souhaitant réaliser une simulation douanière fiable. Le simulateur permet deux actions principales : 1. Générer automatiquement la liste de vos produits ; 2. Simuler l’Attestation de Vérification Documentaire (AVD).",
+      "images": [],
+      "remark": [
+        {
+          "type": "info",
+          "text": "Le Système Harmonisé (SH) est une nomenclature internationale utilisée par plus de 98 % des pays pour classifier les produits et faciliter les échanges commerciaux mondiaux."
+        }
+      ],
+      "quote": "",
+      "table": "",
+      "video": "",
+      "code": ""
+    },
+    {
+      "title": "Informations relatives aux produits",
+      "description": "Dans cette section, vous renseignez toutes les informations concernant vos produits.",
+      "images": [],
+      "remark": [],
+      "steps": [
+        {
+          "number": 1,
+          "title": "Génération automatique de la liste de vos produits",
+          "instructions": [
+            "Veuillez saisir les noms, descriptions, dimensions, poids, prix et quantités avec précision. Les caractères accentués sont autorisés. Vous pouvez ajouter ou supprimer un produit via les boutons « Ajouter un produit » et « Supprimer un produit ». Tous les champs doivent être complétés avant la soumission."
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Prix total",
+          "instructions": [
+            "Le prix total est calculé automatiquement selon la formule : Quantité × Prix unitaire."
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Devise",
+          "instructions": [
+            "Sélectionnez la devise d’achat de votre produit. Le simulateur prend en charge : EUR (€), USD ($), GBP (£), le franc suisse CHF (Fr), et le dollar canadien CAD ($)."
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Photo du produit",
+          "instructions": [
+            "Le simulateur accepte les formats .png et .jpg. La taille maximale autorisée est de 2 mégaoctets (Mo)."
+          ]
+        }
+      ],
+      "quote": "",
+      "table": "",
+      "video": "",
+      "code": ""
+    },
+    {
+      "title": "Coûts d’expédition maritime",
+      "description": "Dans cette section, vous renseignez les informations relatives au fret maritime.",
+      "images": [],
+      "remark": [],
+      "steps": [
+        {
+          "number": 1,
+          "title": "Prix du fret maritime",
+          "instructions": [
+            "Il s’agit du coût du transport par bateau de votre marchandise depuis la Chine jusqu’à votre pays situé dans l’espace CEDEAO. Que vous expédiiez un conteneur complet ou quelques produits, contactez-moi via l’onglet « Me contacter » pour obtenir des conseils personnalisés."
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Assurance",
+          "instructions": [
+            "Ce montant correspond à l’assurance couvrant votre marchandise en cas d’avarie ou de dommages. Si vous ne disposez pas de cette information, contactez-moi via le menu Demander un accompagnement pour vos achats en Chine."
+          ]
+        },
+        {
+          "number": 3,
+          "title": "Total global & Total Cost Insurance & Freight",
+          "instructions": [
+            "Ces totaux sont calculés automatiquement. Ils regroupent le total global de vos produits, le prix du fret maritime et le montant de l’assurance."
+          ]
+        },
+        {
+          "number": 4,
+          "title": "Incoterm",
+          "instructions": [
+            "Veuillez sélectionner l’Incoterm négocié avec votre fournisseur. Si vous avez un doute, contactez-moi via le menu Demander un accompagnement pour vos achats en Chine."
+          ]
+        }
+      ],
+      "quote": "",
+      "table": "",
+      "video": "",
+      "code": ""
+    },
+    {
+      "title": "Soumission du formulaire",
+      "description": "Lorsque toutes les informations ont été renseignées, cliquez sur « Générer la liste de produits & Simuler les droits de douane »",
+      "images": [],
+      "remark": [],
+      "steps": [],
+      "quote": "",
+      "table": "",
+      "video": "",
+      "code": ""
+    }
+  ]
+}
