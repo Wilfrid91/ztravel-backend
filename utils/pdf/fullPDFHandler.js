@@ -25,6 +25,7 @@ const refPath = path.join(__dirname, 'ref.json')
  *  @param {*} options
  * @returns
  */
+/*
 function drawTable(
   doc,
   startX,
@@ -85,6 +86,100 @@ function drawTable(
           align: colIndex === 1 ? 'right' : 'left',
           lineBreak: true,
         })
+
+      x += cellWidth
+    })
+
+    y += rowHeight
+  }
+
+  doc.y = y + 10
+}
+  */
+
+function drawTable(
+  doc,
+  startX,
+  startY,
+  rows,
+  columnWidths,
+  newPage,
+  options = {},
+  rowHeight = 28,
+) {
+  const {
+    prepareHeader,
+    prepareRow,
+    headerBackground = null, // couleur de fond pour l'en-tête (ex: '#1A3C8E')
+    headerTextColor = '#000', // couleur du texte pour l'en-tête
+    rowTextColor = '#000', // couleur du texte pour les lignes normales
+    alternateRowColor = null, // couleur de fond pour les lignes paires (ex: '#EFE')
+  } = options
+
+  let y = startY
+
+  for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
+    const row = rows[rowIndex]
+
+    // Vérifier l'espace
+    if (y + rowHeight > doc.page.height - 20) {
+      newPage(doc)
+      y = doc.y
+    }
+
+    let x = startX
+    const totalWidth = columnWidths.reduce((a, b) => a + Number(b), 0)
+
+    // === DESSINER LE FOND DE LA LIGNE ===
+    if (rowIndex === 0 && headerBackground) {
+      // Fond de l'en-tête
+      doc
+        .save()
+        .fillColor(headerBackground)
+        .rect(startX, y, totalWidth, rowHeight)
+        .fill()
+        .restore()
+    } else if (rowIndex > 0 && alternateRowColor && rowIndex % 2 === 0) {
+      // Fond des lignes alternées
+      doc
+        .save()
+        .fillColor(alternateRowColor)
+        .rect(startX, y, totalWidth, rowHeight)
+        .fill()
+        .restore()
+    }
+
+    // === APPLIQUER LES STYLES DE POLICE ET COULEUR ===
+    if (rowIndex === 0 && prepareHeader) {
+      prepareHeader()
+      // Si prepareHeader n'a pas défini fillColor, on utilise headerTextColor
+      doc.fillColor(headerTextColor)
+    } else if (prepareRow) {
+      prepareRow(row, rowIndex)
+      // Si prepareRow n'a pas défini fillColor, on utilise rowTextColor
+      doc.fillColor(rowTextColor)
+    } else {
+      // Par défaut
+      doc.fillColor(rowIndex === 0 ? headerTextColor : rowTextColor)
+    }
+
+    // === DESSINER LES CELLULES ===
+    row.forEach((cell, colIndex) => {
+      const cellWidth = Number(columnWidths[colIndex])
+
+      // Bordures (optionnelles)
+      doc
+        .lineWidth(0.5)
+        .strokeColor('#000')
+        .rect(x, y, cellWidth, rowHeight)
+        .stroke()
+
+      // Texte (utilise la couleur définie)
+      doc.fontSize(11).text(String(cell ?? ''), x + 2, y + 4, {
+        width: cellWidth - 4,
+        align: colIndex === 1 ? 'right' : 'left', // ou selon vos besoins
+        lineBreak: true,
+      })
 
       x += cellWidth
     })
@@ -506,6 +601,10 @@ export const generateProductFullPDF = async (
       const columnWidths = [90, 80, 90, 90, 120, 85] // total = 555
 
       drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
+        headerBackground: '#1A3C8E',
+        headerTextColor: '#FFFFFF',
+        alternateRowColor: '#EFE',
+        rowTextColor: '#000000',
         prepareHeader: () => {
           doc.font('Helvetica-Bold').fontSize(10)
         },
@@ -574,8 +673,12 @@ export const generateProductFullPDF = async (
 
         //drawTable(doc, 40, doc.y, rows, [250, 200], newPage)
         drawTable(doc, 40, doc.y, tableRows, columnWidths, newPage, {
+          headerBackground: '#1A3C8E',
+          headerTextColor: '#FFFFFF',
+          alternateRowColor: '#EFE',
+          rowTextColor: '#000000',
           prepareHeader: () => {
-            doc.font('Helvetica-Bold').fontSize(9)
+            doc.font('Helvetica-Bold').fontSize(10)
           },
           prepareRow: (row, i) => {
             if (i === 0) {
@@ -618,6 +721,10 @@ export const generateProductFullPDF = async (
           .text('Détail des taxes', 40, doc.y)
 
         drawTable(doc, 40, doc.y, tableRows_, columnWidths_, newPage, {
+          headerBackground: '#1A3C8E',
+          headerTextColor: '#FFFFFF',
+          alternateRowColor: '#EFE',
+          rowTextColor: '#000000',
           prepareHeader: () => {
             doc.font('Helvetica-Bold').fontSize(10)
           },
@@ -674,9 +781,12 @@ export const generateProductFullPDF = async (
       const totalColumnWidths = new Array(totalLabels.length).fill(colWidth)
 
       drawTable(doc, 40, doc.y, totalRows, totalColumnWidths, newPage, {
+        headerBackground: '#1A3C8E',
+        headerTextColor: '#FFFFFF',
+        alternateRowColor: '#EFE',
+        rowTextColor: '#000000',
         prepareHeader: () => {
           doc.font('Helvetica-Bold').fontSize(10)
-          doc.text('', { align: 'left' })
         },
         prepareRow: (row, i) => {
           if (i === 0) {
@@ -1289,16 +1399,16 @@ export const generateVehicleFullPDF = async (
         ['Incoterm', 'Prix HT', 'Prix tranport', 'Assurance', 'CIF', 'Devise'],
         [
           shipping.incoterm,
-          shipping.freeOnBoardFromOriginatePort_,
+          shipping.freeOnBoardFromOriginatePort,
           shipping.oceanFreight,
           shipping.insurance,
-          shipping.totalOperatingCost_,
+          shipping.totalOperatingCost,
           shipping.devise,
         ],
       ]
 
       const columnWidths = [90, 80, 90, 90, 120, 85] // total = 555
-      drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
+      /*drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
         prepareHeader: () => {
           doc.font('Helvetica-Bold').fontSize(10)
           doc.text('', { align: 'left' })
@@ -1306,6 +1416,19 @@ export const generateVehicleFullPDF = async (
         prepareRow: () => {
           doc.font('Helvetica').fontSize(10)
           doc.text('', { align: 'left' })
+        },
+      })*/
+
+      drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
+        headerBackground: '#1A3C8E',
+        headerTextColor: '#FFFFFF',
+        alternateRowColor: '#EFE',
+        rowTextColor: '#000000',
+        prepareHeader: () => {
+          doc.font('Helvetica-Bold').fontSize(10)
+        },
+        prepareRow: () => {
+          doc.font('Helvetica').fontSize(10)
         },
       })
 
@@ -1358,9 +1481,12 @@ export const generateVehicleFullPDF = async (
           .text(`Détail des taxes voiture ${i + 1} : ${a.marque}`, 40, doc.y)
 
         drawTable(doc, 40, doc.y, tableRows, columnWidths, newPage, {
+          headerBackground: '#1A3C8E',
+          headerTextColor: '#FFFFFF',
+          alternateRowColor: '#EFE',
+          rowTextColor: '#000000',
           prepareHeader: () => {
-            doc.font('Helvetica-Bold').fontSize(10)
-            doc.text('', { align: 'left' })
+            doc.font('Helvetica-Bold').fontSize(9)
           },
           prepareRow: (row, i) => {
             if (i === 0) {
@@ -1414,9 +1540,12 @@ export const generateVehicleFullPDF = async (
       const totalColumnWidths = new Array(totalLabels.length).fill(colWidth)
 
       drawTable(doc, 40, doc.y, totalRows, totalColumnWidths, newPage, {
+        headerBackground: '#1A3C8E',
+        headerTextColor: '#FFFFFF',
+        alternateRowColor: '#EFE',
+        rowTextColor: '#000000',
         prepareHeader: () => {
-          doc.font('Helvetica-Bold').fontSize(10)
-          doc.text('', { align: 'left' })
+          doc.font('Helvetica-Bold').fontSize(9)
         },
         prepareRow: (row, i) => {
           if (i === 0) {

@@ -2,105 +2,113 @@
   "chapters": [
     {
       "title": "Guide utilisateur – Saisie des informations véhicule",
-      "description": "Ce guide vous explique comment remplir correctement chaque champ du formulaire véhicule.Chaque règle correspond aux validations appliquées automatiquement lors de l’envoi du formulaire<hr/>",
+      "description": "Ce guide vous explique comment remplir correctement chaque champ du formulaire véhicule. Chaque règle correspond aux validations appliquées automatiquement lors de l’envoi du formulaire.",
       "steps": [
         {
           "number": 1,
-          "title": "<span style='color:#0d47a1'> Type de véhicule",
+          "title": "Type de véhicule",
           "instructions": [
-            "<ul><li>Valeurs autorisées : <strong>Neuf</strong> ou <strong>Occasion</strong></li>  <li>Tout autre type sera refusé.</li></ul><hr/>"
+            "Valeurs autorisées : Neuf ou Occasion.",
+            "Tout autre type sera refusé."
           ]
         },
         {
           "number": 2,
-          "title": "<span style='color:#0d47a1'>Marque",
+          "title": "Marque",
           "instructions": [
-            "<ul><li>Texte obligatoire</li><li>Entre <strong>2 et 100 caractères</strong></li><li>Exemples valides : Toyota, Mercedes-Benz, Peugeot</li></ul><hr/>"
+            "Champ obligatoire.",
+            "Texte entre 2 et 100 caractères.",
+            "Exemples valides : Toyota, Mercedes-Benz, Peugeot"
           ]
         },
         {
           "number": 3,
-          "title": "<span style='color:#0d47a1'>Kilométrage",
+          "title": "Kilométrage",
           "instructions": [
-            "<ul>  <li>Obligatoire pour les véhicules d’occasion</li>  <li>Doit être un <strong>nombre entier</strong></li> <li>Valeur autorisée : <strong>0 à 1 000 000 km</strong></li></ul><hr/>"
+            "Obligatoire pour les véhicules d’occasion.",
+            "Doit être un nombre entier.",
+            "Valeur autorisée : 0 à 1 000 000 km."
           ]
         },
         {
           "number": 4,
-          "title": "<span style='color:#0d47a1'> Puissance fiscale",
-          "instructions": [
-            "<ul>  <li>Nombre entier</li>  <li>Valeur autorisée : <strong>1 à 50 CV</strong></li></ul><hr/>"
-          ]
+          "title": "Puissance fiscale",
+          "instructions": ["Nombre entier.", "Valeur autorisée : 1 à 50 CV."]
         },
         {
           "number": 5,
-          "title": "<span style='color:#0d47a1'> Année de fabrication",
+          "title": "Année de fabrication",
           "instructions": [
-            "<ul>  <li>Doit être un nombre entier</li>  <li>Valeur autorisée : <strong>1900 → année prochaine</strong></li></ul><hr/>"
+            "Doit être un nombre entier.",
+            "Valeur autorisée : 1900 → année prochaine."
           ]
         },
         {
           "number": 6,
-          "title": "<span style='color:#0d47a1'> Motorisation",
+          "title": "Motorisation",
           "instructions": [
-            "<ul>  <li>Valeurs autorisées :</li>  <ul>    <li>Essence</li>    <li>Diesel</li>    <li>Hybride</li>    <li>Électrique</li>  </ul></ul><hr/>"
+            "Valeurs autorisées :",
+            "Essence",
+            "Diesel",
+            "Hybride",
+            "Électrique"
           ]
         },
         {
           "number": 7,
-          "title": "<span style='color:#0d47a1'> Description",
-          "instructions": [
-            "<ul>  <li>Champ optionnel</li>  <li>Texte libre</li></ul><hr/>"
-          ]
+          "title": "Description",
+          "instructions": ["Champ optionnel.", "Texte libre."]
         },
         {
           "number": 8,
-          "title": "<span style='color:#0d47a1'>  Dimensions (en cm)",
+          "title": "Dimensions (en cm)",
           "instructions": [
-            "<p>Chaque dimension doit être un nombre entier entre <strong>50 et 2000 cm</strong> :</p><ul>  <li>Longueur (cm)</li>  <li>Largeur (cm)</li>  <li>Hauteur (cm)</li></ul><hr/>"
+            "Chaque dimension doit être un nombre entier entre 50 et 2000 cm :",
+            "Longueur (cm)",
+            "Largeur (cm)",
+            "Hauteur (cm)"
           ]
         },
         {
           "number": 9,
-          "title": "<span style='color:#0d47a1'> Poids (en kg)",
+          "title": "Poids (en kg)",
           "instructions": [
-            "<ul>  <li>Nombre entier</li>  <li>Valeur autorisée : <strong>100 à 30 000 kg</strong></li></ul><hr/>"
+            "Nombre entier.",
+            "Valeur autorisée : 100 à 30 000 kg."
           ]
         },
         {
           "number": 10,
-          "title": "<span style='color:#0d47a1'>  Quantité",
-          "instructions": [
-            "<ul>  <li>Nombre entier</li>  <li>Valeur autorisée : <strong>1 à 100</strong></li></ul><hr/>"
-          ]
+          "title": "Quantité",
+          "instructions": ["Nombre entier.", "Valeur autorisée : 1 à 100."]
         },
         {
           "number": 11,
-          "title": "<span style='color:#0d47a1'>  Prix unitaire",
-          "instructions": [
-            "<ul><li>Nombre décimal</li>  <li>Valeur minimale : <strong>0</strong></li></ul><hr/>"
-          ]
+          "title": "Prix unitaire",
+          "instructions": ["Nombre décimal.", "Valeur minimale : 0."]
         },
         {
           "number": 12,
-          "title": "<span style='color:#0d47a1'>  Devise",
+          "title": "Devise",
           "instructions": [
-            "<p>Valeurs autorisées :</p><ul>  <li>EUR</li>  <li>USD</li>  <li>CAD</li>  <li>CHF</li>  <li>GBP</li>  <li>XOF</li></ul><hr/>"
+            "Valeurs autorisées :",
+            "EUR",
+            "USD",
+            "CAD",
+            "CHF",
+            "GBP",
+            "XOF"
           ]
         },
         {
           "number": 13,
-          "title": "<span style='color:#0d47a1'> <span style='color:#0d47a1;'> Prix Fret maritime",
-          "instructions": [
-            "<ul><li>Nombre positif</li>  <li>Valeur minimale : <strong>0</strong></li></ul><hr/>"
-          ]
+          "title": "Prix Fret maritime",
+          "instructions": ["Nombre positif.", "Valeur minimale : 0."]
         },
         {
           "number": 14,
-          "title": "<span style='color:#0d47a1'>Assurance transport maritime",
-          "instructions": [
-            "<ul><li>Nombre positif</li>  <li>Valeur minimale : <strong>0</strong></li></ul><hr/>"
-          ]
+          "title": "Assurance transport maritime",
+          "instructions": ["Nombre positif.", "Valeur minimale : 0."]
         }
       ]
     }
