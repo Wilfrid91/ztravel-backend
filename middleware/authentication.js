@@ -1,7 +1,4 @@
 import jwt from 'jsonwebtoken'
-import { asyncWrapper } from './async.js'
-import { createCustomError } from '../errors/custom-api.js'
-import User from '../models/User.js'
 
 export const authenticateUser = (req, res, next) => {
   /**
@@ -29,8 +26,43 @@ export const authenticateUser = (req, res, next) => {
   }
 }
 
+/**
+ * Pour les utilisateurs non authentifiés
+ */
+export const optionalAuthenticateUser = (req, res, next) => {
+  const { accessToken } = req.signedCookies
+
+  // Aucun utilisateur connecté :
+  // on laisse quand même passer le tracking
+  if (!accessToken) {
+    req.user = null
+    return next()
+  }
+
+  try {
+    const payload = jwt.verify(accessToken, process.env.JWT_SECRET)
+
+    req.user = payload.user
+
+    console.log('OPTIONAL AUTH USER:', req.user)
+
+    return next()
+  } catch (err) {
+    // Token expiré/invalide :
+    // le tracking doit quand même fonctionner comme visiteur anonyme
+    req.user = null
+
+    console.log('OPTIONAL AUTH : token absent/invalide, tracking anonyme')
+
+    return next()
+  }
+}
+
 export const authorizeRoles = (...roles) => {
   return (req, res, next) => {
+    /* Si router.get('/admin/transactions',...) -> authorizeRoles('admin') fait que roles vaut: ['admin']
+    roles.includes(req.user.role) -> ['admin'].includes(req.user.role), donc si req.user.role === 'admin' => True -> next() → accès autorisé.
+    */
     if (!req.user || !roles.includes(req.user.role)) {
       return res.status(403).json({ msg: 'Accès refusé' })
     }

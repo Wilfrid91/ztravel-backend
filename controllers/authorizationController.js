@@ -13,8 +13,6 @@ import QRCode from 'qrcode'
 import fs from 'fs'
 import { Webhook } from 'fedapay'
 import FedapayRefund from '../models/FedapayRefund.js'
-import { resolve } from 'dns'
-import { PDFDocument as PDFLibDocument } from 'pdf-lib'
 import { PassThrough } from 'stream'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)

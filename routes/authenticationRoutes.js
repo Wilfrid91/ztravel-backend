@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   authenticateUser,
   authorizeRoles,
+  optionalAuthenticateUser,
 } from '../middleware/authentication.js'
 import {
   login,
@@ -22,6 +23,7 @@ import {
   getRefundFedapayStatus,
   disableUser,
   checkUserCgu,
+  getVisitTracker,
 } from '../controllers/adminController.js'
 
 import {
@@ -33,6 +35,8 @@ import {
 import { validate } from '../middleware/validate.js'
 
 import { loginLimiter, registerLimiter } from '../middleware/rateLimiter.js'
+
+import { trackVisit } from '../middleware/trackVisit.js'
 
 const router = Router()
 
@@ -47,6 +51,25 @@ router.delete('/logout', authenticateUser, logout)
 
 // Verify email
 router.post('/verify-email', verifyEmailValidator, validate, verifyEmail)
+
+/**
+ * Enregistrer une visite
+ * /track doit accepter un visiteur non connecté, alors que /admin/tracker doit être réservé à l'admin.
+ *  path => /api/v1/auth/track
+ */
+console.log('TRACK ROUTE REGISTERED')
+router.post('/track', optionalAuthenticateUser, trackVisit)
+
+router.post('/track', (req, res) => {
+  console.log('===== TRACK ROUTE REÇUE =====')
+  console.log('BODY:', req.body)
+  console.log('HEADERS:', req.headers)
+
+  res.status(200).json({
+    success: true,
+    message: 'TRACK fonctionne',
+  })
+})
 
 // Used to access admin page
 router.get(
@@ -63,7 +86,7 @@ router.get(
   getUserBySearch,
 )
 
-// get momo and Fedapay transactions
+// get all transactions including momo and Fedapay
 router.get(
   '/admin/transactions',
   authenticateUser,
@@ -125,6 +148,17 @@ router.get(
   authenticateUser,
   authorizeRoles('admin'),
   getRefundFedapayStatus,
+)
+
+/**
+ * Consulter les visites — ADMIN uniquement
+ * path => /api/v1/auth/admin/tracker
+ */
+router.get(
+  '/admin/tracker',
+  authenticateUser,
+  authorizeRoles('admin'),
+  getVisitTracker,
 )
 
 // Disable user

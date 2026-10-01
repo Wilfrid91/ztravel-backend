@@ -1,9 +1,6 @@
 import 'dotenv/config'
-import path from 'path'
 import express from 'express'
 import cors from 'cors'
-import https from 'https'
-import fs from 'fs'
 import cookieParser from 'cookie-parser'
 import morgan from 'morgan'
 import helmet from 'helmet' // pour sécuriser les headers
@@ -140,7 +137,7 @@ app.use(
 
 // Middleware global pour logger toutes les requêtes
 app.use((req, res, next) => {
-  console.log('Requête reçue :', req.method, req.url)
+  console.log('GLOBAL REQUEST:', req.method, req.originalUrl)
   next()
 })
 

@@ -5,13 +5,14 @@ import Transaction from '../models/MtnRequestToPayTransaction.js'
 import MTNRefund from '../models/MTNRefund.js'
 import FedapayRefund from '../models/FedapayRefund.js'
 import FedaPayTransaction from '../models/FedaPay.js'
+import VisitTracker from '../models/VisitTracker.js'
 import { getMomoToken } from './authorizationController.js'
+
 import fs from 'fs'
 import crypto from 'crypto'
 import QRCode from 'qrcode'
 import { generateMTNMomoRefundPDF } from '../utils/pdf/fullPDFHandler.js'
 import { FedaPay, Payout } from 'fedapay'
-import CGU from '../models/CGU.js'
 
 export const adminDashboard = async (req, res) => {
   // Ici tu es sûr que :
@@ -741,5 +742,176 @@ export const checkUserCgu = async (req, res) => {
     })
   } catch (err) {
     res.status(500).json({ error: err.message })
+  }
+}
+
+export const getVisitTracker = async (req, res) => {
+  try {
+    const pagesPerUser = await VisitTracker.aggregate([
+      // 1. Exclure les endpoints techniques
+      {
+        $match: {
+          path: {
+            $nin: [
+              '/track',
+              '/api/v1/auth/login',
+              '/api/v1/auth/admin/analytics',
+            ],
+          },
+        },
+      },
+
+      // 2. Trier chronologiquement
+      {
+        $sort: {
+          timestamp: 1,
+        },
+      },
+
+      // 3. UN SEUL GROUPE PAR VISITEUR
+      {
+        $group: {
+          _id: '$visitorId',
+
+          // Toutes les pages visitées
+          pages: {
+            $addToSet: '$path',
+          },
+
+          // Nombre total d'événements
+          visits: {
+            $sum: 1,
+          },
+
+          // Première visite
+          firstVisit: {
+            $first: '$timestamp',
+          },
+
+          // Dernière visite
+          lastVisit: {
+            $last: '$timestamp',
+          },
+
+          // On conserve les userId rencontrés dans l'ordre
+          userIds: {
+            $push: '$userId',
+          },
+        },
+      },
+
+      // 4. Récupérer le dernier userId non null
+      {
+        $addFields: {
+          validUserIds: {
+            $filter: {
+              input: '$userIds',
+              as: 'userId',
+              cond: {
+                $ne: ['$$userId', null],
+              },
+            },
+          },
+        },
+      },
+
+      // 5. Prendre le dernier userId connu
+      {
+        $addFields: {
+          userId: {
+            $arrayElemAt: ['$validUserIds', -1],
+          },
+        },
+      },
+
+      // 6. Calculs
+      {
+        $addFields: {
+          distinctPages: {
+            $size: '$pages',
+          },
+
+          isLoggedUser: {
+            $ne: ['$userId', null],
+          },
+
+          visitedHome: {
+            $in: ['/', '$pages'],
+          },
+        },
+      },
+
+      // 7. Recherche de l'utilisateur
+      {
+        $lookup: {
+          from: 'CustomerDataBase',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user',
+        },
+      },
+
+      // 8. Déplier user
+      {
+        $unwind: {
+          path: '$user',
+          preserveNullAndEmptyArrays: true,
+        },
+      },
+
+      // 9. Réponse finale
+      {
+        $project: {
+          _id: 0,
+
+          visitorId: '$_id',
+
+          userId: 1,
+
+          nom: '$user.nom',
+          prenom: '$user.prenom',
+          email: '$user.email',
+
+          visits: 1,
+          pages: 1,
+          distinctPages: 1,
+          visitedHome: 1,
+          isLoggedUser: 1,
+
+          firstVisit: 1,
+          lastVisit: 1,
+        },
+      },
+
+      // 10. Les plus récents en premier
+      {
+        $sort: {
+          lastVisit: -1,
+        },
+      },
+    ])
+
+    /*console.log(
+      'VISITEURS AGRÉGÉS:',
+      pagesPerUser.map((v) => ({
+        visitorId: v.visitorId,
+        userId: v.userId,
+        visits: v.visits,
+        distinctPages: v.distinctPages,
+      })),
+    )*/
+
+    return res.status(200).json({
+      success: true,
+      totalVisitors: pagesPerUser.length,
+      visitors: pagesPerUser,
+    })
+  } catch (error) {
+    console.error('Erreur getVisitTracker:', error)
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    })
   }
 }

@@ -1,6 +1,5 @@
 import User from '../models/User.js'
 import { StatusCodes } from 'http-status-codes'
-import { createCustomError } from '../errors/custom-api.js'
 import Token from '../models/Token.js'
 import crypto from 'crypto'
 import createTokenUser from '../utils/createTokenUser.js'

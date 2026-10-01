@@ -61,7 +61,7 @@ export const shippingValidator = [
 
   body('shipping.incoterm')
     .optional()
-    .isIn(['EXW', 'FOB', 'CIF', 'CFR', 'CIP', 'CPT', 'DAP', 'DPU', 'DDP'])
+    .isIn(['EXW', 'FOB', 'CIF', 'CFR'])
     .withMessage('Incoterm invalide')
     .default('EXW'),
 

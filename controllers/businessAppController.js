@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken'
-import Tab1DataModel from '../models/avantDePartir.js'
 import Tab2DataModel from '../models/Tab2.js'
 import Tab3DataModel from '../models/Douane.js'
 import Tab2AvdDataModel from '../models/Tab2AvdData.js'
@@ -7,23 +5,16 @@ import Tab3AvdDataModel from '../models/Tab3AvdData.js'
 import AVDSimulatorModel from '../models/AVDSimulator.js'
 import Catalog from '../models/Catalog.js'
 import CGU from '../models/CGU.js'
-import Impression from '../models/Impression.js'
 import JetonImpression from '../models/JetonImpression.js'
-import PaymentMethod from '../models/PaymentMethods.js'
 import UserGuideAVD from '../models/UserGuideAVD.js'
-import CheckList from '../models/Checklist.js'
+import CheckList from '../models/Checklist.js' // replace "avantDePartir.js" model
 import { StatusCodes } from 'http-status-codes'
-import svgCaptcha from 'svg-captcha'
+
 import dotenv from 'dotenv'
 dotenv.config()
-import sendVerificationEmail from '../utils/mailer.js'
-import CGUConsent from '../models/CGUConsent.js'
+
 import User from '../models/User.js'
-import {
-  generateMchtAndCustCopy,
-  computeAVD,
-  computeAvdVehicle,
-} from '../utils/pdfService.js'
+import { computeAVD, computeAvdVehicle } from '../utils/pdfService.js'
 
 import {
   generateProductFullPDF,
@@ -34,7 +25,6 @@ import { sendEmail } from '../utils/mailer.js'
 import axios from 'axios'
 import { fileTypeFromBuffer } from 'file-type'
 import sharp from 'sharp'
-import NodeClam from 'clamscan'
 import path from 'path'
 import fs from 'fs'
 import console from 'console'
