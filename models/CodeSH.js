@@ -2,7 +2,8 @@ import mongoose from 'mongoose'
 
 const CodeSHSchema = new mongoose.Schema({
   code: { type: String, required: true, unique: true },
-  description: { type: String, required: true },
+  description: { type: String, required: true }, // Donne à l'utilisateur le contexte douanier.
+  libelle: { type: String, default: '' }, // Dernier terme, comme « Autres », « Imprimées » ou « En aluminium non allié ».
   tauxDD: { type: Number, required: true }, // ex : 20
   tauxTVA: { type: Number, default: 18 }, // 18% par défaut
   tauxPCS: { type: Number, default: 0.8 },

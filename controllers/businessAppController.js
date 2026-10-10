@@ -335,11 +335,6 @@ export const createProductListAndAVD = async (req, res) => {
         "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
     })
   }
-  /* Consommer 1 jeton
-  jeton.jetons_restants -= 1
-  // incrementer le compteur d'impressions
-  jeton.nbre_impressions += 1
-  await jeton.save()*/
 
   // Génération PDF
   try {

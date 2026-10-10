@@ -1,5 +1,3 @@
-// Importer PDFKit pour générer les PDF
-//import PDFDocument from 'pdfkit'
 import jaroWinkler from 'jaro-winkler'
 import { PDFDocument as PDFLibDocument } from 'pdf-lib'
 import { PassThrough } from 'stream'
@@ -10,7 +8,7 @@ const { PDFDocumentWithTables } = require('pdfkit-table') // Classe étendue de 
 import sharp from 'sharp'
 import removeAccents from 'remove-accents'
 import { loadCodeSHCache } from './loadCodeSHCache.js'
-import SYNONYMS from '../json_data/DicoSynonyms.json' with { type: 'json' }
+
 // Elle supprime les mots grammaticaux inutiles
 const STOPWORDS = [
   'de',
@@ -22,7 +20,6 @@ const STOPWORDS = [
   'en',
   'pour',
   'avec',
-  'à',
   'sans',
   'au',
   'aux',
@@ -32,13 +29,24 @@ const STOPWORDS = [
   'une',
   'et',
   'ou',
+  'article',
+  'articles',
+  'autre',
+  'autres',
 ]
 
+/**
+ * Cette version supprime les doublons : si « aluminium » apparaît plusieurs fois dans la description, il ne sera conservé qu'une seule fois dans la liste des mots-clés
+ */
 function extractKeywords(text) {
-  return normalize(text)
-    .split(' ')
-    .map((w) => w.replace(/[^a-z0-9]/g, '')) // nettoyer chaque mot
-    .filter((w) => w.length > 2 && !STOPWORDS.includes(w))
+  return [
+    ...new Set(
+      normalize(text)
+        .split(' ')
+        .map((w) => w.replace(/[^a-z0-9]/g, ''))
+        .filter((w) => w.length > 2 && !STOPWORDS.includes(w)),
+    ),
+  ]
 }
 
 export const generateMchtAndCustCopy = (transaction, type, qrcode) => {
@@ -301,6 +309,7 @@ function normalize(text) {
 /*Similarité Jaro‑Winkler (version simple)*/
 // Scoring Jaro-Winkler
 // Scoring Jaro-Winkler
+/*
 function computeScore(productDescription, codeDescription) {
   if (!productDescription || !codeDescription) return
   const pWords = extractKeywords(productDescription)
@@ -319,8 +328,41 @@ function computeScore(productDescription, codeDescription) {
   }
 
   return score
+}*/
+
+function computeScore(productDescription, codeDescription) {
+  if (!productDescription || !codeDescription) return 0
+
+  const pWords = extractKeywords(productDescription)
+  const dWords = extractKeywords(codeDescription)
+
+  let score = 0
+  const matchedWords = new Set()
+
+  for (const w1 of pWords) {
+    let bestMatch = 0
+
+    for (const w2 of dWords) {
+      const similarity = jaroWinkler(w1, w2)
+      bestMatch = Math.max(bestMatch, similarity)
+    }
+
+    if (bestMatch >= 0.9) {
+      score += 5
+      matchedWords.add(w1)
+    } else if (bestMatch >= 0.8) {
+      score += 3
+      matchedWords.add(w1)
+    } else if (bestMatch >= 0.7) {
+      score += 1
+      matchedWords.add(w1)
+    }
+  }
+
+  return score
 }
 
+/*
 export const findBestCodeSH = async (productDescription) => {
   const keywords = extractKeywords(productDescription)
   if (keywords.length === 0) return null
@@ -329,6 +371,17 @@ export const findBestCodeSH = async (productDescription) => {
 
   // Charger le cache
   const cache = await loadCodeSHCache()
+
+  console.log('Nombre de codes SH :', cache.length)
+
+  console.log('Exemples de codes SH :', cache.slice(0, 10))
+
+  console.log(
+    "Codes concernant l'aluminium :",
+    cache.filter((item) =>
+      /aluminium|aluminum|tubes et tuyaux/i.test(item.description || ''),
+    ),
+  )
 
   // Récupérer les synonymes si disponibles
   const searchTerms = SYNONYMS[main] || [main]
@@ -376,6 +429,95 @@ export const findBestCodeSH = async (productDescription) => {
   if (!best || best.score < 2) return null
 
   return best
+}*/
+
+export const findBestCodeSH = async (productDescription) => {
+  if (!productDescription?.trim()) return null
+
+  const normalize = (value = '') =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+
+  const description = normalize(productDescription)
+  const keywords = extractKeywords(productDescription)
+
+  if (!keywords.length) return null
+
+  const cache = await loadCodeSHCache()
+
+  console.log('Nombre de codes SH :', cache.length)
+
+  console.log('Exemples de codes SH :', cache.slice(0, 10))
+
+  console.log(
+    "Codes concernant l'aluminium :",
+    cache.filter((item) =>
+      /aluminium|aluminum|tubes et tuyaux/i.test(item.description || ''),
+    ),
+  )
+
+  if (!Array.isArray(cache) || cache.length === 0) {
+    return null
+  }
+
+  // Recherche sur l'ensemble du cache, pas seulement
+  // sur le premier mot extrait.
+  const scored = cache
+    .map((item) => {
+      const candidateDescription = normalize(item.description)
+
+      const score = computeScore(description, candidateDescription)
+
+      // Bonus de cohérence pour les termes importants.
+      const keywordMatches = keywords.filter((keyword) =>
+        candidateDescription.includes(normalize(keyword)),
+      ).length
+
+      return {
+        ...item,
+        score: score + keywordMatches,
+      }
+    })
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+
+  if (scored.length === 0) return null
+
+  const best = scored[0]
+  const second = scored[1]
+
+  console.log(
+    'Meilleurs candidats SH :',
+    scored.slice(0, 5).map(({ code, description, score }) => ({
+      code,
+      description,
+      score,
+    })),
+  )
+
+  // Seuil provisoire : à calibrer sur des cas vérifiés.
+  if (best.score < 2) return null
+
+  // Ne pas prétendre avoir trouvé un code fiable
+  // lorsque plusieurs candidats sont trop proches.
+  if (second && best.score - second.score < 2) {
+    return {
+      ...best,
+      needsReview: true,
+      candidates: scored.slice(0, 5),
+    }
+  }
+
+  return {
+    ...best,
+    needsReview: true,
+    candidates: scored.slice(0, 5),
+  }
 }
 
 /*
@@ -505,6 +647,7 @@ export const computeAVD = async (products, shipping) => {
 
   // Taux de change
   const exchangeRate = computeCurrency(shipping)
+
   // CIF en CFA
   const cifCFA = cifDevise * exchangeRate
 

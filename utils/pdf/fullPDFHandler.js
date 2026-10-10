@@ -586,7 +586,7 @@ export const generateProductFullPDF = async (
 
       const usableWidth =
         doc.page.width - doc.page.margins.left - doc.page.margins.right // = 555.28 pts
-      // ⭐ TABLEAU 100% STABLE
+      // TABLEAU 100% STABLE
       const rows = [
         ['Incoterm', 'Prix HT', 'Fret maritime', 'Assurance', 'CIF', 'Devise'],
         [
@@ -659,11 +659,6 @@ export const generateProductFullPDF = async (
         const values = rows.map((row) => row[1]) // Valeur
 
         const tableRows = [labels, values]
-
-        /*console.log('labels =', labels)
-        console.log('values =', values)
-        console.log('tableRows =', tableRows)
-        console.log('columnWidths =', new Array(labels.length).fill(100))*/
 
         const margin = 40
         const availableWidth = doc.page.width - margin * 2

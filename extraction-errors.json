@@ -1,0 +1,77 @@
+{
+  "errors": [
+    {
+      "page": 16,
+      "code": "0305.54.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "(Trachurus spp.), carangues (Caranx spp.), mafous (Rachycentron canadum), castagnoles argentées kg 1 (Pampus spp.), balaous du Pacifique (Cololabis saira), comètes (Decapterus spp.), capelans (Mallotus villosus), espadons (Xiphias gladius), thonines orientales (Euthynnus affinis), bonites (Sarda spp.), makaires, marlins, voiliers (Istiophoridae) 20"
+    },
+    {
+      "page": 48,
+      "code": "1518.00.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "celles du n° 15.16; mélanges ou préparations non alimentaires de graisses ou d'huiles animales, kg 1 végétales ou d'origine microbienne ou de fractions de différentes graisses ou huiles du présent Chapitre, non dénommés ni compris ailleurs. 20 [15.19]"
+    },
+    {
+      "page": 87,
+      "code": "2844.42.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "209, polonium-210, radium-223, uranium-230 ou uranium-232, et leurs composés; alliages, kg 1 dispersions (y compris les cermets), produits céramiques et mélanges renfermant ces éléments ou composés 5"
+    },
+    {
+      "page": 106,
+      "code": "2933.33.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "méthylphénidate (DCI), pentazocine (DCI), péthidine (DCI), péthidine (DCI) intermédiaire A, kg 1 phencyclidine (DCI) (PCP), phénopéridine (DCI), pipradrol (DCI), piritramide (DCI), propiram (DCI), remifentanil (DCI) et trimépéridine (DCI); sels de ces produits 5"
+    },
+    {
+      "page": 107,
+      "code": "2933.91.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "(DCI), lormétazépam (DCI), mazindol (DCI), médazépam (DCI), midazolam (DCI), kg 1 nimétazépam (DCI), nitrazépam (DCI), nordazépam (DCI), oxazépam (DCI), pinazépam (DCI), prazépam (DCI), pyrovalérone (DCI), témazépam (DCI), tétrazépam (DCI) et triazolam (DCI); sels de ces produits 5"
+    },
+    {
+      "page": 114,
+      "code": "3006.10.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "utilisés en chirurgie pour refermer les plaies; laminaires stériles; hémostatiques résorbables kg 1 stériles pour la chirurgie ou l'art dentaire; barrières anti-adhérence stériles pour la chirurgie ou l'art dentaire, résorbables ou non 0"
+    },
+    {
+      "page": 163,
+      "code": "4412.33.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "m 1 (Carya spp.), marronnier (Aesculus spp.), tilleul (Tilia spp.), érable (Acer spp.), chêne (Quercus spp.), platane (Platanus spp.), peuplier (Populus spp.), robinier (Robinia spp.), tulipier (Liriodendron spp.) ou noyer (Juglans spp.) 20"
+    },
+    {
+      "page": 170,
+      "code": "4803.00.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "toilette, ouate de cellulose et nappes de fibres de cellulose, même crêpés, plissés, gaufrés, kg 1 estampés, perforés, coloriés en surface, décorés en surface ou imprimés, en rouleaux ou en feuilles. 10 Papiers et cartons Kraft, non couchés ni enduits, en rouleaux ou en feuilles, autres que ceux"
+    },
+    {
+      "page": 384,
+      "code": "9405.91.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "-- En verre kg 10 l"
+    },
+    {
+      "page": 384,
+      "code": "9405.92.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "-- En matieres plastiques kg 10 l"
+    },
+    {
+      "page": 384,
+      "code": "9405.99.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "-- Autres kg 10 l"
+    },
+    {
+      "page": 387,
+      "code": "9602.00.00.00",
+      "reason": "Taux DD ou RS non détecté",
+      "raw": "naturelles, en pâtes à modeler, et autres ouvrages moulés ou taillés, non dénommés ni kg 1 compris ailleurs; gélatine non durcie travaillée, autre que celle du n° 35.03, et ouvrages en gélatine non durcie. 20 Balais et brosses, même constituant des parties de machines, d'appareils ou de véhicules, balais mécaniques pour emploi à la main, autres qu'à moteur, pinceaux et plumeaux;"
+    }
+  ],
+  "duplicates": []
+}
