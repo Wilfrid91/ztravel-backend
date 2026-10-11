@@ -3474,7 +3474,7 @@
     "code": "0305.54.00.00",
     "description": "Harengs (Clupea harengus, Clupea pallasii), anchois (Engraulis spp.), sardines (Sardina pilchardus, — (Trachurus spp.), carangues (Caranx spp.), mafous (Rachycentron canadum), castagnoles argentées kg 1 (Pampus spp.), balaous du Pacifique (Cololabis saira), comètes (Decapterus spp.), capelans (Mallotus villosus), espadons (Xiphias gladius), thonines orientales (Euthynnus affinis), bonites (Sarda spp.), makaires, marlins, voiliers (Istiophoridae) 20",
     "libelle": "(Trachurus spp.), carangues (Caranx spp.), mafous (Rachycentron canadum), castagnoles argentées kg 1 (Pampus spp.), balaous du Pacifique (Cololabis saira), comètes (Decapterus spp.), capelans (Mallotus villosus), espadons (Xiphias gladius), thonines orientales (Euthynnus affinis), bonites (Sarda spp.), makaires, marlins, voiliers (Istiophoridae) 20",
-    "tauxDD": null,
+    "tauxDD": 20,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -10988,7 +10988,7 @@
     "code": "1518.00.00.00",
     "description": "celles du n° 15.16; mélanges ou préparations non alimentaires de graisses ou d'huiles animales, kg 1 végétales ou d'origine microbienne ou de fractions de différentes graisses ou huiles du présent Chapitre, non dénommés ni compris ailleurs. 20 [15.19]",
     "libelle": "celles du n° 15.16; mélanges ou préparations non alimentaires de graisses ou d'huiles animales, kg 1 végétales ou d'origine microbienne ou de fractions de différentes graisses ou huiles du présent Chapitre, non dénommés ni compris ailleurs. 20 [15.19]",
-    "tauxDD": null,
+    "tauxDD": 20,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -19165,7 +19165,7 @@
     "code": "2844.42.00.00",
     "description": "chimiques et isotopes fissiles ou fertiles) et leurs composés; mélanges et résidus contenant ces produits. — Eléments et isotopes et composés radioactifs autres que ceux des n°s 2844.10, 2844.20 ou — Actinium-225, actinium-227, californium-253, curium-240, curium241, curium-242, curium- — 209, polonium-210, radium-223, uranium-230 ou uranium-232, et leurs composés; alliages, kg 1 dispersions (y compris les cermets), produits céramiques et mélanges renfermant ces éléments ou composés 5",
     "libelle": "209, polonium-210, radium-223, uranium-230 ou uranium-232, et leurs composés; alliages, kg 1 dispersions (y compris les cermets), produits céramiques et mélanges renfermant ces éléments ou composés 5",
-    "tauxDD": null,
+    "tauxDD": 5,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -23780,7 +23780,7 @@
     "code": "2933.33.00.00",
     "description": "Composés hétérocycliques à hétéroatome(s) d'azote exclusivement. — Composés dont la structure comporte un cycle pyridine (hydrogéné ou non) non condensé — Alfentanil (DCI), aniléridine (DCI), bézitramide (DCI), bromazépam (DCI), carfentanil (DCI), — méthylphénidate (DCI), pentazocine (DCI), péthidine (DCI), péthidine (DCI) intermédiaire A, kg 1 phencyclidine (DCI) (PCP), phénopéridine (DCI), pipradrol (DCI), piritramide (DCI), propiram (DCI), remifentanil (DCI) et trimépéridine (DCI); sels de ces produits 5",
     "libelle": "méthylphénidate (DCI), pentazocine (DCI), péthidine (DCI), péthidine (DCI) intermédiaire A, kg 1 phencyclidine (DCI) (PCP), phénopéridine (DCI), pipradrol (DCI), piritramide (DCI), propiram (DCI), remifentanil (DCI) et trimépéridine (DCI); sels de ces produits 5",
-    "tauxDD": null,
+    "tauxDD": 5,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -24014,7 +24014,7 @@
     "code": "2933.91.00.00",
     "description": "Autres — Alprazolam (DCI), camazépam (DCI),chlordiazépoxide (DCI), clonazépam (DCI), — (DCI), lormétazépam (DCI), mazindol (DCI), médazépam (DCI), midazolam (DCI), kg 1 nimétazépam (DCI), nitrazépam (DCI), nordazépam (DCI), oxazépam (DCI), pinazépam (DCI), prazépam (DCI), pyrovalérone (DCI), témazépam (DCI), tétrazépam (DCI) et triazolam (DCI); sels de ces produits 5",
     "libelle": "(DCI), lormétazépam (DCI), mazindol (DCI), médazépam (DCI), midazolam (DCI), kg 1 nimétazépam (DCI), nitrazépam (DCI), nordazépam (DCI), oxazépam (DCI), pinazépam (DCI), prazépam (DCI), pyrovalérone (DCI), témazépam (DCI), tétrazépam (DCI) et triazolam (DCI); sels de ces produits 5",
-    "tauxDD": null,
+    "tauxDD": 5,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -25327,7 +25327,7 @@
     "code": "3006.10.00.00",
     "description": "Préparations et articles pharmaceutiques visés à la Note 4 du présent Chapitre. — Catguts stériles, ligatures stériles similaires pour sutures chirurgicales (y compris les fils — utilisés en chirurgie pour refermer les plaies; laminaires stériles; hémostatiques résorbables kg 1 stériles pour la chirurgie ou l'art dentaire; barrières anti-adhérence stériles pour la chirurgie ou l'art dentaire, résorbables ou non 0",
     "libelle": "utilisés en chirurgie pour refermer les plaies; laminaires stériles; hémostatiques résorbables kg 1 stériles pour la chirurgie ou l'art dentaire; barrières anti-adhérence stériles pour la chirurgie ou l'art dentaire, résorbables ou non 0",
-    "tauxDD": null,
+    "tauxDD": 0,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -35038,7 +35038,7 @@
     "code": "4412.33.00.00",
     "description": "Bois contre-plaqués, bois plaqués et bois stratifiés similaires. 3 — Autres bois contre-plaqués constitués exclusivement de feuilles de bois (autres que bambou) — Autres, ayant au moins un pli extérieur en bois autre que de conifères, des espèces aulne — m 1 (Carya spp.), marronnier (Aesculus spp.), tilleul (Tilia spp.), érable (Acer spp.), chêne (Quercus spp.), platane (Platanus spp.), peuplier (Populus spp.), robinier (Robinia spp.), tulipier (Liriodendron spp.) ou noyer (Juglans spp.) 20",
     "libelle": "m 1 (Carya spp.), marronnier (Aesculus spp.), tilleul (Tilia spp.), érable (Acer spp.), chêne (Quercus spp.), platane (Platanus spp.), peuplier (Populus spp.), robinier (Robinia spp.), tulipier (Liriodendron spp.) ou noyer (Juglans spp.) 20",
-    "tauxDD": null,
+    "tauxDD": 20,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -36481,7 +36481,7 @@
     "code": "4803.00.00.00",
     "description": "toilette, ouate de cellulose et nappes de fibres de cellulose, même crêpés, plissés, gaufrés, kg 1 estampés, perforés, coloriés en surface, décorés en surface ou imprimés, en rouleaux ou en feuilles. 10 Papiers et cartons Kraft, non couchés ni enduits, en rouleaux ou en feuilles, autres que ceux",
     "libelle": "toilette, ouate de cellulose et nappes de fibres de cellulose, même crêpés, plissés, gaufrés, kg 1 estampés, perforés, coloriés en surface, décorés en surface ou imprimés, en rouleaux ou en feuilles. 10 Papiers et cartons Kraft, non couchés ni enduits, en rouleaux ou en feuilles, autres que ceux",
-    "tauxDD": null,
+    "tauxDD": 10,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,
@@ -81429,7 +81429,7 @@
     "tauxPS": 0.2,
     "tauxRAU": 0.5,
     "tauxAIB": 1,
-    "tauxRS": null
+    "tauxRS": 1
   },
   {
     "code": "9405.92.00.00",
@@ -81442,7 +81442,7 @@
     "tauxPS": 0.2,
     "tauxRAU": 0.5,
     "tauxAIB": 1,
-    "tauxRS": null
+    "tauxRS": 1
   },
   {
     "code": "9405.99.00.00",
@@ -81455,7 +81455,7 @@
     "tauxPS": 0.2,
     "tauxRAU": 0.5,
     "tauxAIB": 1,
-    "tauxRS": null
+    "tauxRS": 1
   },
   {
     "code": "9406.10.00.00",
@@ -82033,7 +82033,7 @@
     "code": "9602.00.00.00",
     "description": "naturelles, en pâtes à modeler, et autres ouvrages moulés ou taillés, non dénommés ni kg 1 compris ailleurs; gélatine non durcie travaillée, autre que celle du n° 35.03, et ouvrages en gélatine non durcie. 20 Balais et brosses, même constituant des parties de machines, d'appareils ou de véhicules, balais mécaniques pour emploi à la main, autres qu'à moteur, pinceaux et plumeaux",
     "libelle": "naturelles, en pâtes à modeler, et autres ouvrages moulés ou taillés, non dénommés ni kg 1 compris ailleurs; gélatine non durcie travaillée, autre que celle du n° 35.03, et ouvrages en gélatine non durcie. 20 Balais et brosses, même constituant des parties de machines, d'appareils ou de véhicules, balais mécaniques pour emploi à la main, autres qu'à moteur, pinceaux et plumeaux",
-    "tauxDD": null,
+    "tauxDD": 20,
     "tauxTVA": 18,
     "tauxPCS": 0.8,
     "tauxPC": 0.5,

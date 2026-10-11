@@ -163,6 +163,15 @@ function extractConfig(pages) {
     const lines = page.lines
     const pageItems = page.items
 
+    // ADDED
+    const tariffCodeItems = pageItems
+      .filter(
+        (item) =>
+          /^\d{4}\.\d{2}\.\d{2}\.\d{2}$/.test(item.str?.trim() ?? '') &&
+          item.transform,
+      )
+      .sort((a, b) => b.transform[5] - a.transform[5])
+
     let positionTitle = ''
     let branches = []
     let collectingPositionTitle = false
@@ -176,15 +185,21 @@ function extractConfig(pages) {
 
       const libelle = cleanTerminalLabel(raw)
 
-      const tauxDD =
-        pendingEntry.codeY === null
-          ? null
-          : findRateInColumn(pageItems, taxColumns.ddX, pendingEntry.codeY)
+      const tauxDD = findRateInColumn(
+        pageItems,
+        taxColumns.ddX,
+        pendingEntry.codeY,
+        pendingEntry.nextCodeY,
+        'DD',
+      )
 
-      const tauxRS =
-        pendingEntry.codeY === null
-          ? null
-          : findRateInColumn(pageItems, taxColumns.rsX, pendingEntry.codeY)
+      const tauxRS = findRateInColumn(
+        pageItems,
+        taxColumns.rsX,
+        pendingEntry.codeY,
+        pendingEntry.nextCodeY,
+        'RS',
+      )
 
       const rates = { tauxDD, tauxRS }
 
@@ -266,7 +281,18 @@ function extractConfig(pages) {
         const code = codeMatch[0]
         const suffix = line.slice(codeMatch.index + code.length).trim()
 
-        const codeItem = pageItems.find((item) => item.str?.trim() === code)
+        const codeItem = tariffCodeItems.find(
+          (item) => item.str.trim() === code,
+        )
+
+        const codeY = codeItem?.transform?.[5] ?? null
+
+        const nextCodeItem =
+          codeY === null
+            ? null
+            : tariffCodeItems.find((item) => item.transform[5] < codeY - 1)
+
+        const nextCodeY = nextCodeItem?.transform?.[5] ?? 0
 
         pendingEntry = {
           code,
@@ -274,7 +300,8 @@ function extractConfig(pages) {
           position: positionTitle,
           branchPath: [...branches],
           pageNumber: pageIndex + 1,
-          codeY: codeItem?.transform?.[5] ?? null,
+          codeY,
+          nextCodeY,
         }
 
         collectingPositionTitle = false
@@ -350,25 +377,52 @@ function getTaxColumnPositions(pages) {
   }
 }
 
-function findRateInColumn(items, columnX, codeY) {
-  const candidates = items
-    .filter((item) => {
-      const text = item.str?.trim()
+function findRateInColumn(items, columnX, codeY, nextCodeY, columnName = 'DD') {
+  if (!Number.isFinite(codeY)) {
+    return null
+  }
 
-      return (
-        /^\d+(?:[,.]\d+)?$/.test(text || '') &&
-        item.transform &&
-        Math.abs(getItemCenterX(item) - columnX) <= 14
-      )
+  // Les coordonnées PDF diminuent généralement de haut en bas.
+  // Le taux est recherché dans la zone du code courant.
+  const lowerBound = Number.isFinite(nextCodeY) ? nextCodeY : 0
+
+  const candidates = []
+
+  for (const item of items) {
+    if (!item.transform) continue
+
+    const originalText = item.str?.trim() ?? ''
+
+    // Certains chiffres 1 de la colonne RS sont extraits comme "l".
+    const text =
+      columnName === 'RS' && /^[lI|]$/.test(originalText) ? '1' : originalText
+
+    if (!/^\d+(?:[,.]\d+)?$/.test(text)) {
+      continue
+    }
+
+    const x = getItemCenterX(item)
+    const y = item.transform[5]
+
+    // Vérifier la colonne tarifaire.
+    if (Math.abs(x - columnX) > 18) {
+      continue
+    }
+
+    // Garder les nombres appartenant à la zone du code courant.
+    if (y > codeY + 5 || y <= lowerBound + 1) {
+      continue
+    }
+
+    candidates.push({
+      value: Number(text.replace(',', '.')),
+      distance: Math.abs(y - codeY),
     })
-    .map((item) => ({
-      value: Number(item.str.trim().replace(',', '.')),
-      distanceY: Math.abs(item.transform[5] - codeY),
-    }))
-    .filter((item) => item.distanceY <= 30)
-    .sort((a, b) => a.distanceY - b.distanceY)
+  }
 
-  return candidates.length > 0 ? candidates[0].value : null
+  candidates.sort((a, b) => a.distance - b.distance)
+
+  return candidates[0]?.value ?? null
 }
 
 // MAIN
@@ -385,6 +439,30 @@ async function main() {
     const pages = await extractTextFromPDF(path.resolve(inputFile))
     const { entries, errors } = extractConfig(pages)
     const { entries: uniqueEntries, duplicates } = deduplicateEntries(entries)
+
+    // Ne retient que les éléments PDF correspondant exactement à un code complet
+    const sourceCodes = new Set(
+      pages.flatMap((page) =>
+        page.items
+          .map((item) => item.str?.trim() ?? '')
+          .filter((text) => /^\d{4}\.\d{2}\.\d{2}\.\d{2}$/.test(text)),
+      ),
+    )
+
+    const outputCodes = new Set(uniqueEntries.map((entry) => entry.code))
+
+    const missingCodes = [...sourceCodes].filter(
+      (code) => !outputCodes.has(code),
+    )
+
+    console.log('\n--- Vérification des codes ---')
+    console.log(`Codes tarifaires détectés : ${sourceCodes.size}`)
+    console.log(`Codes dans le JSON : ${outputCodes.size}`)
+    console.log(`Codes manquants : ${missingCodes.length}`)
+
+    if (missingCodes.length > 0) {
+      console.log('Codes manquants :', missingCodes)
+    }
 
     fs.writeFileSync(
       OUTPUT_FILE,
@@ -405,6 +483,15 @@ async function main() {
     console.log(`Doublons divergents : ${duplicates.length}`)
     console.log(`Fichier généré : ${OUTPUT_FILE}`)
     console.log(`Rapport généré : ${ERRORS_FILE}`)
+
+    console.table(
+      errors.map(({ page, code, reason, raw }) => ({
+        page,
+        code,
+        reason,
+        raw: raw?.slice(0, 100) ?? '',
+      })),
+    )
 
     if (errors.length) {
       console.warn(
