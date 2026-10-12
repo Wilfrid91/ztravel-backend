@@ -2,7 +2,7 @@
   "chapters": [
     {
       "title": "Simulateur d’Achats Chine : Calculez vos Frais de Douane",
-      "description": "Ce simulateur s’appuie sur le document officiel BJ‑Tarif‑Douanier‑SH2022‑à‑jour_2.0, publié par la Direction Générale des Douanes du Bénin. Il intègre l’ensemble des droits et taxes applicables aux marchandises importées ou exportées au Bénin, conformément au classement du Système Harmonisé (SH 2022). Bien qu’il soit édité par les autorités béninoises, ce document reprend les dernières mises à jour du Tarif Extérieur Commun (TEC) de la CEDEAO. Le simulateur peut donc être utilisé par toute personne, entreprise ou transitaire opérant au sein de l’espace CEDEAO et souhaitant réaliser une simulation douanière fiable. Le simulateur permet deux actions principales : 1. Générer automatiquement la liste de vos produits ; 2. Simuler l’Attestation de Vérification Documentaire (AVD).",
+      "description": "<p>Ce simulateur s’appuie sur les documents officiels <a href=\"/pdf/BJ-Tarif-Douanier-SH2022-a-jour_2.0.pdf\" target=\"_blank\"><strong>BJ-Tarif-Douanier-SH2022-a-jour_2.0</strong></a> publié par la Direction Générale des Douanes du Bénin et <a href=\"/pdf/UEMOA_TEC2022_V4.pdf\" target=\"_blank\"><strong>UEMOA_TEC2022_V4.pdf</strong></a>, téléchargeables depuis notre serveur.</p><p>Il intègre l’ensemble des droits et taxes applicables aux marchandises du Système Harmonisé (SH 2022). Il reprend également les dernières mises à jour du Tarif Extérieur Commun (TEC) de la CEDEAO.</p><p>Le simulateur est donc utilisable par toute personne, entreprise ou transitaire opérant au sein de l’espace CEDEAO et souhaitant réaliser une simulation douanière fiable.</p><p>Le simulateur permet deux actions principales :</p><ol><li>Générer automatiquement la liste de vos produits et véhicules à importer ou exporter.</li><li>Simuler l’Attestation de Vérification Documentaire (AVD).</li></ol></p>",
       "images": [],
       "remark": [
         {
@@ -17,15 +17,15 @@
     },
     {
       "title": "Informations relatives aux produits",
-      "description": "Dans cette section, vous renseignez toutes les informations concernant vos produits.",
-      "images": [],
+      "description": "Dans cette section, renseignez toutes les informations relatives à vos produits. Pour garantir la fiabilité de la simulation, le nom et la description du produit doivent comporter la désignation de la marchandise, la branche et le libellé. Sur l'illustration ci-dessous, les icônes 1, 2 et 3 indiquent respectivement la désignation (« Chevaux, ânes, mulets et bardots, vivants »), la branche (« Chevaux ») et le libellé (« Reproducteurs de race pure »)",
+      "images": ["/img/CodeSHExplication.png"],
       "remark": [],
       "steps": [
         {
           "number": 1,
-          "title": "Génération automatique de la liste de vos produits",
+          "title": "Information relative au nom, description, dimension, poids, prix et quantités",
           "instructions": [
-            "Veuillez saisir les noms, descriptions, dimensions, poids, prix et quantités avec précision. Les caractères accentués sont autorisés. Vous pouvez ajouter ou supprimer un produit via les boutons « Ajouter un produit » et « Supprimer un produit ». Tous les champs doivent être complétés avant la soumission."
+            "Veuillez saisir les noms, descriptions, dimensions, poids, prix et quantités avec précision. Enfin, Les caractères accentués sont autorisés. Vous pouvez ajouter ou supprimer un produit via les boutons « Ajouter un produit » et « Supprimer un produit ». Tous les champs doivent être complétés avant la soumission."
           ]
         },
         {
@@ -39,7 +39,7 @@
           "number": 3,
           "title": "Devise",
           "instructions": [
-            "Sélectionnez la devise d’achat de votre produit. Le simulateur prend en charge : EUR (€), USD ($), GBP (£), le franc suisse CHF (Fr), et le dollar canadien CAD ($)."
+            "Sélectionnez la devise d’achat de votre produit. Le simulateur prend en charge les devises suivantes : euro (EUR €), dollar américain (USD $), livre sterling (GBP £), franc suisse (CHF Fr) et dollar canadien (CAD $). La devise du produit doit être identique à celle utilisée pour le fret maritime. Ainsi, lorsque vous sélectionnez la devise d’un produit, la devise du fret maritime est automatiquement mise à jour avec la même valeur. En cas de simulation comportant plusieurs produits ou véhicules, la devise choisie pour le premier produit est automatiquement appliquée à l’ensemble des autres produits, véhicules et au fret maritime. Cette synchronisation garantit la cohérence des calculs et la fiabilité de la simulation douanière"
           ]
         },
         {

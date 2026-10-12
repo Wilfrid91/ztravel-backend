@@ -1,5 +1,4 @@
 /********** ADD DATA WITHIN MONGO DB DADATABSE *************/
-// start woking with database
 import 'dotenv/config'
 import connectDB from './db/connect.js'
 import fs from 'fs'
@@ -19,9 +18,9 @@ import jsonCatalog from './json_data/catalog_generated.json' assert { type: 'jso
 
 import CGU from './models/CGU.js'
 import jsonCGU from './json_data/CGU.json' assert { type: 'json' }
-/*
+
 import codeSHModel from './models/CodeSH.js'
-import codeSHjsonData from './output.json' assert { type: 'json' }*/
+import codeSHjsonData from './output.json' assert { type: 'json' }
 
 import douaneModel from './models/Douane.js'
 import douaneInfo from './json_data/douane.json' assert { type: 'json' }
@@ -57,7 +56,7 @@ const FILES = {
   tab2: './json_data/tab2.json',
   catalog: './json_data/catalog_generated.json',
   cgu: './json_data/CGU.json',
-  //codeSH: './output.json',
+  codeSH: './output.json',
   douane: './json_data/douane.json',
   simulateurDD: './json_data/simulateurDD.json',
   tab2AVDIntro: './json_data/tab2AvdSimulator.json',
