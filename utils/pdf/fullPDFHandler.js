@@ -249,583 +249,746 @@ function fmt3(value) {
     .replace(/\u00A0/g, ' ') // espace insécable → espace normal
 }
 
+function pdfSafeText(value) {
+  return (
+    String(value ?? '')
+      .normalize('NFC')
+      // Remplacer les espaces Unicode par des espaces ordinaires
+      .replace(/[\u00A0\u202F\u2007\u2009]/g, ' ')
+  )
+}
+
+function formatPdfAmount(value) {
+  // fmt3 est ta fonction de formatage existante
+  return pdfSafeText(fmt3(value))
+}
+
+/**
+ * Génération du PDF AVD — version avec tableaux lisibles et mise en page A4.
+ *
+ * Dépendances attendues dans le module appelant :
+ *   - PDFDocumentWithTables (classe compatible PDFKit)
+ *   - PassThrough (node:stream)
+ *   - sharp
+ *   - generateReference()
+ *
+ * Cette version ne dépend plus du helper externe drawTable().
+ */
 export const generateProductFullPDF = async (
-  products,
-  photos,
-  shipping,
-  avdData,
+  products = [],
+  photos = [],
+  shipping = {},
+  avdData = {},
 ) => {
-  const { articles } = avdData
-  console.log('ARTICLES', articles)
+  const articles = Array.isArray(avdData?.articles) ? avdData.articles : []
+  const productList = Array.isArray(products) ? products : []
+  const photoList = Array.isArray(photos) ? photos : []
 
   return new Promise(async (resolve, reject) => {
     try {
-      // 1,4 cm de marge interne sur chaque bord (gauche, haut, droite, bas)
-      const doc = new PDFDocumentWithTables({ margin: 20 })
+      // A4 portrait, marges uniformes de 40 points.
+      const PAGE_MARGIN = 40
+      const FOOTER_RESERVE = 105
+      const CONTENT_BOTTOM = () => doc.page.height - FOOTER_RESERVE
+      const doc = new PDFDocumentWithTables({ size: 'A4', margin: PAGE_MARGIN })
       const stream = new PassThrough()
       const chunks = []
 
+      let currentPage = 1
+      let lastHeaderPage = 0
+      // Une seule référence pour l'ensemble du document (et toutes ses pages).
+      const documentReference = generateReference()
+      const generatedAt = new Date().toLocaleString('fr-FR')
+
+      const pageWidth = () => doc.page.width
+      const contentWidth = () => pageWidth() - PAGE_MARGIN * 2
+      const contentX = PAGE_MARGIN
+
       doc.pipe(stream)
-      stream.on('data', (c) => chunks.push(c))
+      stream.on('data', (chunk) => chunks.push(chunk))
       stream.on('end', () => resolve(Buffer.concat(chunks)))
       stream.on('error', reject)
+      doc.on?.('error', reject)
 
-      // -----------------------------------------------------
-      // PAGE COUNTER
-      // -----------------------------------------------------
-      let currentPage = 1
-      let lastHeaderPage = 0 // ⭐ Suivi des pages
-      const neededHeight = 260 // hauteur du bloc produit
+      const toText = (value, fallback = '—') => {
+        if (value === null || value === undefined || value === '')
+          return fallback
+        return String(value)
+      }
 
-      // -----------------------------------------------------
-      // HEADER
-      // -----------------------------------------------------
-      function drawHeader(doc) {
+      function formatAmount(value) {
+        const number =
+          typeof value === 'number'
+            ? value
+            : Number(
+                String(value ?? '')
+                  .replace(/\s/g, '')
+                  .replace(',', '.'),
+              )
+
+        if (!Number.isFinite(number)) {
+          return '—'
+        }
+
+        return new Intl.NumberFormat('fr-FR', {
+          useGrouping: true,
+          maximumFractionDigits: 2,
+        })
+          .format(number)
+          .replace(/[\u00A0\u202F\u2007\u2009]/g, ' ')
+      }
+
+      function drawHeader() {
         if (currentPage === lastHeaderPage) return
         lastHeaderPage = currentPage
 
-        const now = new Date()
+        // Logo de l'entreprise. Le chemin reste relatif au répertoire de lancement.
+        doc.image('assets/logo.png', PAGE_MARGIN, 20, { width: 70 })
 
-        const dateStr = now.toLocaleString('fr-FR')
-
-        // Logo
-        // X: 40 points() depuis le bord gauche => 515.28 - 40 = 475,28
-        // Y: 20 points() depuis le bord haut => 762-20 = 742
-        doc.image('assets/logo.png', 40, 20, { width: 70 })
-
-        // Position du texte
-        const headerY = 30
-        let y = headerY
-
-        // Nom entreprise
         doc
           .fillColor('#1A3C8E')
           .font('Helvetica-Bold')
-          .fontSize(14)
-          .text('Ztravel Consulting', 130, y, {
-            width: 400,
-            align: 'left',
+          .fontSize(15)
+          .text('Ztravel Consulting', 130, 27, {
+            width: Math.max(200, pageWidth() - 170),
+            lineBreak: false,
           })
 
-        y += 18
-
-        // Sous-titre
         doc
-          .fillColor('#000')
+          .fillColor('#222222')
           .font('Helvetica')
           .fontSize(11)
-          .text('Analyse des valeurs en douane (AVD)', 130, y, {
-            width: 400,
-            align: 'left',
+          .text('Analyse des valeurs en douane (AVD)', 130, 47, {
+            width: Math.max(200, pageWidth() - 170),
+            lineBreak: false,
           })
 
-        y += 14
-
-        // Date de génération
         doc
-          .fontSize(10)
-          .fillColor('#444')
-          .text(`Document généré le : ${dateStr}`, 130, y, {
-            width: 400,
-            align: 'left',
+          .fillColor('#666666')
+          .font('Helvetica')
+          .fontSize(9)
+          .text(`Document généré le : ${generatedAt}`, 130, 64, {
+            width: Math.max(200, pageWidth() - 170),
+            lineBreak: false,
           })
 
-        // Ligne de séparation
         doc
-          .moveTo(40, 80)
-          .lineTo(doc.page.width - 40, 80)
-          .strokeColor('#cccccc')
-          .lineWidth(1)
+          .moveTo(PAGE_MARGIN, 84)
+          .lineTo(pageWidth() - PAGE_MARGIN, 84)
+          .strokeColor('#D5DAE4')
+          .lineWidth(0.8)
           .stroke()
 
-        // Position du contenu
-        doc.y = 90
+        doc.y = 98
       }
 
-      // -----------------------------------------------------
-      // FOOTER
-      // -----------------------------------------------------
-      function drawFooter(doc) {
-        const pageWidth = doc.page.width
-        const pageHeight = doc.page.height // Hauteur A4 FIXE (841.89 pts)
+      function drawFooter() {
+        const pageHeight = doc.page.height
 
-        // Position du texte
+        doc.save()
         doc
-          .moveTo(40, pageHeight - 80)
-          .lineTo(pageWidth - 40, pageHeight - 80)
-          .strokeColor('#cccccc')
-          .lineWidth(1)
+          .moveTo(PAGE_MARGIN, pageHeight - 75)
+          .lineTo(pageWidth() - PAGE_MARGIN, pageHeight - 75)
+          .strokeColor('#D5DAE4')
+          .lineWidth(0.8)
           .stroke()
 
         doc
-          .fontSize(9)
-          .fillColor('#666')
-          .text(`Page ${currentPage}`, 0, pageHeight - 50, {
+          .font('Helvetica')
+          .fontSize(8.5)
+          .fillColor('#555555')
+          .text(
+            `Référence : ${documentReference}`,
+            PAGE_MARGIN,
+            pageHeight - 57,
+            {
+              width: 220,
+              lineBreak: false,
+            },
+          )
+
+        doc
+          .font('Helvetica')
+          .fontSize(8.5)
+          .fillColor('#555555')
+          .text(`Page ${currentPage}`, 0, pageHeight - 57, {
+            width: pageWidth(),
             align: 'center',
+            lineBreak: false,
           })
-
-        // Compteur simple
-        const refNumber = generateReference()
-
-        // Référence
-        // Dans un footer, tu dois utiliser des coordonnées fixes, car le footer ne dépend pas de doc.y
-        doc
-          .fontSize(9)
-          .fillColor('#444')
-          .text(`Référence : ${refNumber}`, 40, pageHeight - 60, {
-            width: 300,
-            align: 'left',
-          })
+        doc.restore()
       }
 
-      // -----------------------------------------------------
-      // PAGE ADDED HOOK (LE SEUL QUI DOIT EXISTER)
-      // -----------------------------------------------------
-
-      // Fonction pour changer de page (100% maîtrisée)
-      function newPage(doc) {
-        drawFooter(doc) // Footer de la page ACTUELLE
-        doc.addPage() // Nouvelle page
-        currentPage++ // Incrémente le compteur
-        drawHeader(doc) // Header de la NOUVELLE page
-        doc.y = 100 // ⭐ Réinitialise doc.y (CRUCIAL)
+      function newPage() {
+        drawFooter()
+        doc.addPage({ size: 'A4', margin: PAGE_MARGIN })
+        currentPage += 1
+        lastHeaderPage = 0
+        drawHeader()
+        doc.y = 98
       }
 
-      function getUsableHeight(doc) {
-        //return doc.page.height - doc.page.margins.bottom - doc.y
-        const footerHeight = 100 // zone réservée pour le footer
-        return doc.page.height - 20 - doc.y - footerHeight
+      function getUsableHeight() {
+        return CONTENT_BOTTOM() - doc.y
       }
 
-      function ensureSpace(doc, neededHeight) {
-        if (getUsableHeight(doc) < neededHeight) {
-          newPage(doc)
-        }
+      function ensureSpace(requiredHeight) {
+        if (getUsableHeight() < requiredHeight) newPage()
       }
 
-      // -----------------------------------------------------
-      // PAGE 1
-      // -----------------------------------------------------
-      drawHeader(doc)
-      //doc.y = 100 // Position après le header
-
-      // -----------------------------------------------------
-      // LISTE PRODUITS
-      // -----------------------------------------------------
-      doc.moveDown(1)
-
-      doc
-        .fillColor('#1A3C8E')
-        .fontSize(12)
-        .font('Helvetica-Bold')
-        .text('Liste de produits', doc.page.margins.left, doc.y, {
-          width: 500,
-          align: 'left',
-          lineBreak: true,
+      function measureText(text, font, fontSize, width) {
+        doc.font(font).fontSize(fontSize)
+        return doc.heightOfString(toText(text, ''), {
+          width: Math.max(20, width),
+          lineGap: 0,
         })
+      }
 
-      doc.moveDown(1)
+      function drawSectionTitle(
+        title,
+        { color = '#1A3C8E', size = 12, space = 42, gap = 10 } = {},
+      ) {
+        ensureSpace(space)
+        doc.font('Helvetica-Bold').fontSize(size).fillColor(color)
+        const textHeight = doc.heightOfString(title, {
+          width: contentWidth(),
+          lineGap: 1,
+        })
+        doc.text(title, contentX, doc.y, {
+          width: contentWidth(),
+          lineGap: 1,
+        })
+        doc.y += Math.max(textHeight, size + 3) + gap
+      }
 
-      for (let index = 0; index < products.length; index++) {
-        const produit = products[index]
-        const boxHeight = 260
+      /**
+       * Dessine un tableau avec hauteur de ligne calculée, marges internes,
+       * retour à la ligne maîtrisé et répétition de l'en-tête après un saut de page.
+       * rows = [ligne d'en-tête, ligne de données, ...]
+       */
+      function drawStyledTable(rows, columnWidths, options = {}) {
+        if (!Array.isArray(rows) || rows.length === 0) return doc.y
 
-        ensureSpace(doc, boxHeight)
+        const config = {
+          headerBackground: '#1A3C8E',
+          headerTextColor: '#FFFFFF',
+          bodyTextColor: '#202938',
+          alternateRowColor: '#F3F6FB',
+          rowBackground: '#FFFFFF',
+          borderColor: '#D5DCE8',
+          headerFontSize: 9,
+          bodyFontSize: 9.5,
+          headerPadding: 7,
+          bodyPadding: 7,
+          minHeaderHeight: 30,
+          minRowHeight: 27,
+          gapAfter: 10,
+          repeatHeader: true,
+          headerAlignments: [],
+          columnAlignments: [],
+          boldRowIndexes: [],
+          ...options,
+        }
 
-        const boxTop = doc.y
-
-        doc
-          .lineWidth(1)
-          .strokeColor('#1A3C8E')
-          .rect(40, boxTop, 520, boxHeight)
-          .stroke()
-
-        let yText = boxTop + 10
-
-        doc
-          .fillColor('#1A3C8E')
-          .font('Helvetica-Bold')
-          .fontSize(14)
-          .text(`Produit ${index + 1}: ${produit.nom}`, 50, yText, {
-            width: 500,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 40
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica-Bold')
-          .fontSize(11)
-          .text(`Description : ${produit.description}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        doc.moveDown(3)
-
-        yText += 28
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(
-            `Dimensions : ${produit.longueurCm} x ${produit.largeurCm} cm`,
-            50,
-            yText,
-            {
-              width: 400,
-              align: 'left',
-              lineBreak: true,
-            },
+        const widths = columnWidths.map((width) => Number(width))
+        if (widths.length !== rows[0].length) {
+          throw new Error(
+            `Le tableau comporte ${rows[0].length} colonnes mais ${widths.length} largeurs ont été fournies.`,
           )
-        yText += 18
+        }
 
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Poids : ${produit.poidsKg} kg`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
+        const normalizeRow = (row) =>
+          widths.map((_, index) => toText(row?.[index], '—'))
+
+        const rowHeight = (row, rowIndex) => {
+          const isHeader = rowIndex === 0
+          const isBold = isHeader || config.boldRowIndexes.includes(rowIndex)
+          const font = isBold ? 'Helvetica-Bold' : 'Helvetica'
+          const fontSize = isHeader
+            ? config.headerFontSize
+            : config.bodyFontSize
+          const padding = isHeader ? config.headerPadding : config.bodyPadding
+          let measuredHeight = 0
+
+          normalizeRow(row).forEach((cell, colIndex) => {
+            measuredHeight = Math.max(
+              measuredHeight,
+              measureText(cell, font, fontSize, widths[colIndex] - padding * 2),
+            )
           })
-        yText += 18
 
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Quantité : ${produit.quantity}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Cartons : ${produit.numberOfBox}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(
-            `Prix unitaire : ${produit.prix} ${produit.devise}`,
-            50,
-            yText,
-            {
-              width: 400,
-              align: 'left',
-              lineBreak: true,
-            },
+          return Math.max(
+            isHeader ? config.minHeaderHeight : config.minRowHeight,
+            measuredHeight + padding * 2,
           )
-        yText += 18
+        }
 
+        const paintRow = (row, rowIndex, y, height) => {
+          const isHeader = rowIndex === 0
+          const isBold = isHeader || config.boldRowIndexes.includes(rowIndex)
+          const font = isBold ? 'Helvetica-Bold' : 'Helvetica'
+          const fontSize = isHeader
+            ? config.headerFontSize
+            : config.bodyFontSize
+          const padding = isHeader ? config.headerPadding : config.bodyPadding
+          const rowFill = isHeader
+            ? config.headerBackground
+            : rowIndex % 2 === 0
+              ? config.alternateRowColor
+              : config.rowBackground
+
+          let x = contentX
+          const cells = normalizeRow(row)
+
+          cells.forEach((cell, colIndex) => {
+            const width = widths[colIndex]
+
+            doc.save()
+            doc
+              .fillColor(rowFill)
+              .strokeColor(config.borderColor)
+              .lineWidth(0.5)
+              .rect(x, y, width, height)
+              .fillAndStroke(rowFill, config.borderColor)
+
+            doc
+              .font(font)
+              .fontSize(fontSize)
+              .fillColor(
+                isHeader ? config.headerTextColor : config.bodyTextColor,
+              )
+              .text(cell, x + padding, y + padding, {
+                width: Math.max(20, width - padding * 2),
+                height: Math.max(10, height - padding * 2),
+                align: isHeader
+                  ? config.headerAlignments[colIndex] || 'left'
+                  : config.columnAlignments[colIndex] || 'left',
+                valign: 'center',
+                lineGap: 0,
+              })
+            doc.restore()
+            x += width
+          })
+        }
+
+        let y = doc.y
+        let rowIndex = 0
+
+        while (rowIndex < rows.length) {
+          let height = rowHeight(rows[rowIndex], rowIndex)
+
+          if (y + height > CONTENT_BOTTOM()) {
+            newPage()
+            y = doc.y
+
+            // Répéter la ligne d'en-tête si une suite du tableau passe à la page suivante.
+            if (rowIndex > 0 && config.repeatHeader && rows.length > 1) {
+              const headerHeight = rowHeight(rows[0], 0)
+              paintRow(rows[0], 0, y, headerHeight)
+              y += headerHeight
+            }
+
+            height = rowHeight(rows[rowIndex], rowIndex)
+          }
+
+          paintRow(rows[rowIndex], rowIndex, y, height)
+          y += height
+          rowIndex += 1
+        }
+
+        doc.y = y + config.gapAfter
+        return doc.y
+      }
+
+      // -----------------------------------------------------
+      // Première page : en-tête et liste des produits
+      // -----------------------------------------------------
+      drawHeader()
+      drawSectionTitle('Liste de produits', { space: 48, gap: 12 })
+
+      if (productList.length === 0) {
         doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(
-            `Prix total : ${produit.prixTotal} ${produit.devise}`,
-            50,
-            yText,
-            {
-              width: 500,
-              align: 'left',
-              lineBreak: true,
-            },
-          )
+          .font('Helvetica-Oblique')
+          .fontSize(10)
+          .fillColor('#666666')
+          .text('Aucun produit renseigné.', contentX + 8, doc.y, {
+            width: contentWidth() - 16,
+          })
+        doc.y += 28
+      }
 
-        const file = photos.find((f) => f.fieldname === `photo_${index}`)
+      for (let index = 0; index < productList.length; index += 1) {
+        const product = productList[index] || {}
+        const heading = `Produit ${index + 1} : ${toText(product.nom, 'Sans nom')}`
+        const description = toText(product.description, 'Non renseignée')
+        const imageFile = photoList.find(
+          (file) => file.fieldname === `photo_${index}`,
+        )
 
-        if (file) {
+        let imageBuffer = null
+        let imageError = false
+        if (imageFile?.buffer) {
           try {
-            const pngBuffer = await sharp(file.buffer).rotate().png().toBuffer()
-            const xImg = 40 + 520 - 180 - 10
-            const yImg = boxTop + 70
-
-            doc.image(pngBuffer, xImg, yImg, { fit: [180, 180] })
-          } catch (err) {
-            doc.fillColor('red').text(`Image illisible`, 350, boxTop + 20)
-            doc.fillColor('black')
+            imageBuffer = await sharp(imageFile.buffer)
+              .rotate()
+              .png()
+              .toBuffer()
+          } catch (error) {
+            imageError = true
+            console.warn(
+              `Photo du produit ${index + 1} illisible :`,
+              error.message,
+            )
           }
         }
 
-        doc.y = boxTop + boxHeight + 20
+        const cardX = contentX
+        const cardWidth = contentWidth()
+        const padding = 12
+        const leftX = cardX + padding
+        const leftWidth = imageBuffer
+          ? cardWidth - 210
+          : cardWidth - padding * 2
+        const titleHeight = measureText(
+          heading,
+          'Helvetica-Bold',
+          13,
+          cardWidth - padding * 2,
+        )
+        const descriptionLabelHeight = measureText(
+          'Description',
+          'Helvetica-Bold',
+          9.5,
+          leftWidth,
+        )
+        const descriptionHeight = measureText(
+          description,
+          'Helvetica',
+          9.5,
+          leftWidth,
+        )
+        /*const detailRows = [
+          `Dimensions : ${toText(product.longueurCm)} × ${toText(product.largeurCm)} cm`,
+          `Poids : ${toText(product.poidsKg)} kg`,
+          `Quantité : ${toText(product.quantity)}`,
+          `Cartons : ${toText(product.numberOfBox)}`,
+          `Prix unitaire : ${formatAmount(product.prix)} ${toText(product.devise, '')}`.trim(),
+          `Prix total : ${formatAmount(product.prixTotal)} ${toText(product.devise, '')}`.trim(),
+        ]*/
+
+        const detailRows = [
+          `Dimensions : ${pdfSafeText(toText(product.longueurCm))} × ${pdfSafeText(toText(product.largeurCm))} cm`,
+          `Poids : ${pdfSafeText(toText(product.poidsKg))} kg`,
+          `Quantité : ${pdfSafeText(toText(product.quantity))}`,
+          `Cartons : ${pdfSafeText(toText(product.numberOfBox))}`,
+          `Prix unitaire : ${formatPdfAmount(product.prix)} ${pdfSafeText(toText(product.devise, ''))}`.trim(),
+          `Prix total : ${formatPdfAmount(product.prixTotal)} ${pdfSafeText(toText(product.devise, ''))}`.trim(),
+        ]
+
+        const detailHeights = detailRows.map((line) =>
+          Math.max(14, measureText(line, 'Helvetica', 9.5, leftWidth) + 2),
+        )
+        const detailsHeight = detailHeights.reduce(
+          (sum, height) => sum + height,
+          0,
+        )
+        const imageHeight = imageBuffer ? 150 : imageError ? 18 : 0
+        const bodyHeight = Math.max(
+          descriptionLabelHeight + 3 + descriptionHeight + 8 + detailsHeight,
+          imageHeight,
+        )
+        const cardHeight = padding + titleHeight + 10 + bodyHeight + padding
+
+        ensureSpace(cardHeight + 14)
+        const cardTop = doc.y
+        const bodyTop = cardTop + padding + titleHeight + 10
+
+        doc.save()
+        doc
+          .lineWidth(0.8)
+          .strokeColor('#C9D4E6')
+          .fillColor('#FFFFFF')
+          .rect(cardX, cardTop, cardWidth, cardHeight)
+          .fillAndStroke('#FFFFFF', '#C9D4E6')
+        doc.fillColor('#1A3C8E').rect(cardX, cardTop, 4, cardHeight).fill()
+        doc.restore()
+
+        doc
+          .font('Helvetica-Bold')
+          .fontSize(13)
+          .fillColor('#1A3C8E')
+          .text(heading, leftX, cardTop + padding, {
+            width: cardWidth - padding * 2,
+            lineGap: 1,
+          })
+
+        doc
+          .font('Helvetica-Bold')
+          .fontSize(9.5)
+          .fillColor('#303846')
+          .text('Description', leftX, bodyTop, { width: leftWidth })
+
+        doc
+          .font('Helvetica')
+          .fontSize(9.5)
+          .fillColor('#202938')
+          .text(description, leftX, bodyTop + descriptionLabelHeight + 3, {
+            width: leftWidth,
+            lineGap: 1,
+          })
+
+        let detailY =
+          bodyTop + descriptionLabelHeight + 3 + descriptionHeight + 8
+        detailRows.forEach((line, detailIndex) => {
+          doc
+            .font('Helvetica')
+            .fontSize(9.5)
+            .fillColor('#303846')
+            .text(line, leftX + 6, detailY, {
+              width: leftWidth - 6,
+              lineGap: 0,
+            })
+          detailY += detailHeights[detailIndex]
+        })
+
+        if (imageBuffer) {
+          const imageX = cardX + cardWidth - 12 - 170
+          doc.image(imageBuffer, imageX, bodyTop + 2, {
+            fit: [160, 145],
+            align: 'center',
+            valign: 'center',
+          })
+        } else if (imageError) {
+          const imageX = cardX + cardWidth - 182
+          doc
+            .font('Helvetica-Oblique')
+            .fontSize(9)
+            .fillColor('#B42318')
+            .text('Photo indisponible', imageX, bodyTop + 8, { width: 165 })
+        }
+
+        doc.y = cardTop + cardHeight + 14
       }
 
       // -----------------------------------------------------
-      // SHIPPING
+      // Fret / Incoterms — tableau horizontal adapté à la largeur A4
       // -----------------------------------------------------
-      ensureSpace(doc, 150)
+      drawSectionTitle('Information de fret / Incoterms', {
+        space: 110,
+        gap: 8,
+      })
 
-      doc.moveDown(1)
-
-      doc
-        .fillColor('#1A3C8E')
-        .fontSize(12)
-        .font('Helvetica-Bold')
-        .text('Information de fret / Incoterms', doc.page.margins.left, doc.y, {
-          width: 500,
-          align: 'left',
-          lineBreak: true,
-        })
-
-      doc.moveDown(1)
-
-      const usableWidth =
-        doc.page.width - doc.page.margins.left - doc.page.margins.right // = 555.28 pts
-      // TABLEAU 100% STABLE
-      const rows = [
+      const shippingRows = [
         ['Incoterm', 'Prix HT', 'Fret maritime', 'Assurance', 'CIF', 'Devise'],
         [
-          shipping.incoterm,
-          shipping.freeOnBoardFromOriginatePort,
-          shipping.oceanFreight,
-          shipping.insurance,
-          shipping.totalOperatingCost,
-          shipping.devise,
+          pdfSafeText(toText(shipping?.incoterm)),
+          formatPdfAmount(shipping?.freeOnBoardFromOriginatePort),
+          formatPdfAmount(shipping?.oceanFreight),
+          formatPdfAmount(shipping?.insurance),
+          formatPdfAmount(shipping?.totalOperatingCost),
+          pdfSafeText(toText(shipping?.devise, '')),
         ],
       ]
-      const columnWidths = [90, 80, 90, 90, 120, 85] // total = 555
 
-      drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
-        headerBackground: '#1A3C8E',
-        headerTextColor: '#FFFFFF',
-        alternateRowColor: '#EFE',
-        rowTextColor: '#000000',
-        prepareHeader: () => {
-          doc.font('Helvetica-Bold').fontSize(10)
+      drawStyledTable(
+        shippingRows,
+        [74, 75, 96, 75, 85, 110], // somme = largeur utile A4 : 515 points
+        {
+          headerFontSize: 8.5,
+          bodyFontSize: 9.5,
+          headerPadding: 6,
+          bodyPadding: 7,
+          minHeaderHeight: 32,
+          minRowHeight: 30,
+          headerAlignments: [
+            'left',
+            'center',
+            'center',
+            'center',
+            'center',
+            'center',
+          ],
+          columnAlignments: [
+            'left',
+            'right',
+            'right',
+            'right',
+            'right',
+            'center',
+          ],
+          gapAfter: 18,
         },
-        prepareRow: () => {
-          doc.font('Helvetica').fontSize(10)
-        },
-      })
-
-      //drawTable(doc, 40, doc.y, rows, columnWidths, newPage)
-
-      doc.moveDown(1)
+      )
 
       // -----------------------------------------------------
-      // AVD
+      // AVD — éviter qu'un titre de section reste isolé en bas de page
       // -----------------------------------------------------
-      doc
-        .fillColor('#1A3C8E')
-        .fontSize(12)
-        .font('Helvetica-Bold')
-        .text('AVD - Analyse des valeurs en douane', doc.page.margins.left)
-
-      doc.moveDown(1)
-
-      // LOOP
-      for (let i = 0; i < articles.length; i++) {
-        const a = articles[i]
-
-        ensureSpace(doc, 200)
-
-        doc
-          .font('Helvetica-Bold')
-          .fontSize(11)
-          .fillColor('#000')
-          .text(`Article ${i + 1} : ${a.nom}`, 40, doc.y)
-
-        const safe = (value) =>
-          typeof value === 'number' ? formatXOF(value) : 'N/A'
-
-        const rows = [
-          // ['Champ', 'Valeur'],
-          /*['Code SH', a.codeSH ?? 'N/A'],
-          ['Valeur XOF', safe(a.valeurCFA)],
-          ['Total taxes', safe(a.taxes?.total)],*/
-          ['Code SH', a.codeSH ?? 'N/A'],
-          ['Valeur XOF', fmt3(a.valeurCFA)],
-          ['Total taxes', fmt3(a.taxes?.total)],
-          ['Devise', 'XOF'],
-        ]
-
-        // Transformer en colonnes
-        const labels = rows.map((row) => row[0]) // Champ
-        const values = rows.map((row) => row[1]) // Valeur
-
-        const tableRows = [labels, values]
-
-        const margin = 40
-        const availableWidth = doc.page.width - margin * 2
-        const colWidth = availableWidth / labels.length
-
-        const columnWidths = new Array(labels.length).fill(colWidth)
-
-        //drawTable(doc, 40, doc.y, rows, [250, 200], newPage)
-        drawTable(doc, 40, doc.y, tableRows, columnWidths, newPage, {
-          headerBackground: '#1A3C8E',
-          headerTextColor: '#FFFFFF',
-          alternateRowColor: '#EFE',
-          rowTextColor: '#000000',
-          prepareHeader: () => {
-            doc.font('Helvetica-Bold').fontSize(10)
-          },
-          prepareRow: (row, i) => {
-            if (i === 0) {
-              doc.font('Helvetica-Bold').fontSize(9)
-            } else {
-              doc.font('Helvetica').fontSize(9)
-            }
-          },
+      if (articles.length > 0) {
+        ensureSpace(550)
+        drawSectionTitle('AVD - Analyse des valeurs en douane', {
+          space: 500,
+          gap: 12,
         })
-
-        doc.moveDown(1)
-
-        const datas = [
-          ['Droit de Douane', fmt3(a.taxes?.DD)],
-          ['TVA', fmt3(a.taxes?.TVA)],
-          ['PCS', fmt3(a.taxes?.PCS)],
-          ['PC', fmt3(a.taxes?.PC)],
-          ['PS', fmt3(a.taxes?.PS)],
-          ['RAU', fmt3(a.taxes?.RAU)],
-          ['RS', fmt3(a.taxes?.RS)],
-          ['AIB', fmt3(a.taxes?.AIB)],
-          ['Total', fmt3(a.taxes?.total)],
-        ]
-
-        // Transformer en colonnes
-        const labels_ = datas.map((row) => row[0]) // Champ
-        const values_ = datas.map((row) => row[1]) // Valeur
-
-        const tableRows_ = [labels_, values_]
-
-        const margin_ = 40
-        const availableWidth_ = doc.page.width - margin_ * 2
-        const colWidth_ = availableWidth_ / labels_.length
-
-        const columnWidths_ = new Array(labels_.length).fill(colWidth_)
-
-        doc
-          .font('Helvetica-Bold')
-          .fontSize(12)
-          .text('Détail des taxes', 40, doc.y)
-
-        drawTable(doc, 40, doc.y, tableRows_, columnWidths_, newPage, {
-          headerBackground: '#1A3C8E',
-          headerTextColor: '#FFFFFF',
-          alternateRowColor: '#EFE',
-          rowTextColor: '#000000',
-          prepareHeader: () => {
-            doc.font('Helvetica-Bold').fontSize(10)
-          },
-          prepareRow: (row, i) => {
-            if (i === 0) {
-              doc.font('Helvetica-Bold').fontSize(10)
-            } else {
-              doc.font('Helvetica').fontSize(10)
-            }
-          },
-        })
-
-        doc.moveDown(2)
       }
 
-      // TOTAL GENERAL
-      const totals = {
-        totalTVA: articles.reduce((s, v) => s + Number(v.taxes?.TVA), 0),
-        totalPCS: articles.reduce((s, v) => s + Number(v.taxes?.PCS), 0),
-        totalPC: articles.reduce((s, v) => s + Number(v.taxes?.PC), 0),
-        totalRAU: articles.reduce((s, v) => s + Number(v.taxes?.RAU), 0),
-        totalRS: articles.reduce((s, v) => s + Number(v.taxes?.RS), 0),
-        totalAIB: articles.reduce((s, v) => s + Number(v.taxes?.AIB), 0),
-        totalTaxes: articles.reduce((s, v) => s + Number(v.taxes?.total), 0),
-      }
+      for (let index = 0; index < articles.length; index += 1) {
+        const article = articles[index] || {}
+        // Laisser assez de place pour le titre et les deux tableaux de l'article.
+        ensureSpace(500)
 
-      // TOTAL GÉNÉRAL
-      ensureSpace(doc, 200)
-
-      doc
-        .font('Helvetica-Bold')
-        .fontSize(12)
-        .text('Total général des taxes', 40, doc.y)
-
-      const totalDatas = [
-        ['Total TVA', fmt3(totals.totalTVA)],
-        ['Total PCS', fmt3(totals.totalPCS)],
-        ['Total PC', fmt3(totals.totalPC)],
-        ['Total RAU', fmt3(totals.totalRAU)],
-        ['Total RS', fmt3(totals.totalRS)],
-        ['Total AIB', fmt3(totals.totalAIB)],
-        ['Total taxes globales', fmt3(totals.totalTaxes)],
-      ]
-
-      // Transformer en colonnes
-      const totalLabels = totalDatas.map((row) => row[0])
-      const totalValues = totalDatas.map((row) => row[1])
-
-      const totalRows = [totalLabels, totalValues]
-
-      const margin = 40
-      const availableWidth = doc.page.width - margin * 2
-      const colWidth = availableWidth / totalLabels.length
-      const totalColumnWidths = new Array(totalLabels.length).fill(colWidth)
-
-      drawTable(doc, 40, doc.y, totalRows, totalColumnWidths, newPage, {
-        headerBackground: '#1A3C8E',
-        headerTextColor: '#FFFFFF',
-        alternateRowColor: '#EFE',
-        rowTextColor: '#000000',
-        prepareHeader: () => {
-          doc.font('Helvetica-Bold').fontSize(10)
-        },
-        prepareRow: (row, i) => {
-          if (i === 0) {
-            doc.font('Helvetica-Bold').fontSize(10)
-            doc.text('', { align: 'left' })
-          } else {
-            doc.font('Helvetica').fontSize(10)
-            doc.text('', { align: 'left' })
-          }
-        },
-      })
-
-      doc.moveDown(1)
-
-      // MENTION LEGAL
-      // text() attend (texte, x, y, options).
-      doc.moveDown(2)
-      doc
-        .font('Helvetica-Bold')
-        .fontSize(12)
-        .text('Mention légale : ', 40, doc.y, {
-          width: 500,
-          align: 'left',
-          lineBreak: true,
-        })
-
-      doc
-        .font('Helvetica')
-        .fontSize(10)
-        .text(
-          'Ce calcul est fourni à titre indicatif sur la base des données disponibles et des barèmes en vigueur. Les montants présentés peuvent être ajustés ou requalifiés par l’administration douanière, seule habilitée à déterminer la valeur en douane et les droits définitifs.',
+        drawSectionTitle(
+          `Article ${index + 1} : ${toText(article.nom, 'Article sans nom')}`,
           {
-            width: usableWidth,
-            align: 'justify',
+            color: '#202938',
+            size: 11,
+            space: 490,
+            gap: 9,
           },
         )
 
+        const summaryRows = [
+          ['Information', 'Valeur'],
+          ['Code SH', pdfSafeText(toText(article.codeSH))],
+          ['Valeur en douane (XOF)', formatPdfAmount(article.valeurCFA)],
+          ['Total taxes (XOF)', formatPdfAmount(article.taxes?.total)],
+          ['Devise', 'XOF'],
+        ]
+
+        drawStyledTable(summaryRows, [255, 260], {
+          headerFontSize: 9,
+          bodyFontSize: 9.5,
+          minHeaderHeight: 30,
+          minRowHeight: 25,
+          columnAlignments: ['left', 'right'],
+          headerAlignments: ['left', 'right'],
+          gapAfter: 12,
+        })
+
+        doc
+          .font('Helvetica-Bold')
+          .fontSize(10.5)
+          .fillColor('#1A3C8E')
+          .text('Détail des taxes', contentX, doc.y, {
+            width: contentWidth(),
+          })
+        doc.y += 7
+
+        const taxRows = [
+          ['Taxe', 'Montant (XOF)'],
+          ['Droit de douane', formatPdfAmount(article.taxes?.DD)],
+          ['TVA', formatPdfAmount(article.taxes?.TVA)],
+          ['PCS', formatPdfAmount(article.taxes?.PCS)],
+          ['PC', formatPdfAmount(article.taxes?.PC)],
+          ['PS', formatPdfAmount(article.taxes?.PS)],
+          ['RAU', formatPdfAmount(article.taxes?.RAU)],
+          ['RS', formatPdfAmount(article.taxes?.RS)],
+          ['AIB', formatPdfAmount(article.taxes?.AIB)],
+          ['Total des taxes', formatPdfAmount(article.taxes?.total)],
+        ]
+
+        drawStyledTable(taxRows, [330, 185], {
+          headerFontSize: 9,
+          bodyFontSize: 9.5,
+          minHeaderHeight: 29,
+          minRowHeight: 24,
+          headerAlignments: ['left', 'right'],
+          columnAlignments: ['left', 'right'],
+          boldRowIndexes: [taxRows.length - 1],
+          gapAfter: 20,
+        })
+      }
+
       // -----------------------------------------------------
-      // FOOTER FINAL
+      // Total général — 2 colonnes pour éviter le retour à la ligne des montants
       // -----------------------------------------------------
-      drawFooter(doc)
+      if (articles.length > 0) {
+        ensureSpace(290)
+        drawSectionTitle('Total général des taxes', {
+          color: '#1A3C8E',
+          size: 12,
+          space: 270,
+          gap: 8,
+        })
+
+        const totalFor = (key) =>
+          articles.reduce((sum, article) => {
+            const value = Number(article?.taxes?.[key] ?? 0)
+            return sum + (Number.isFinite(value) ? value : 0)
+          }, 0)
+
+        const totalRows = [
+          ['Taxe', 'Montant total (XOF)'],
+          ['Droit de douane', formatAmount(totalFor('DD'))],
+          ['TVA', formatAmount(totalFor('TVA'))],
+          ['PCS', formatAmount(totalFor('PCS'))],
+          ['PC', formatAmount(totalFor('PC'))],
+          ['PS', formatAmount(totalFor('PS'))],
+          ['RAU', formatAmount(totalFor('RAU'))],
+          ['RS', formatAmount(totalFor('RS'))],
+          ['AIB', formatAmount(totalFor('AIB'))],
+          [
+            'Total des taxes globales',
+            formatAmount(
+              articles.reduce((sum, article) => {
+                const value = Number(article?.taxes?.total ?? 0)
+                return sum + (Number.isFinite(value) ? value : 0)
+              }, 0),
+            ),
+          ],
+        ]
+
+        drawStyledTable(totalRows, [330, 185], {
+          headerFontSize: 9,
+          bodyFontSize: 9.5,
+          minHeaderHeight: 30,
+          minRowHeight: 25,
+          headerAlignments: ['left', 'right'],
+          columnAlignments: ['left', 'right'],
+          boldRowIndexes: [totalRows.length - 1],
+          gapAfter: 16,
+        })
+      }
+
+      // -----------------------------------------------------
+      // Mention légale — ne pas la laisser coupée par le pied de page
+      // -----------------------------------------------------
+      const legalText =
+        'Ce calcul est fourni à titre indicatif sur la base des données disponibles et des barèmes en vigueur. Les montants présentés peuvent être ajustés ou requalifiés par l’administration douanière, seule habilitée à déterminer la valeur en douane et les droits définitifs.'
+      const legalHeight =
+        measureText(
+          'Mention légale :',
+          'Helvetica-Bold',
+          10.5,
+          contentWidth(),
+        ) +
+        5 +
+        measureText(legalText, 'Helvetica', 9, contentWidth())
+      ensureSpace(legalHeight + 16)
+
+      doc
+        .font('Helvetica-Bold')
+        .fontSize(10.5)
+        .fillColor('#202938')
+        .text('Mention légale', contentX, doc.y, {
+          width: contentWidth(),
+        })
+      doc.y += 5
+
+      doc
+        .font('Helvetica')
+        .fontSize(9)
+        .fillColor('#454D5A')
+        .text(legalText, contentX, doc.y, {
+          width: contentWidth(),
+          align: 'justify',
+          lineGap: 2,
+        })
+
+      // Pied de page de la dernière page.
+      drawFooter()
       doc.end()
-    } catch (err) {
-      reject(err)
+    } catch (error) {
+      reject(error)
     }
   })
 }
@@ -1403,16 +1566,6 @@ export const generateVehicleFullPDF = async (
       ]
 
       const columnWidths = [90, 80, 90, 90, 120, 85] // total = 555
-      /*drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
-        prepareHeader: () => {
-          doc.font('Helvetica-Bold').fontSize(10)
-          doc.text('', { align: 'left' })
-        },
-        prepareRow: () => {
-          doc.font('Helvetica').fontSize(10)
-          doc.text('', { align: 'left' })
-        },
-      })*/
 
       drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
         headerBackground: '#1A3C8E',

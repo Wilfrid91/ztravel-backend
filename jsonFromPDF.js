@@ -1,6 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import * as pdfjsLib from 'pdfjs-dist/legacy/build/pdf.mjs'
+import { execFile } from 'node:child_process'
+import { promisify } from 'node:util'
+
+const execFileAsync = promisify(execFile)
 
 const OUTPUT_FILE = 'output.json'
 const ERRORS_FILE = 'extraction-errors.json'
@@ -59,7 +63,7 @@ function groupItemsIntoLines(items) {
     .filter(Boolean)
 }
 
-// Lecture du PDF : une liste de lignes par page.
+/* Lecture du PDF : une liste de lignes par page.
 async function extractTextFromPDF(filePath) {
   if (!fs.existsSync(filePath)) {
     throw new Error(`Fichier introuvable : ${filePath}`)
@@ -80,6 +84,59 @@ async function extractTextFromPDF(filePath) {
   }
 
   return pages
+}*/
+
+async function extractTextFromPDF(filePath) {
+  if (!fs.existsSync(filePath)) {
+    throw new Error(`Fichier introuvable : ${filePath}`)
+  }
+
+  // 1. PDF.js : conserver les coordonnées pour lire les colonnes DD et RS.
+  const data = new Uint8Array(fs.readFileSync(filePath))
+  const pdf = await pdfjsLib.getDocument({ data }).promise
+  const pdfjsPages = []
+
+  for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+    const page = await pdf.getPage(pageNumber)
+    const content = await page.getTextContent()
+
+    pdfjsPages.push(content.items)
+  }
+
+  // 2. Poppler : récupérer un texte Unicode correctement décodé.
+  let extractedText
+
+  try {
+    const result = await execFileAsync(
+      'pdftotext',
+      ['-layout', '-enc', 'UTF-8', filePath, '-'],
+      {
+        encoding: 'utf8',
+        maxBuffer: 50 * 1024 * 1024,
+      },
+    )
+
+    extractedText = result.stdout
+  } catch (error) {
+    throw new Error(
+      `Impossible d'exécuter pdftotext. Vérifie son installation et le PATH. ${error.message}`,
+    )
+  }
+
+  // Le caractère form-feed (\f) sépare normalement les pages.
+  const textPages = extractedText.split('\f')
+
+  // 3. Conserver les deux sources :
+  //    - lignes Poppler pour les descriptions ;
+  //    - éléments PDF.js pour les coordonnées des taux.
+  return Array.from({ length: pdf.numPages }, (_, index) => ({
+    items: pdfjsPages[index] ?? [],
+
+    lines: (textPages[index] ?? '')
+      .split(/\r?\n/)
+      .map((line) => line.replace(/\s+$/, ''))
+      .filter((line) => line.trim()),
+  }))
 }
 
 // Nettoyage générique des espaces et de la ponctuation finale.
