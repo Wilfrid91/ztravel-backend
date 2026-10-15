@@ -62,6 +62,9 @@ export const momoAuthorizationRequest = async (req, res) => {
       'collection',
       process.env.MTN_MOMO_SUB_KEY_REST,
     )
+
+    console.log('TOKEN DATA >>>>>>', tokenData)
+
     if (!tokenData.success) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
@@ -114,6 +117,8 @@ export const momoAuthorizationRequest = async (req, res) => {
         },
       },
     )
+
+    console.log('MTN RESPONSE >>>>>>', mtnResponse)
     // IMPORTANT: Attendre 2-3 secondes avant de vérifier le statut
     // MTN a besoin de temps pour traiter la transaction
     await new Promise((resolve) => setTimeout(resolve, 3000))
