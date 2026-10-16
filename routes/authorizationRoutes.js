@@ -11,6 +11,7 @@ import {
   getUserPaymentData,
   getUserPrintingToken,
   printFedapayReceipt,
+  getFedaPayTicketPdf,
 } from '../controllers/authorizationController.js' // N'oublie pas l'extension .js
 const router = Router()
 /*
@@ -84,6 +85,13 @@ router.post(
   '/credit-card/fedapay/print/:referenceId',
   authenticateUser,
   printFedapayReceipt,
+)
+
+// Nouvelle route : ouverture du ticket dans Safari
+router.get(
+  '/credit-card/fedapay/ticket/:referenceId',
+  authenticateUser,
+  getFedaPayTicketPdf,
 )
 
 export default router

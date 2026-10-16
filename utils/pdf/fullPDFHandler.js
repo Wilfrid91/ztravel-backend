@@ -14,6 +14,44 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const refPath = path.join(__dirname, 'ref.json')
 
+// ---------------------------------------------------------------------
+// CONFIG VISUELLE POUR
+// ---------------------------------------------------------------------
+
+const COLORS = {
+  primary: '#1A3C8E',
+  headerText: '#FFFFFF',
+  rowText: '#000000',
+  line: '#CCCCCC',
+  muted: '#666666',
+  // Une couleur par colonne pour les en-têtes de tableaux
+  columnPalette: [
+    '#1A3C8E',
+    '#2454B3',
+    '#2E63C4',
+    '#3872D5',
+    '#1A3C8E',
+    '#2454B3',
+  ],
+  // Fond très léger par colonne (alternance) pour les lignes de données
+  columnTint: [
+    '#FFFFFF',
+    '#F4F7FC',
+    '#EAF0F9',
+    '#F4F7FC',
+    '#FFFFFF',
+    '#EAF0F9',
+  ],
+}
+
+const MARGIN = 40
+const FOOTER_ZONE = 80 // hauteur réservée en bas de page pour le footer
+
+// ---------------------------------------------------------------------
+// HELPERS
+// ---------------------------------------------------------------------
+const safe = (value) => (typeof value === 'number' ? formatXOF(value) : 'N/A')
+
 /**
  * Draw manually the table with color
  * @param {*} doc
@@ -25,170 +63,6 @@ const refPath = path.join(__dirname, 'ref.json')
  *  @param {*} options
  * @returns
  */
-/*
-function drawTable(
-  doc,
-  startX,
-  startY,
-  rows,
-  columnWidths,
-  newPage,
-  options = {},
-  rowHeight = 28,
-) {
-  const { prepareHeader, prepareRow } = options
-
-  let y = startY
-
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-    const row = rows[rowIndex]
-
-    if (y + rowHeight > doc.page.height - 20) {
-      newPage(doc)
-      y = doc.y
-    }
-
-    let x = startX
-
-    if (rowIndex > 0 && rowIndex % 2 === 0) {
-      const totalWidth = columnWidths.reduce((a, b) => a + Number(b), 0)
-
-      doc
-        .save()
-        .fillColor('#EFE')
-        .rect(startX, y, totalWidth, rowHeight)
-        .fill()
-        .restore()
-    }
-
-    // appliquer le style
-    if (rowIndex === 0 && prepareHeader) {
-      prepareHeader()
-    } else if (prepareRow) {
-      prepareRow(row, rowIndex)
-    }
-
-    row.forEach((cell, colIndex) => {
-      const cellWidth = Number(columnWidths[colIndex])
-      //console.log('cell =', cell)
-
-      doc
-        .lineWidth(0.5)
-        .strokeColor('#000')
-        .rect(x, y, cellWidth, rowHeight)
-        .stroke()
-
-      doc
-        .fillColor('#000')
-        .fontSize(11)
-        .text(cell, x + 2, y + 4, {
-          width: cellWidth - 4, // Padding horizontal
-          align: colIndex === 1 ? 'right' : 'left',
-          lineBreak: true,
-        })
-
-      x += cellWidth
-    })
-
-    y += rowHeight
-  }
-
-  doc.y = y + 10
-}
-  */
-
-function drawTable(
-  doc,
-  startX,
-  startY,
-  rows,
-  columnWidths,
-  newPage,
-  options = {},
-  rowHeight = 28,
-) {
-  const {
-    prepareHeader,
-    prepareRow,
-    headerBackground = null, // couleur de fond pour l'en-tête (ex: '#1A3C8E')
-    headerTextColor = '#000', // couleur du texte pour l'en-tête
-    rowTextColor = '#000', // couleur du texte pour les lignes normales
-    alternateRowColor = null, // couleur de fond pour les lignes paires (ex: '#EFE')
-  } = options
-
-  let y = startY
-
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex++) {
-    const row = rows[rowIndex]
-
-    // Vérifier l'espace
-    if (y + rowHeight > doc.page.height - 20) {
-      newPage(doc)
-      y = doc.y
-    }
-
-    let x = startX
-    const totalWidth = columnWidths.reduce((a, b) => a + Number(b), 0)
-
-    // === DESSINER LE FOND DE LA LIGNE ===
-    if (rowIndex === 0 && headerBackground) {
-      // Fond de l'en-tête
-      doc
-        .save()
-        .fillColor(headerBackground)
-        .rect(startX, y, totalWidth, rowHeight)
-        .fill()
-        .restore()
-    } else if (rowIndex > 0 && alternateRowColor && rowIndex % 2 === 0) {
-      // Fond des lignes alternées
-      doc
-        .save()
-        .fillColor(alternateRowColor)
-        .rect(startX, y, totalWidth, rowHeight)
-        .fill()
-        .restore()
-    }
-
-    // === APPLIQUER LES STYLES DE POLICE ET COULEUR ===
-    if (rowIndex === 0 && prepareHeader) {
-      prepareHeader()
-      // Si prepareHeader n'a pas défini fillColor, on utilise headerTextColor
-      doc.fillColor(headerTextColor)
-    } else if (prepareRow) {
-      prepareRow(row, rowIndex)
-      // Si prepareRow n'a pas défini fillColor, on utilise rowTextColor
-      doc.fillColor(rowTextColor)
-    } else {
-      // Par défaut
-      doc.fillColor(rowIndex === 0 ? headerTextColor : rowTextColor)
-    }
-
-    // === DESSINER LES CELLULES ===
-    row.forEach((cell, colIndex) => {
-      const cellWidth = Number(columnWidths[colIndex])
-
-      // Bordures (optionnelles)
-      doc
-        .lineWidth(0.5)
-        .strokeColor('#000')
-        .rect(x, y, cellWidth, rowHeight)
-        .stroke()
-
-      // Texte (utilise la couleur définie)
-      doc.fontSize(11).text(String(cell ?? ''), x + 2, y + 4, {
-        width: cellWidth - 4,
-        align: colIndex === 1 ? 'right' : 'left', // ou selon vos besoins
-        lineBreak: true,
-      })
-
-      x += cellWidth
-    })
-
-    y += rowHeight
-  }
-
-  doc.y = y + 10
-}
 
 /**
  * --- Nettoyeur ultra strict ---
@@ -1156,7 +1030,7 @@ export const generateMTNMomoRefundPDF = async (tender, customer, qrcode) => {
     }
   })
 }
-
+/*
 export const generateVehicleFullPDF = async (
   vehicles,
   photos,
@@ -1168,138 +1042,213 @@ export const generateVehicleFullPDF = async (
   return new Promise(async (resolve, reject) => {
     try {
       // 1,4 cm de marge interne sur chaque bord (gauche, haut, droite, bas)
-      const doc = new PDFDocumentWithTables({ margin: 20 })
+
+      const doc = new PDFDocumentWithTables({ margin: 40 })
+
       const stream = new PassThrough()
+
       const chunks = []
 
       doc.pipe(stream)
+
       stream.on('data', (c) => chunks.push(c))
+
       stream.on('end', () => resolve(Buffer.concat(chunks)))
+
       stream.on('error', reject)
 
       // -----------------------------------------------------
+
       // PAGE COUNTER
-      // -----------------------------------------------------
-      let currentPage = 1
-      let lastHeaderPage = 0 // ⭐ Suivi des pages
-      const neededHeight = 260 // hauteur du bloc produit
 
       // -----------------------------------------------------
-      // HEADER
+
+      let currentPage = 1
+
+      let lastHeaderPage = 0
+      const refNumber = generateReference()
+
+      const footerTop = () => doc.page.height - 80
+      const pageContentBottom = () => footerTop() - 20
+
       // -----------------------------------------------------
+
+      // HEADER
+
+      // -----------------------------------------------------
+
       function drawHeader(doc) {
         // Évite les doublons sur la même page
+
         if (currentPage === lastHeaderPage) return
+
         lastHeaderPage = currentPage
 
         const now = new Date()
+
         const dateStr = now.toLocaleString('fr-FR')
+
         // X: 40 points() depuis le bord gauche => 515.28 - 40 = 475,28
+
         // Y: 20 points() depuis le bord haut => 762-20 = 742
+
         doc.image('assets/logo.png', 40, 20, { width: 70 })
 
         // Position du texte
+
         const headerY = 30
+
         let y = headerY
 
         // Nom entreprise
+
         doc
+
           .fillColor('#1A3C8E')
+
           .font('Helvetica-Bold')
+
           .fontSize(14)
+
           .text('Ztravel Consulting', 130, y, {
             width: 400,
+
             align: 'left',
           })
 
         y += 18
 
         // Sous-titre
+
         doc
+
           .fillColor('#000')
+
           .font('Helvetica')
+
           .fontSize(11)
+
           .text('Analyse des valeurs en douane (AVD)', 130, y, {
             width: 400,
+
             align: 'left',
           })
 
         y += 14
 
         // Date de génération
+
         doc
+
           .fontSize(10)
+
           .fillColor('#444')
+
           .text(`Document généré le : ${dateStr}`, 130, y, {
             width: 400,
+
             align: 'left',
           })
 
         // Ligne de séparation
+
         doc
+
           .moveTo(40, 80)
+
           .lineTo(doc.page.width - 40, 80)
+
           .strokeColor('#cccccc')
+
           .lineWidth(1)
+
           .stroke()
 
         // Position du contenu
+
         doc.y = 90
       }
 
       // -----------------------------------------------------
+
       // FOOTER
+
       // -----------------------------------------------------
+
       function drawFooter(doc) {
         const pageWidth = doc.page.width
+
         const pageHeight = doc.page.height // Hauteur A4 FIXE (841.89 pts)
 
         // Position du texte
+
         doc
+
           .moveTo(40, pageHeight - 80)
+
           .lineTo(pageWidth - 40, pageHeight - 80)
+
           .strokeColor('#cccccc')
+
           .lineWidth(1)
+
           .stroke()
 
         doc
+
           .fontSize(9)
+
           .fillColor('#666')
+
           .text(`Page ${currentPage}`, 0, pageHeight - 50, {
             align: 'center',
           })
 
         // Compteur simple
-        const refNumber = generateReference()
 
         // Référence
+
         // Dans un footer, tu dois utiliser des coordonnées fixes, car le footer ne dépend pas de doc.y
+
         doc
+
           .fontSize(9)
+
           .fillColor('#444')
+
           .text(`Référence : ${refNumber}`, 40, pageHeight - 60, {
             width: 300,
+
             align: 'left',
           })
       }
 
       // -----------------------------------------------------
+
       // PAGE ADDED HOOK (LE SEUL QUI DOIT EXISTER)
+
       // -----------------------------------------------------
 
       // Fonction pour changer de page (100% maîtrisée)
+
       function newPage(doc) {
         drawFooter(doc) // Footer de la page ACTUELLE
+
         doc.addPage() // Nouvelle page
+
         currentPage++ // Incrémente le compteur
+
         drawHeader(doc) // Header de la NOUVELLE page
+
         doc.y = 100 // ⭐ Réinitialise doc.y (CRUCIAL)
       }
 
       function getUsableHeight(doc) {
         //return doc.page.height - doc.page.margins.bottom - doc.y
+
         const footerHeight = 100 // zone réservée pour le footer
-        return doc.page.height - 20 - doc.y - footerHeight
+
+        return pageContentBottom() - doc.y
       }
 
       function ensureSpace(doc, neededHeight) {
@@ -1309,268 +1258,338 @@ export const generateVehicleFullPDF = async (
       }
 
       // -----------------------------------------------------
+
       // PAGE 1
+
       // -----------------------------------------------------
+
       drawHeader(doc)
+
       //doc.y = 80 // Position après le header
 
       // -----------------------------------------------------
+
       // LISTE PRODUITS
+
       // -----------------------------------------------------
+
       doc.moveDown(1)
 
       doc
+
         .fillColor('#1A3C8E')
+
         .fontSize(12)
+
         .font('Helvetica-Bold')
+
         .text('Liste de véhicules', doc.page.margins.left, doc.y, {
           width: 500,
+
           align: 'left',
+
           lineBreak: true,
         })
 
       doc.moveDown(1)
 
-      for (let index = 0; index < vehicles.length; index++) {
+      for (let index = 0; index < (vehicles || []).length; index++) {
         const vehicle = vehicles[index]
-        const boxHeight = 260
 
-        ensureSpace(doc, boxHeight)
+        const pageWidth = doc.page.width
+        const left = 40
+        const boxWidth = pageWidth - left * 2
+        const innerPadding = 12
+        const textX = left + innerPadding
+        const textWidth = 300
+        const imageWidth = 150
+        const title = `Véhicule ${index + 1} — ${vehicle.description || 'Description non renseignée'}`
+        const titleHeight = doc
+          .font('Helvetica-Bold')
+          .fontSize(13)
+          .heightOfString(title, {
+            width: boxWidth - innerPadding * 2,
+            lineGap: 2,
+          })
+        const fields = [
+          `Marque : ${vehicle.marque ?? 'N/A'}`,
+          `Type : ${vehicle.type ?? 'N/A'}`,
+          `Année : ${vehicle.anneeFabrication ?? 'N/A'}`,
+          `Motorisation : ${vehicle.motorisation ?? 'N/A'}`,
+          `Description : ${vehicle.description ?? 'N/A'}`,
+          `Puissance fiscale : ${vehicle.puissanceFiscal ?? 'N/A'} cv`,
+          `Kilométrage : ${vehicle.kilometrage ?? 'N/A'} km`,
+          `Dimensions : ${vehicle.longueurCm ?? 'N/A'} × ${vehicle.largeurCm ?? 'N/A'} × ${vehicle.hauteurCm ?? 'N/A'} cm`,
+          `Poids : ${vehicle.poidsKg ?? 'N/A'} kg`,
+          `Quantité : ${vehicle.quantity ?? 'N/A'}`,
+          `Prix unitaire : ${vehicle.prix ?? 'N/A'} ${vehicle.devise ?? ''}`,
+          `Prix total : ${vehicle.prixTotal ?? 'N/A'} ${vehicle.devise ?? ''}`,
+        ]
+        doc.font('Helvetica').fontSize(10)
+        const fieldHeights = fields.map(
+          (field) =>
+            doc.heightOfString(field, {
+              width: textWidth,
+              lineGap: 1,
+            }) + 5,
+        )
+        const textBlockHeight =
+          titleHeight + 12 + fieldHeights.reduce((sum, h) => sum + h, 0)
+        const boxHeight = Math.max(textBlockHeight + innerPadding * 2, 190)
+
+        ensureSpace(doc, boxHeight + 12)
 
         const boxTop = doc.y
 
         doc
+
           .lineWidth(1)
+
           .strokeColor('#1A3C8E')
-          .rect(40, boxTop, 520, boxHeight)
+
+          .rect(left, boxTop, boxWidth, boxHeight)
+
           .stroke()
 
-        let yText = boxTop + 10
+        let yText = boxTop + innerPadding
 
         doc
           .fillColor('#1A3C8E')
-          .fontSize(14)
+          .fontSize(13)
           .font('Helvetica-Bold')
-          .text(`Véhicule ${index + 1} — ${vehicle.description}`, 50, yText, {
-            width: 500,
-            align: 'left',
-            lineBreak: true,
+          .text(title, textX, yText, {
+            width: boxWidth - innerPadding * 2,
+            lineGap: 2,
           })
 
-        doc.moveDown(3)
+        yText += titleHeight + 12
 
-        yText += 28
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Marque : ${vehicle.marque}`, 50, yText, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
+        doc.fillColor('#000').font('Helvetica').fontSize(10)
+        for (let fieldIndex = 0; fieldIndex < fields.length; fieldIndex++) {
+          doc.text(fields[fieldIndex], textX, yText, {
+            width: textWidth,
+            lineGap: 1,
           })
+          yText += fieldHeights[fieldIndex]
+        }
 
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Type : ${vehicle.type}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Année : ${vehicle.anneeFabrication}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Motorisation : ${vehicle.motorisation}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Description : ${vehicle.description}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Puissance Fiscal : ${vehicle.puissanceFiscal} cv`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Kilometrage : ${vehicle.kilometrage} km`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(
-            `Dimensions : ${vehicle.longueurCm} x ${vehicle.largeurCm} x ${vehicle.hauteurCm}cm`,
-            50,
-            yText,
-            {
-              width: 400,
-              align: 'left',
-              lineBreak: true,
-            },
-          )
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Poids : ${vehicle.poidsKg} kg`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(`Quantité : ${vehicle.quantity}`, 50, yText, {
-            width: 400,
-            align: 'left',
-            lineBreak: true,
-          })
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(
-            `Prix unitaire : ${vehicle.prix} ${vehicle.devise}`,
-            50,
-            yText,
-            {
-              width: 400,
-              align: 'left',
-              lineBreak: true,
-            },
-          )
-
-        yText += 18
-
-        doc
-          .fillColor('#000')
-          .font('Helvetica')
-          .fontSize(11)
-          .text(
-            `Prix total : ${vehicle.prixTotal} ${vehicle.devise}`,
-            50,
-            yText,
-            {
-              width: 400,
-              align: 'left',
-              lineBreak: true,
-            },
-          )
-
-        const file = photos.find((f) => f.fieldname === `photo_${index}`)
+        const file = (photos || []).find(
+          (f) => f.fieldname === `photo_${index}`,
+        )
 
         if (file) {
           try {
             const pngBuffer = await sharp(file.buffer).rotate().png().toBuffer()
+
             // 40 → marge gauche du bloc, 520 → largeur totale du bloc produit, 180 → largeur maximale de l’image (fit: [180, 180])
+
             // 10 → marge droite interne
-            const xImg = 40 + 520 - 180 - 10
-            const yImg = boxTop + 70
+
+            const xImg = left + boxWidth - 180 - innerPadding
+
+            const yImg = boxTop + Math.max(titleHeight + 24, 42)
 
             doc.image(pngBuffer, xImg, yImg, { fit: [180, 180] })
           } catch (err) {
-            doc.fillColor('red').text(`Image illisible`, 350, boxTop + 20)
+            doc
+              .fillColor('red')
+              .fontSize(9)
+              .text(
+                'Image illisible',
+                left + boxWidth - imageWidth - innerPadding,
+                boxTop + 20,
+                { width: imageWidth },
+              )
+
             doc.fillColor('black')
           }
         }
-        doc.y = boxTop + boxHeight + 20
+
+        doc.y = boxTop + boxHeight + 12
       } // end for loop
+
       // -----------------------------------------------------
+
       // SHIPPING
+
       // -----------------------------------------------------
+
       ensureSpace(doc, 150)
 
       doc.moveDown(1)
+
       doc
+
         .fillColor('#1A3C8E')
+
         .fontSize(12)
+
         .font('Helvetica-Bold')
+
         .text('SHIPPING INFORMATIONS / INCOTERMS', doc.page.margins.left)
 
       doc.moveDown(1)
 
       const usableWidth =
         doc.page.width - doc.page.margins.left - doc.page.margins.right // = 555.28 pts
+
       // TABLEAU
+
       const rows = [
-        ['Incoterm', 'Prix HT', 'Prix tranport', 'Assurance', 'CIF', 'Devise'],
+        ['Incoterm', 'Prix HT', 'Prix transport', 'Assurance', 'CIF', 'Devise'],
+
         [
           shipping.incoterm,
+
           shipping.freeOnBoardFromOriginatePort,
+
           shipping.oceanFreight,
+
           shipping.insurance,
+
           shipping.totalOperatingCost,
+
           shipping.devise,
         ],
       ]
 
-      const columnWidths = [90, 80, 90, 90, 120, 85] // total = 555
+      const columnWidths = [85, 80, 100, 80, 95, 75] // largeur totale : 515 points
 
       drawTable(doc, 40, doc.y, rows, columnWidths, newPage, {
         headerBackground: '#1A3C8E',
+
         headerTextColor: '#FFFFFF',
+
         alternateRowColor: '#EFE',
+
+        rowTextColor: '#000000',
+
+        prepareHeader: () => {
+          doc.font('Helvetica-Bold').fontSize(10)
+        },
+
+        prepareRow: () => {
+          doc.font('Helvetica').fontSize(10)
+        },
+      })
+
+      doc.moveDown(1)
+
+      // -----------------------------------------------------
+
+      // AVD
+
+      // -----------------------------------------------------
+
+      doc
+
+        .fillColor('#1A3C8E')
+
+        .fontSize(12)
+
+        .font('Helvetica-Bold')
+
+        .text('AVD - Analyse des valeurs en douane', doc.page.margins.left)
+
+      //doc.moveDown(1)
+
+      // Utile si code SH introuvable)
+
+      const safe = (value) =>
+        typeof value === 'number' ? formatXOF(value) : 'N/A'
+
+      for (let i = 0; i < (avdData || []).length; i++) {
+        const a = avdData[i]
+
+        ensureSpace(doc, 200)
+
+        const tableRows = [
+          ['Élément', 'Montant / taux'],
+          ['Droit de douane', safe(a.DD)],
+          ['TVA', safe(a.TVA)],
+          ['Taxe statistique', safe(a.TSTAT)],
+          ['Taux DD', a.tauxDD != null ? `${a.tauxDD}%` : 'N/A'],
+          ['Timbre douanier (TD)', safe(a.TD)],
+          ['Total taxes véhicule', safe(a.totalTaxes)],
+        ]
+        const columnWidths = [300, doc.page.width - 80 - 300]
+
+        doc
+          .font('Helvetica-Bold')
+          .fontSize(11)
+          .fillColor('#000')
+          .text(
+            `Détail des taxes voiture ${i + 1} : ${a.marque || 'Marque non renseignée'}`,
+            40,
+            doc.y,
+            {
+              width: doc.page.width - 80,
+            },
+          )
+        doc.moveDown(0.5)
+
+        drawTable(doc, 40, doc.y, tableRows, columnWidths, newPage, {
+          headerBackground: '#1A3C8E',
+          headerTextColor: '#FFFFFF',
+          alternateRowColor: '#EFEFEF',
+          rowTextColor: '#000000',
+          prepareHeader: () => {
+            doc.font('Helvetica-Bold').fontSize(10)
+          },
+          prepareRow: () => {
+            doc.font('Helvetica').fontSize(10)
+          },
+        })
+
+        doc.moveDown(1)
+      }
+
+      // TOTAL GÉNÉRAL
+
+      ensureSpace(doc, 200)
+
+      doc
+
+        .font('Helvetica-Bold')
+
+        .fontSize(12)
+
+        .text('Total général des taxes', 40, doc.y)
+
+      const totals = {
+        //totalCIF: avdData.reduce((s, v) => s + Number(v.CIF), 0),
+
+        totalDD: (avdData || []).reduce((s, v) => s + Number(v.DD || 0), 0),
+
+        totalTVA: (avdData || []).reduce((s, v) => s + Number(v.TVA || 0), 0),
+
+        totalTSTAT: (avdData || []).reduce(
+          (s, v) => s + Number(v.TSTAT || 0),
+          0,
+        ),
+
+        totalTD: (avdData || []).reduce((s, v) => s + Number(v.TD || 0), 0),
+
+        totalTaxes: (avdData || []).reduce(
+          (s, v) => s + Number(v.totalTaxes || 0),
+          0,
+        ),
+      }
+
+      const totalRows = [
+        ['Élément', 'Montant total'],
+        ['Total DD', safe(totals.totalDD)],
+        ['Total TVA', safe(totals.totalTVA)],
+        ['Total taxe statistique', safe(totals.totalTSTAT)],
+        ['Total timbre douanier (TD)', safe(totals.totalTD)],
+        ['Total taxes globales', safe(totals.totalTaxes)],
+      ]
+      const totalColumnWidths = [300, doc.page.width - 80 - 300]
+
+      drawTable(doc, 40, doc.y, totalRows, totalColumnWidths, newPage, {
+        headerBackground: '#1A3C8E',
+        headerTextColor: '#FFFFFF',
+        alternateRowColor: '#EFEFEF',
         rowTextColor: '#000000',
         prepareHeader: () => {
           doc.font('Helvetica-Bold').fontSize(10)
@@ -1580,162 +1599,552 @@ export const generateVehicleFullPDF = async (
         },
       })
 
-      doc.moveDown(1)
+      // MENTION LEGAL
 
-      // -----------------------------------------------------
-      // AVD
-      // -----------------------------------------------------
+      // text() attend (texte, x, y, options).
+
+      doc.moveDown(2)
+
       doc
-        .fillColor('#1A3C8E')
-        .fontSize(12)
+
         .font('Helvetica-Bold')
-        .text('AVD - Analyse des valeurs en douane', doc.page.margins.left)
 
-      //doc.moveDown(1)
-      // Utile si code SH introuvable)
-      const safe = (value) =>
-        typeof value === 'number' ? formatXOF(value) : 'N/A'
+        .fontSize(12)
 
-      for (let i = 0; i < avdData.length; i++) {
-        const a = avdData[i]
+        .text('Mention légale : ', 40, doc.y, {
+          width: 500,
 
-        ensureSpace(doc, 200)
+          align: 'left',
 
-        const datas = [
-          ['Droit de Douane', safe(a.DD)],
-          ['TVA', safe(a.TVA)],
-          ['Taxe statistique', safe(a.TSTAT)],
-          ['Taux DD', a.tauxDD != null ? `${a.tauxDD}%` : 'N/A'],
-          ['Timbre douanier (TD)', safe(a.TD)],
-          ['Total taxes voiture', safe(a.totalTaxes)],
+          lineBreak: true,
+        })
+
+      doc
+
+        .font('Helvetica')
+
+        .fontSize(10)
+
+        .text(
+          'Ce calcul est fourni à titre indicatif sur la base des données disponibles et des barèmes en vigueur. Les montants présentés peuvent être ajustés ou requalifiés par l’administration douanière, seule habilitée à déterminer la valeur en douane et les droits définitifs.',
+
+          {
+            width: doc.page.width - 80,
+
+            align: 'left',
+
+            lineGap: 2,
+          },
+        )
+
+      // -----------------------------------------------------
+
+      // FOOTER FINAL
+
+      // -----------------------------------------------------
+
+      drawFooter(doc)
+
+      doc.end()
+    } catch (error) {
+      console.log(error)
+
+      reject(error)
+    }
+  })
+}*/
+
+// ---------------------------------------------------------------------
+// GÉNÉRATION
+// ---------------------------------------------------------------------
+
+export const generateVehicleFullPDF = async (
+  vehicles,
+  photos,
+  shipping,
+  avdData,
+) => {
+  const vehiclesList = vehicles || []
+
+  // -------------------------------------------------------------------
+  // PRÉ-TRAITEMENT DES PHOTOS (await autorisé ici, hors de la Promise)
+  // -------------------------------------------------------------------
+
+  const photoBuffers = new Map() // key: index véhicule -> Buffer png
+  for (let index = 0; index < vehiclesList.length; index++) {
+    const file = (photos || []).find((f) => f.fieldname === `photo_${index}`)
+    if (!file) continue
+    try {
+      const pngBuffer = await sharp(file.buffer).rotate().png().toBuffer()
+      photoBuffers.set(index, pngBuffer)
+    } catch (err) {
+      console.error(`Photo ${index} illisible :`, err.message)
+    }
+  }
+
+  return new Promise((resolve, reject) => {
+    try {
+      const doc = new PDFDocumentWithTables({
+        size: 'A4',
+        margin: MARGIN,
+        bufferPages: true,
+      })
+
+      const stream = new PassThrough()
+      const chunks = []
+
+      doc.pipe(stream)
+      stream.on('data', (c) => chunks.push(c))
+      stream.on('end', () => resolve(Buffer.concat(chunks)))
+      stream.on('error', reject)
+
+      // -------------------------------------------------------------------
+      // ÉTAT DE PAGINATION
+      // -------------------------------------------------------------------
+
+      let currentPage = 1
+      const refNumber = generateReference()
+
+      const contentBottom = () => doc.page.height - FOOTER_ZONE - 20
+      const usableWidth = () => doc.page.width - MARGIN * 2
+      const usableHeight = () => contentBottom() - doc.y
+
+      // Dessine le header de la page courante
+      function drawHeader() {
+        const now = new Date()
+        const dateStr = now.toLocaleString('fr-FR')
+
+        doc.image('assets/logo.png', MARGIN, 20, { width: 70 })
+
+        let y = 30
+        doc
+          .fillColor(COLORS.primary)
+          .font('Helvetica-Bold')
+          .fontSize(14)
+          .text('Ztravel Consulting', 130, y, { width: 400, align: 'left' })
+
+        y += 18
+        doc
+          .fillColor('#000000')
+          .font('Helvetica')
+          .fontSize(11)
+          .text('Analyse des valeurs en douane (AVD)', 130, y, {
+            width: 400,
+            align: 'left',
+          })
+
+        y += 14
+        doc
+          .fontSize(10)
+          .fillColor('#444444')
+          .text(`Document généré le : ${dateStr}`, 130, y, {
+            width: 400,
+            align: 'left',
+          })
+
+        doc
+          .moveTo(MARGIN, 80)
+          .lineTo(doc.page.width - MARGIN, 80)
+          .strokeColor(COLORS.line)
+          .lineWidth(1)
+          .stroke()
+
+        doc.y = 90
+      }
+
+      // Dessine le footer de la page courante
+      function drawFooter() {
+        const oldY = doc.y
+
+        const { width: pageWidth, height: pageHeight } = doc.page
+
+        doc
+          .moveTo(MARGIN, pageHeight - FOOTER_ZONE)
+          .lineTo(pageWidth - MARGIN, pageHeight - FOOTER_ZONE)
+          .strokeColor(COLORS.line)
+          .lineWidth(1)
+          .stroke()
+
+        doc
+          .fontSize(9)
+          .fillColor(COLORS.muted)
+          .text(`Page ${currentPage}`, 0, pageHeight - 50, {
+            width: pageWidth,
+            align: 'center',
+            lineBreak: false,
+          })
+
+        doc
+          .fontSize(9)
+          .fillColor('#444444')
+          .text(`Référence : ${refNumber}`, MARGIN, pageHeight - 60, {
+            width: 300,
+            align: 'left',
+            lineBreak: false,
+          })
+
+        doc.y = oldY
+      }
+
+      // Passe à la page suivante (seul point d'ajout de page du document)
+      function newPage() {
+        drawFooter()
+        doc.addPage()
+        currentPage += 1
+        drawHeader()
+      }
+
+      // Garantit `needed` points disponibles sous doc.y, sinon nouvelle page
+      function ensureSpace(needed) {
+        if (usableHeight() < needed) {
+          newPage()
+        }
+      }
+
+      // -------------------------------------------------------------------
+      // TABLEAU AVEC COLONNES COLORÉES
+      // -------------------------------------------------------------------
+
+      /**
+       * drawTable — dessine un tableau :
+       *  - en-tête : chaque colonne a sa couleur (columnPalette, cyclique)
+       *  - lignes : fond léger différent par colonne (columnTint, cyclique)
+       * Gère le passage à la page suivante si le tableau ne tient pas.
+       */
+      function drawTable(rows, columnWidths) {
+        if (!rows.length) return
+
+        const rowHeight = 24
+        const tableWidth = columnWidths.reduce((sum, w) => sum + w, 0)
+
+        // Le tableau entier tient-il sur la page ? Sinon, nouvelle page.
+        //ensureSpace(rows.length * rowHeight + 10)
+
+        let y = doc.y
+
+        rows.forEach((row, rowIndex) => {
+          // Anti-saut involontaire : si on dépasse la zone de contenu, on pagine
+          if (y + rowHeight > contentBottom()) {
+            newPage()
+            y = doc.y
+          }
+
+          let x = MARGIN
+
+          row.forEach((cell, colIndex) => {
+            const width = columnWidths[colIndex]
+
+            if (rowIndex === 0) {
+              // En-tête : couleur par colonne
+              doc
+                .rect(x, y, width, rowHeight)
+                .fillColor(
+                  COLORS.columnPalette[colIndex % COLORS.columnPalette.length],
+                )
+                .fill()
+
+              doc
+                .fillColor(COLORS.headerText)
+                .font('Helvetica-Bold')
+                .fontSize(10)
+                .text(String(cell), x + 6, y + 7, {
+                  width: width - 12,
+                  align: 'left',
+                  ellipsis: true,
+                  lineBreak: false,
+                })
+            } else {
+              // Données : fond léger par colonne, zébrage optionnel sur lignes paires
+              const tint =
+                rowIndex % 2 === 1
+                  ? COLORS.columnTint[colIndex % COLORS.columnTint.length]
+                  : '#F9F9F9'
+              doc.rect(x, y, width, rowHeight).fillColor(tint).fill()
+
+              doc
+                .fillColor(COLORS.rowText)
+                .font('Helvetica')
+                .fontSize(10)
+                .text(String(cell), x + 6, y + 7, {
+                  width: width - 12,
+                  align: 'left',
+                  ellipsis: true,
+                  lineBreak: false,
+                })
+            }
+
+            // Bordure de cellule
+            doc
+              .rect(x, y, width, rowHeight)
+              .strokeColor(COLORS.line)
+              .lineWidth(0.5)
+              .stroke()
+
+            x += width
+          })
+
+          y += rowHeight
+        })
+
+        // Repositionne le curseur de texte SOUS le tableau,
+        // en évitant tout auto-flow de pdfkit vers une page vierge.
+        doc.y = y + 12
+      }
+
+      // Écrit un titre de section (vérifie l'espace avant)
+      function sectionTitle(text) {
+        ensureSpace(40)
+        //doc.moveDown(1)
+        doc
+          .fillColor(COLORS.primary)
+          .font('Helvetica-Bold')
+          .fontSize(12)
+          .text(text, MARGIN, doc.y, { width: usableWidth(), align: 'left' })
+        //doc.moveDown(0.5)
+      }
+
+      // -------------------------------------------------------------------
+      // PAGE 1
+      // -------------------------------------------------------------------
+
+      drawHeader()
+
+      // -------------------------------------------------------------------
+      // LISTE DES VÉHICULES
+      // -------------------------------------------------------------------
+
+      sectionTitle('Liste de véhicules')
+
+      const vehiclesList = vehicles || []
+
+      for (let index = 0; index < vehiclesList.length; index++) {
+        const vehicle = vehiclesList[index]
+        const left = MARGIN
+        const boxWidth = usableWidth()
+        const innerPadding = 12
+        const textX = left + innerPadding
+        const textWidth = 300
+
+        const title = `Véhicule ${index + 1} — ${vehicle.description || 'Description non renseignée'}`
+
+        const fields = [
+          `Marque : ${vehicle.marque ?? 'N/A'}`,
+          `Type : ${vehicle.type ?? 'N/A'}`,
+          `Année : ${vehicle.anneeFabrication ?? 'N/A'}`,
+          `Motorisation : ${vehicle.motorisation ?? 'N/A'}`,
+          `Description : ${vehicle.description ?? 'N/A'}`,
+          `Puissance fiscale : ${vehicle.puissanceFiscal ?? 'N/A'} cv`,
+          `Kilométrage : ${vehicle.kilometrage ?? 'N/A'} km`,
+          `Dimensions : ${vehicle.longueurCm ?? 'N/A'} × ${vehicle.largeurCm ?? 'N/A'} × ${vehicle.hauteurCm ?? 'N/A'} cm`,
+          `Poids : ${vehicle.poidsKg ?? 'N/A'} kg`,
+          `Quantité : ${vehicle.quantity ?? 'N/A'}`,
+          `Prix unitaire : ${vehicle.prix ?? 'N/A'} ${vehicle.devise ?? ''}`,
+          `Prix total : ${vehicle.prixTotal ?? 'N/A'} ${vehicle.devise ?? ''}`,
         ]
 
-        // Transformer en colonnes
-        const labels = datas.map((row) => row[0]) // Champ
-        const values = datas.map((row) => row[1]) // Valeur
+        doc.font('Helvetica').fontSize(10)
+        const titleHeight = doc
+          .font('Helvetica-Bold')
+          .fontSize(13)
+          .heightOfString(title, {
+            width: boxWidth - innerPadding * 2,
+            lineGap: 2,
+          })
+        const fieldHeights = fields.map(
+          (field) =>
+            doc.heightOfString(field, { width: textWidth, lineGap: 1 }) + 5,
+        )
+        const textBlockHeight =
+          titleHeight + 12 + fieldHeights.reduce((sum, h) => sum + h, 0)
+        const boxHeight = Math.max(textBlockHeight + innerPadding * 2, 190)
 
-        const tableRows = [labels, values]
+        // Toute la carte doit tenir sur la page — jamais de coupure au milieu
+        ensureSpace(boxHeight + 14)
 
-        const margin = 40
-        const availableWidth = doc.page.width - margin * 2
-        const colWidth = availableWidth / labels.length
+        const boxTop = doc.y
 
-        const columnWidths = new Array(labels.length).fill(colWidth)
+        doc
+          .lineWidth(1)
+          .strokeColor(COLORS.primary)
+          .rect(left, boxTop, boxWidth, boxHeight)
+          .stroke()
+
+        let yText = boxTop + innerPadding
+
+        doc
+          .fillColor(COLORS.primary)
+          .fontSize(13)
+          .font('Helvetica-Bold')
+          .text(title, textX, yText, {
+            width: boxWidth - innerPadding * 2,
+            lineGap: 2,
+          })
+
+        yText += titleHeight + 12
+
+        doc.fillColor('#000000').font('Helvetica').fontSize(10)
+        fields.forEach((field, fieldIndex) => {
+          doc.text(field, textX, yText, { width: textWidth, lineGap: 1 })
+          yText += fieldHeights[fieldIndex]
+        })
+
+        const pngBuffer = photoBuffers.get(index)
+        const file = (photos || []).find(
+          (f) => f.fieldname === `photo_${index}`,
+        )
+
+        if (pngBuffer) {
+          const xImg = left + boxWidth - 180 - innerPadding
+          const yImg = boxTop + Math.max(titleHeight + 24, 42)
+          doc.image(pngBuffer, xImg, yImg, { fit: [180, 180] })
+        } else if (file) {
+          // photo présente mais illisible au pré-traitement
+          doc
+            .fillColor('red')
+            .fontSize(9)
+            .text(
+              'Image illisible',
+              left + boxWidth - 150 - innerPadding,
+              boxTop + 20,
+              {
+                width: 150,
+              },
+            )
+          doc.fillColor('#000000')
+        }
+
+        doc.y = boxTop + boxHeight + 14
+      }
+
+      // -------------------------------------------------------------------
+      // SHIPPING / INCOTERMS
+      // -------------------------------------------------------------------
+
+      ensureSpace(150)
+      sectionTitle('SHIPPING INFORMATIONS / INCOTERMS')
+
+      const shippingRows = [
+        ['Incoterm', 'Prix HT', 'Prix transport', 'Assurance', 'CIF', 'Devise'],
+        [
+          shipping.incoterm ?? 'N/A',
+          shipping.freeOnBoardFromOriginatePort ?? 'N/A',
+          shipping.oceanFreight ?? 'N/A',
+          shipping.insurance ?? 'N/A',
+          shipping.totalOperatingCost ?? 'N/A',
+          shipping.devise ?? 'N/A',
+        ],
+      ]
+      const shippingWidths = [85, 80, 100, 80, 95, 75] // total 515 pts
+
+      drawTable(shippingRows, shippingWidths)
+
+      // -------------------------------------------------------------------
+      // AVD — ANALYSE DES VALEURS EN DOUANE
+      // -------------------------------------------------------------------
+
+      ensureSpace(80)
+      sectionTitle('AVD - Analyse des valeurs en douane')
+
+      const avdList = avdData || []
+
+      for (let i = 0; i < avdList.length; i++) {
+        const a = avdList[i]
+
+        // Le titre + le tableau de ce véhicule doivent tenir ensemble
+        ensureSpace(30 + 7 * 24 + 20)
 
         doc
           .font('Helvetica-Bold')
           .fontSize(11)
-          .fillColor('#000')
-          .text(`Détail des taxes voiture ${i + 1} : ${a.marque}`, 40, doc.y)
+          .fillColor('#000000')
+          .text(
+            `Détail des taxes voiture ${i + 1} : ${a.marque || 'Marque non renseignée'}`,
+            MARGIN,
+            doc.y,
+            { width: usableWidth() },
+          )
+        doc.y += 10
 
-        drawTable(doc, 40, doc.y, tableRows, columnWidths, newPage, {
-          headerBackground: '#1A3C8E',
-          headerTextColor: '#FFFFFF',
-          alternateRowColor: '#EFE',
-          rowTextColor: '#000000',
-          prepareHeader: () => {
-            doc.font('Helvetica-Bold').fontSize(9)
-          },
-          prepareRow: (row, i) => {
-            if (i === 0) {
-              doc.font('Helvetica-Bold').fontSize(10)
-              doc.text('', { align: 'left' })
-            } else {
-              doc.font('Helvetica').fontSize(10)
-              doc.text('', { align: 'left' })
-            }
-          },
-        })
+        const tableRows = [
+          ['Élément', 'Montant / taux'],
+          ['Droit de douane', safe(a.DD)],
+          ['TVA', safe(a.TVA)],
+          ['Taxe statistique', safe(a.TSTAT)],
+          ['Taux DD', a.tauxDD != null ? `${a.tauxDD}%` : 'N/A'],
+          ['Timbre douanier (TD)', safe(a.TD)],
+          ['Total taxes véhicule', safe(a.totalTaxes)],
+        ]
+        const avdWidths = [300, usableWidth() - 300]
 
-        doc.moveDown(1)
+        drawTable(tableRows, avdWidths)
       }
 
+      // -------------------------------------------------------------------
       // TOTAL GÉNÉRAL
-      ensureSpace(doc, 200)
+      // -------------------------------------------------------------------
 
-      doc
-        .font('Helvetica-Bold')
-        .fontSize(12)
-        .text('Total général des taxes', 40, doc.y)
+      ensureSpace(30 + 6 * 24 + 20)
+      sectionTitle('Total général des taxes')
 
       const totals = {
-        //totalCIF: avdData.reduce((s, v) => s + Number(v.CIF), 0),
-        totalDD: avdData.reduce((s, v) => s + Number(v.DD), 0),
-        totalTVA: avdData.reduce((s, v) => s + Number(v.TVA), 0),
-        totalTSTAT: avdData.reduce((s, v) => s + Number(v.TSTAT), 0),
-        totalTD: avdData.reduce((s, v) => s + Number(v.TD), 0),
-        totalTaxes: avdData.reduce((s, v) => s + Number(v.totalTaxes), 0),
+        totalDD: avdList.reduce((s, v) => s + Number(v.DD || 0), 0),
+        totalTVA: avdList.reduce((s, v) => s + Number(v.TVA || 0), 0),
+        totalTSTAT: avdList.reduce((s, v) => s + Number(v.TSTAT || 0), 0),
+        totalTD: avdList.reduce((s, v) => s + Number(v.TD || 0), 0),
+        totalTaxes: avdList.reduce((s, v) => s + Number(v.totalTaxes || 0), 0),
       }
 
-      const totalDatas = [
-        //['Total CIF', safe(totals.totalCIF)],
+      const totalRows = [
+        ['Élément', 'Montant total'],
         ['Total DD', safe(totals.totalDD)],
         ['Total TVA', safe(totals.totalTVA)],
-        ['Total Taxe statistique', safe(totals.totalTSTAT)],
-        ['Total Timbre douanier (TD)', safe(totals.totalTD)],
+        ['Total taxe statistique', safe(totals.totalTSTAT)],
+        ['Total timbre douanier (TD)', safe(totals.totalTD)],
         ['Total taxes globales', safe(totals.totalTaxes)],
       ]
+      const totalWidths = [300, usableWidth() - 300]
 
-      // Transformer en colonnes
-      const totalLabels = totalDatas.map((row) => row[0])
-      const totalValues = totalDatas.map((row) => row[1])
+      drawTable(totalRows, totalWidths)
 
-      const totalRows = [totalLabels, totalValues]
+      // -------------------------------------------------------------------
+      // MENTION LÉGALE
+      // -------------------------------------------------------------------
 
-      const margin = 40
-      const availableWidth = doc.page.width - margin * 2
-      const colWidth = availableWidth / totalLabels.length
-      const totalColumnWidths = new Array(totalLabels.length).fill(colWidth)
+      const legalText =
+        'Ce calcul est fourni à titre indicatif sur la base des données disponibles et des barèmes en vigueur. ' +
+        'Les montants présentés peuvent être ajustés ou requalifiés par l’administration douanière, ' +
+        'seule habilitée à déterminer la valeur en douane et les droits définitifs.'
+      const legalHeight = doc
+        .font('Helvetica')
+        .fontSize(10)
+        .heightOfString(legalText, { width: usableWidth(), lineGap: 2 })
 
-      drawTable(doc, 40, doc.y, totalRows, totalColumnWidths, newPage, {
-        headerBackground: '#1A3C8E',
-        headerTextColor: '#FFFFFF',
-        alternateRowColor: '#EFE',
-        rowTextColor: '#000000',
-        prepareHeader: () => {
-          doc.font('Helvetica-Bold').fontSize(9)
-        },
-        prepareRow: (row, i) => {
-          if (i === 0) {
-            doc.font('Helvetica-Bold').fontSize(10)
-            doc.text('', { align: 'left' })
-          } else {
-            doc.font('Helvetica').fontSize(10)
-            doc.text('', { align: 'left' })
-          }
-        },
-      })
+      // Titre + texte : jamais coupés par un saut de page
+      ensureSpace(30 + legalHeight + 20)
 
-      // MENTION LEGAL
-      // text() attend (texte, x, y, options).
-      doc.moveDown(2)
+      doc.moveDown(1)
       doc
         .font('Helvetica-Bold')
         .fontSize(12)
-        .text('Mention légale : ', 40, doc.y, {
-          width: 500,
+        .fillColor('#000000')
+        .text('Mention légale :', MARGIN, doc.y, {
+          width: usableWidth(),
           align: 'left',
-          lineBreak: true,
         })
 
       doc
         .font('Helvetica')
         .fontSize(10)
-        .text(
-          'Ce calcul est fourni à titre indicatif sur la base des données disponibles et des barèmes en vigueur. Les montants présentés peuvent être ajustés ou requalifiés par l’administration douanière, seule habilitée à déterminer la valeur en douane et les droits définitifs.',
-          {
-            width: usableWidth,
-            align: 'justify',
-          },
-        )
+        .text(legalText, { width: usableWidth(), align: 'left', lineGap: 2 })
 
-      // -----------------------------------------------------
-      // FOOTER FINAL
-      // -----------------------------------------------------
-      drawFooter(doc)
+      // -------------------------------------------------------------------
+      // FOOTER DE LA DERNIÈRE PAGE
+      // -------------------------------------------------------------------
+
+      drawFooter()
       doc.end()
     } catch (error) {
-      console.log(error)
+      console.error('Erreur génération PDF véhicules :', error)
       reject(error)
     }
   })

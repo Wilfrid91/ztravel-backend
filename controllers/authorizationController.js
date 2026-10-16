@@ -1064,269 +1064,362 @@ export const getSubscriptionStatus = async (req, res) => {
 }
 
 export const printFedapayReceipt = async (req, res) => {
-  let qrcode = null
   try {
     const { referenceId } = req.params
 
-    // 🟩 Recupérer la transaction dans la DB pour impression
-    const transactionDb = await FedaPayTransaction.findOne({ referenceId })
-    if (!transactionDb) {
-      return res
-        .status(StatusCodes.NOT_FOUND)
-        .json({ error: 'Reference non trouvée' })
-    }
-    // Impression du ticket
-    //console.log(transactionDb)
+    const pdfBuffer = await generateFedaPayTicket(referenceId)
 
-    // --- Vérification du montant ---
-    const amount = Number(transactionDb.amount)
-    if (isNaN(amount) || amount <= 0) {
-      console.error(
-        'Montant invalide dans la transaction :',
-        transactionDb.amount,
-      )
-      return res.status(400).json({ error: 'Montant invalide' })
-    }
-    const safeAmount = amount
+    res.setHeader('Content-Type', 'application/pdf')
 
-    const qrPayload = {
-      id: transactionDb._id,
-      amount: safeAmount,
-      date: transactionDb.createdAt,
-      status: transactionDb.status,
-      method: transactionDb.method,
-      ip: transactionDb.ip,
-      country: transactionDb.country,
-      type: 'AVD_Certificate',
-    }
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="recu_${referenceId}.pdf"`,
+    )
+
+    return res.status(200).send(pdfBuffer)
+  } catch (error) {
+    console.error('Erreur impression ticket FedaPay:', error)
+
+    return res.status(error.statusCode || 500).json({
+      error: error.message || 'Impossible de générer le ticket PDF',
+    })
+  }
+}
+
+const generateFedaPayTicket = async (referenceId) => {
+  let qrcode = null
+  const now = new Date()
+
+  // 1. Récupérer la transaction
+  const transactionDb = await FedaPayTransaction.findOne({
+    referenceId,
+  })
+
+  if (!transactionDb) {
+    const error = new Error('Référence non trouvée')
+    error.statusCode = 404
+    throw error
+  }
+
+  // 2. Vérifier le montant
+  const amount = Number(transactionDb.amount)
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    const error = new Error('Montant invalide')
+    error.statusCode = 400
+    throw error
+  }
+
+  const safeAmount = amount
+
+  // 3. Générer le QR code signé
+  const qrPayload = {
+    id: transactionDb._id,
+    amount: safeAmount,
+    date: transactionDb.createdAt,
+    status: transactionDb.status,
+    method: transactionDb.method,
+    ip: transactionDb.ip,
+    country: transactionDb.country,
+    type: 'AVD_Certificate',
+  }
+
+  const signature = crypto
+    .createHmac('sha256', process.env.QR_SIGNING_SECRET)
+    .update(JSON.stringify(qrPayload))
+    .digest('base64')
+
+  qrcode = await QRCode.toBuffer(
+    JSON.stringify({
+      data: qrPayload,
+      signature,
+    }),
+    {
+      width: 250,
+      margin: 2,
+      errorCorrectionLevel: 'M',
+    },
+  )
+
+  if (!Buffer.isBuffer(qrcode) || qrcode.length < 100) {
+    throw new Error('QR code invalide')
+  }
+
+  // 4. Générer le PDF
+  const pdfBuffer = await new Promise((resolve, reject) => {
+    const doc = new PDFDocumentWithTables()
+    const stream = new PassThrough()
+    const chunks = []
+
+    stream.on('data', (chunk) => chunks.push(chunk))
+    stream.on('end', () => resolve(Buffer.concat(chunks)))
+    stream.on('error', reject)
+    doc.on('error', reject)
+
+    doc.pipe(stream)
 
     try {
-      const signature = crypto
-        .createHmac('sha256', process.env.QR_SIGNING_SECRET)
-        .update(JSON.stringify(qrPayload))
-        .digest('base64')
+      // -------------------------------------------------
+      // CONSERVE ICI LA MISE EN PAGE DE TON TICKET
+      // -------------------------------------------------
+      // En-tête, logo, tableau, montant, statut,
+      // description et insertion du QR code.
+      //
+      // Utilise les variables :
+      // safeAmount, transactionDb, qrcode et doc.
+      //
+      // Termine la génération avec doc.end().
+      // -------------------------------------------------
 
-      const qrObject = {
-        data: qrPayload,
-        signature,
-      }
-      // Vérifiez que toBuffer existe
-      console.log('QRCode.toBuffer existe:', typeof QRCode.toBuffer)
+      // =====================================================
+      // EN-TÊTE : LOGO ET INFORMATIONS DE L'ENTREPRISE
+      // =====================================================
+      console.log('Logo existe:', fs.existsSync('assets/logo.png'))
 
-      const qrString = JSON.stringify(qrObject)
-
-      qrcode = await QRCode.toBuffer(qrString, {
-        width: 250,
-        margin: 2,
-        errorCorrectionLevel: 'M',
+      doc.image('assets/logo.png', 40, 20, {
+        width: 70,
       })
 
-      console.log('QR code généré, taille:', qrcode.length)
+      doc.moveDown(1)
 
-      // Vérification que c'est un buffer valide
-      if (!qrcode || qrcode.length < 100) {
-        throw new Error('QR code généré est vide ou trop petit')
-      }
-    } catch (error) {
-      console.log(error)
-    }
+      doc
+        .fontSize(10)
+        .text('6 cours de la marne, 33800 Bordeaux', {
+          align: 'center',
+        })
+        .text('+33 0559040100', {
+          align: 'center',
+        })
+        .text('Numéro IFU: 06466570485', {
+          align: 'center',
+        })
+        .text(`Date: ${now.toLocaleDateString()}`, {
+          align: 'center',
+        })
+        .text(`Heure: ${now.toLocaleTimeString()}`, {
+          align: 'center',
+        })
 
-    const pdfBuffer = await new Promise((resolve, reject) => {
-      try {
-        const now = new Date()
-        const doc = new PDFDocumentWithTables()
-        const stream = new PassThrough()
-        const chunks = []
+      doc.moveDown(2)
 
-        doc.pipe(stream)
+      // =====================================================
+      // TITRE DU TICKET
+      // =====================================================
+      doc.fontSize(14).text('REÇU CLIENT', {
+        align: 'left',
+      })
 
-        stream.on('data', (chunk) => chunks.push(chunk))
-        // le buffer final n’est renvoyé que quand le stream émet end.
-        stream.on('end', () => resolve(Buffer.concat(chunks)))
-        stream.on('error', reject)
+      doc.moveDown(3)
 
-        // HEADER LOGO
-        console.log('Logo existe:', fs.existsSync('assets/logo.png'))
+      // =====================================================
+      // CONFIGURATION DES MARGES ET DES COLONNES
+      // =====================================================
+      const leftMargin = doc.page.margins?.left ?? 72
+      const rightMargin = doc.page.margins?.right ?? 72
 
-        doc.image('assets/logo.png', 40, 20, { width: 70 })
-        doc.moveDown(1)
+      const pageWidth = doc.page.width - leftMargin - rightMargin
 
-        doc
-          .fontSize(10)
-          .text('6 cours de la marne, 33800 Bordeaux', { align: 'center' })
-        doc.text('+33 0559040100', { align: 'center' })
-        doc.text('Numéro IFU: 06466570485', { align: 'center' })
-        doc.text(`Date: ${now.toLocaleDateString()}`, { align: 'center' })
-        doc.text(`Heure: ${now.toLocaleTimeString()}`, { align: 'center' })
-        doc.moveDown(2)
+      doc.fontSize(12)
 
-        doc.fontSize(14).text('RECU CLIENT', {
+      const startX = leftMargin
+
+      let currentY = doc.y
+
+      const colItem = startX
+      const colQty = startX + 80
+      const colPrix = startX + 140
+      const colTva = startX + 200
+      const colMontant = startX + 260
+
+      // =====================================================
+      // TABLEAU DES ARTICLES : EN-TÊTES
+      // =====================================================
+      doc.text('Item', colItem, currentY)
+      doc.text('Qty', colQty, currentY)
+      doc.text('Prix', colPrix, currentY)
+      doc.text('TVA', colTva, currentY)
+      doc.text('Montant XOF', colMontant, currentY)
+
+      // Ligne de séparation sous les en-têtes
+      const lineY = currentY + 15
+
+      doc
+        .moveTo(leftMargin, lineY)
+        .lineTo(leftMargin + pageWidth, lineY)
+        .stroke()
+
+      currentY = lineY + 10
+
+      // =====================================================
+      // TABLEAU DES ARTICLES : DÉTAILS
+      // =====================================================
+      doc.text('100', colItem, currentY)
+      doc.text('1', colQty, currentY)
+
+      doc.text(safeAmount.toFixed(2), colPrix, currentY)
+
+      doc.text('18%', colTva, currentY)
+
+      doc.text((safeAmount * 0.18).toFixed(2), colMontant, currentY)
+
+      doc.moveDown(2)
+
+      // =====================================================
+      // TOTAL À PAYER
+      // =====================================================
+      const totalLabel = 'Total à payer:'
+      const totalAmount = `${safeAmount.toFixed(2)} XOF`
+
+      const totalWidth = doc.widthOfString(totalAmount)
+
+      const rawMethod = transactionDb.method
+
+      const psp =
+        rawMethod && rawMethod !== 'NaN' ? String(rawMethod) : 'Inconnu'
+
+      let y = doc.y
+
+      doc.text(totalLabel, leftMargin, y)
+
+      doc.text(totalAmount, leftMargin + pageWidth - totalWidth, y)
+
+      doc.moveDown(2)
+
+      // =====================================================
+      // MODE DE PAIEMENT
+      // =====================================================
+      doc.text('Payé par :', leftMargin)
+
+      doc.moveDown(1)
+
+      y = doc.y
+
+      doc.text(psp, leftMargin, y)
+
+      doc.text(totalAmount, leftMargin + pageWidth - totalWidth, y)
+
+      doc.moveDown(2)
+
+      // =====================================================
+      // IDENTIFIANT DE TRANSACTION FEDAPAY
+      // =====================================================
+      const idLabel = 'Identifiant client FedaPay:'
+
+      const idValueRaw = transactionDb.transactionId
+
+      const idValue = idValueRaw ? String(idValueRaw) : 'N/A'
+
+      const idWidth = doc.widthOfString(idValue)
+
+      y = doc.y
+
+      doc.text(idLabel, leftMargin, y)
+
+      doc.text(idValue, leftMargin + pageWidth - idWidth, y)
+
+      doc.moveDown(2)
+
+      // =====================================================
+      // TYPE DE TRANSACTION
+      // =====================================================
+      y = doc.y
+
+      const typeLabel = 'Type'
+      const typeValue = 'BIENS & SERVICES'
+
+      const typeWidth = doc.widthOfString(typeValue)
+
+      doc.text(`${typeLabel}:`, leftMargin, y)
+
+      doc.text(typeValue, leftMargin + pageWidth - typeWidth, y)
+
+      doc.moveDown(2)
+
+      // Réinitialiser la position horizontale
+      doc.x = leftMargin
+
+      // =====================================================
+      // STATUT DU PAIEMENT
+      // =====================================================
+      doc.fontSize(12).text('PAIEMENT ACCEPTÉ', {
+        align: 'left',
+        underline: true,
+      })
+
+      doc.moveDown(2)
+
+      // =====================================================
+      // DESCRIPTION DU SERVICE
+      // =====================================================
+      doc.text(
+        'Achat d’un pack de 3 jetons destinés à la génération ' +
+          'd’attestations de vérification documentaire (AVD) ' +
+          'sur zTravel Consulting ©. Scannez ce reçu pour en ' +
+          'vérifier l’authenticité.',
+        {
           align: 'left',
-        })
-        doc.moveDown(3)
+        },
+      )
 
-        // --- MARGES (UNE SEULE FOIS) ---
-        const leftMargin = doc.page.margins?.left ?? 72
-        const rightMargin = doc.page.margins?.right ?? 72
-        const pageWidth = doc.page.width - leftMargin - rightMargin
+      doc.moveDown(1)
 
-        // --- TABLEAU PRODUIT ---
-        doc.fontSize(12)
+      // =====================================================
+      // QR CODE : VÉRIFICATION ET INSERTION
+      // =====================================================
+      const qrSize = 140
 
-        const startX = leftMargin
-        let currentY = doc.y
+      const qrX = leftMargin + (pageWidth - qrSize) / 2
 
-        const colItem = startX
-        const colQty = startX + 80
-        const colPrix = startX + 140
-        const colTva = startX + 200
-        const colMontant = startX + 260
+      console.log('QR code global:', qrcode ? 'OK' : 'NULL')
 
-        doc.text('Item', colItem, currentY)
-        doc.text('Qty', colQty, currentY)
-        doc.text('Prix', colPrix, currentY)
-        doc.text('TVA', colTva, currentY)
-        doc.text('Montant XOF', colMontant, currentY)
-
-        // --- TRAIT SOUS LES EN-TÊTES ---
-        const lineY = currentY + 15
-        doc
-          .moveTo(leftMargin, lineY)
-          .lineTo(leftMargin + pageWidth, lineY)
-          .stroke()
-
-        currentY = lineY + 10
-
-        doc.text('100', colItem, currentY)
-        doc.text('1', colQty, currentY)
-        doc.text(safeAmount.toFixed(2), colPrix, currentY)
-        doc.text('18%', colTva, currentY)
-        doc.text((safeAmount * 0.18).toFixed(2), colMontant, currentY)
-
-        doc.moveDown(2)
-
-        // --- TOTAL À PAYER ---
-        const totalLabel = 'Total à payer:'
-        const totalAmount = `${safeAmount.toFixed(2)} XOF`
-        const totalWidth = doc.widthOfString(totalAmount)
-
-        // --- PAYÉ AVEC ---
-        const rawMethod = transactionDb.method
-        const psp =
-          rawMethod && rawMethod !== 'NaN' ? String(rawMethod) : 'Inconnu'
-
-        //const psp = `${transactionDb.method}`
-
-        let y = doc.y
-
-        // --- TOTAL À PAYER ---
-        doc.text(totalLabel, leftMargin, y)
-        doc.text(totalAmount, leftMargin + pageWidth - totalWidth, y)
-
-        doc.moveDown(2)
-
-        // --- PAYÉ PAR ---
-        doc.text('Payé par :', leftMargin)
-        doc.moveDown(1)
-
-        // --- PSP + MONTANT ---
-        y = doc.y
-        doc.text(psp, leftMargin, y)
-        doc.text(totalAmount, leftMargin + pageWidth - totalWidth, y)
-
-        doc.moveDown(2)
-
-        // --- IDENTIFIANT CLIENT FEDAPAY ---
-        const idLabel = 'Identifiant client Fedaypay:'
-        const idValueRaw = transactionDb.transactionId
-        const idValue = idValueRaw ? String(idValueRaw) : 'N/A'
-
-        //const idValue = transactionDb.transactionId ?? ''
-        const idWidth = doc.widthOfString(idValue)
-
-        y = doc.y
-        doc.text(idLabel, leftMargin, y)
-        doc.text(idValue, leftMargin + pageWidth - idWidth, y)
-
-        doc.moveDown(2)
-
-        // --- TYPE ---
-        y = doc.y
-
-        const typeLabel = 'Type'
-        const typeValue = 'BIENS & SERVICES'
-        const typeWidth = doc.widthOfString(typeValue)
-
-        doc.text(typeLabel + ':', leftMargin, y)
-        doc.text(typeValue, leftMargin + pageWidth - typeWidth, y)
-
-        doc.moveDown(2)
-
-        // IMPORTANT : réinitialiser X
-        doc.x = leftMargin
-
-        // --- STATUT ---
-        doc
-          .fontSize(12)
-          .text('PAIEMENT ACCEPTE', { align: 'left', underline: true })
-        doc.moveDown(2)
-
-        // --- DESCRIPTION ---
-        doc.text(
-          'Achat d’un pack de 3 jetons destinés à la génération d’attestations de vérification documentaire (AVD) sur zTravel Consulting ©. Scannez ce reçu pour en vérifier l’authenticité.',
-          { align: 'left' },
-        )
-        doc.moveDown(1)
-
-        const qrSize = 140
-        const qrX = leftMargin + (pageWidth - qrSize) / 2
-
-        // VÉRIFICATION CRITIQUE avant d'ajouter l'image
-        console.log('qrcode global:', qrcode ? 'OK' : 'NULL')
-
-        if (!qrcode || !Buffer.isBuffer(qrcode) || qrcode.length === 0) {
-          console.error("QR Code invalide, impossible d'ajouter l'image")
-          // Option 1: Ajouter un texte d'erreur
-          doc.text('QR Code indisponible', { align: 'center' })
-          doc.end()
-          return
-        }
-
-        console.log('Insertion du QR code dans le PDF…')
-
-        doc.image(qrcode, qrX, doc.y, {
-          width: qrSize,
-          height: qrSize,
-        })
+      if (!qrcode || !Buffer.isBuffer(qrcode) || qrcode.length === 0) {
+        doc.text('QR Code indisponible', { align: 'center' })
         doc.end()
-        console.log('PDF terminé')
-      } catch (error) {
-        console.error('🔥 ERREUR DANS LE PDF :', error)
-        reject(error)
+        return
       }
-    })
 
-    // Envoyer le PDF au client
+      console.log('Insertion du QR code dans le PDF…')
+
+      doc.image(qrcode, qrX, doc.y, {
+        width: qrSize,
+        height: qrSize,
+      })
+
+      // =====================================================
+      // FINALISATION DU PDF
+      // =====================================================
+      doc.end()
+
+      console.log('PDF terminé')
+    } catch (error) {
+      reject(error)
+    }
+  })
+
+  return pdfBuffer
+}
+
+export const getFedaPayTicketPdf = async (req, res) => {
+  try {
+    const { referenceId } = req.params
+
+    // Réutilise ici ta fonction existante de génération
+    // ou de récupération du PDF.
+    const pdfBuffer = await generateFedaPayTicket(referenceId)
+
     res.setHeader('Content-Type', 'application/pdf')
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename=reçu_${referenceId}.pdf`,
+      `inline; filename="recu_${referenceId}.pdf"`,
     )
-    // Save the transaction within Hetzne
-    /*const upload = await s3.send(
-      new PutObjectCommand({
-        Bucket: process.env.HETZNER_BUCKET,
-        Key: `receipts/${transactionDb._id}.pdf`,
-        Body: pdfBuffer,
-        ContentType: 'application/pdf',
-        ACL: 'public-read', // si tu veux un lien public
-      }),
-    )*/
 
-    res.send(pdfBuffer)
+    return res.send(pdfBuffer)
   } catch (error) {
-    console.error('🔥 ERREUR PDF :', error)
-    res.status(500).json({ error: error.message || 'Erreur inconnue' })
+    console.error('Erreur ouverture ticket PDF:', error)
+
+    return res.status(500).json({
+      message: 'Impossible de récupérer le ticket PDF',
+    })
   }
 }
 
