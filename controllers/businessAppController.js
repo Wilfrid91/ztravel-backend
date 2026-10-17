@@ -311,12 +311,26 @@ export const getCustomsData = async (req, res, next) => {
  * @param {*} res
  */
 export const createProductListAndAVD = async (req, res) => {
-  const userId = req.user.userId
-  const products = req.body.products || '[]'
-  const shipping = req.body.shipping || '{}'
+  // vaut undefined si l'utilisateur n'est pas authentifié
+  const userId = req.user?.userId
+  // products est attendu comme une liste (0, 1, plusieurs véhicules/produits)
+  //  → le fallback est un tableau vide [] (ou '[]' dans votre version avec le bug des quotes)
+  const products = Array.isArray(req.body.products) ? req.body.products : []
+  // shipping est attendu comme un objet unique (un seul ensemble de données : incoterm, fret, assurance, CIF, devise)
+  //  → le fallback est un objet vide {} (ou '{}' bugué).
+  const shipping =
+    req.body.shipping &&
+    typeof req.body.shipping === 'object' &&
+    !Array.isArray(req.body.shipping)
+      ? req.body.shipping
+      : {}
+
   const photos = req.files || []
   const user = req.user?.name || 'client'
   const username = req.user.username
+
+  if (!userId)
+    return res.status(401).json({ message: 'Authentification requise' })
 
   const jeton = await JetonImpression.findOneAndUpdate(
     {
@@ -425,6 +439,75 @@ const generatePDF = async ({
   } catch (error) {
     console.error(error)
   }
+}
+
+/**
+ * Genère la liste des produits et calcul l'attestation de validation documentaire
+ * @param {*} req
+ * @param {*} res
+ */
+export const createVehicleListAndAVD = async (req, res) => {
+  try {
+    const userId = req.user?.userId
+    const user = req.user?.name || 'client'
+    const username = req.user.username
+    if (!userId)
+      return res.status(401).json({ message: 'Authentification requise' })
+
+    // vehicles sont optionnels
+    const vehicles = Array.isArray(req.body.vehicles) ? req.body.vehicles : []
+    const shipping =
+      req.body.shipping &&
+      typeof req.body.shipping === 'object' &&
+      !Array.isArray(req.body.shipping)
+        ? req.body.shipping
+        : {}
+    const photos = req.files || []
+
+    // Trouve un document correspondant à userId dans la collection JetonImpression et mets-le à jour en même temps.
+    const jeton = await JetonImpression.findOneAndUpdate(
+      {
+        userId,
+        // $gt = “greater than” → “strictement supérieur à 0” => Vérifie qu'il reste un jeton
+        // Trouve le document du user X qui a encore des jetons disponibles.
+        jetons_restants: { $gt: 0 },
+      },
+      {
+        // $inc : incrémente/décrémente des champs numériques.
+        // On décrémente jetons_restants de 1 → on consomme un jeton.
+        // On incrémente nbre_impressions de 1 → on compte une impression de plus.
+        $inc: { jetons_restants: -1, nbre_impressions: 1 },
+      },
+      {
+        // Renvoie-moi le document après la mise à jour.
+        // Donc jeton contient les valeurs à jour (jetons_restants décrémenté, nbre_impressions incrémenté).
+        new: true,
+      },
+    )
+
+    if (!jeton) {
+      return res.status(403).json({
+        message:
+          "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
+      })
+    }
+
+    const pdf = await generatePDF({
+      vehicles,
+      shipping,
+      photos,
+      user,
+    })
+    console.log('PDF DATA', pdf)
+    // 3. Envoyer le PDF fusionné
+    return res
+      .status(StatusCodes.OK)
+      .set({
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `attachment; filename=AVD_${username}.pdf`,
+      })
+      .end(pdf)
+  } catch (error) {}
 }
 
 /**
@@ -590,65 +673,4 @@ export const getSimulatorTab3 = async (req, res, next) => {
     console.log(error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message })
   }
-}
-
-/**
- * Genère la liste des produits et calcul l'attestation de validation documentaire
- * @param {*} req
- * @param {*} res
- */
-export const createVehicleListAndAVD = async (req, res) => {
-  try {
-    // vehicles sont optionnels
-    const vehicles = req.body.vehicles || '[]'
-    const shipping = req.body.shipping || '{}'
-    const photos = req.files || []
-    const user = req.user?.name || 'client'
-    const userId = req.user.userId
-    const username = req.user.username
-
-    // Trouve un document correspondant à userId dans la collection JetonImpression et mets-le à jour en même temps.
-    const jeton = await JetonImpression.findOneAndUpdate(
-      {
-        userId,
-        // $gt = “greater than” → “strictement supérieur à 0” => Vérifie qu'il reste un jeton
-        // Trouve le document du user X qui a encore des jetons disponibles.
-        jetons_restants: { $gt: 0 },
-      },
-      {
-        // $inc : incrémente/décrémente des champs numériques.
-        // On décrémente jetons_restants de 1 → on consomme un jeton.
-        // On incrémente nbre_impressions de 1 → on compte une impression de plus.
-        $inc: { jetons_restants: -1, nbre_impressions: 1 },
-      },
-      {
-        // Renvoie-moi le document après la mise à jour.
-        // Donc jeton contient les valeurs à jour (jetons_restants décrémenté, nbre_impressions incrémenté).
-        new: true,
-      },
-    )
-
-    if (!jeton) {
-      return res.status(403).json({
-        message:
-          "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
-      })
-    }
-
-    // const mergePdf = await generatePDF(req)
-    const pdf = await generatePDF({
-      vehicles,
-      shipping,
-      photos,
-      user,
-    })
-    // 3. Envoyer le PDF fusionné
-    return res
-      .status(StatusCodes.OK)
-      .set({
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename=AVD_${username}.pdf`,
-      })
-      .end(pdf)
-  } catch (error) {}
 }
