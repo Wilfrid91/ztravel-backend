@@ -1753,37 +1753,55 @@ export const generateVehicleFullPDF = async (
       }
 
       // Dessine le footer de la page courante
+      // Dessine le footer sans déclencher de saut de page automatique
       function drawFooter() {
         const oldY = doc.y
-
+        const oldBottomMargin = doc.page.margins.bottom
         const { width: pageWidth, height: pageHeight } = doc.page
 
-        doc
-          .moveTo(MARGIN, pageHeight - FOOTER_ZONE)
-          .lineTo(pageWidth - MARGIN, pageHeight - FOOTER_ZONE)
-          .strokeColor(COLORS.line)
-          .lineWidth(1)
-          .stroke()
+        try {
+          // Autorise temporairement l'écriture dans la zone du pied de page
+          doc.page.margins.bottom = 0
+          doc.save()
 
-        doc
-          .fontSize(9)
-          .fillColor(COLORS.muted)
-          .text(`Page ${currentPage}`, 0, pageHeight - 50, {
-            width: pageWidth,
-            align: 'center',
-            lineBreak: false,
-          })
+          // Ligne de séparation
+          doc
+            .moveTo(MARGIN, pageHeight - FOOTER_ZONE)
+            .lineTo(pageWidth - MARGIN, pageHeight - FOOTER_ZONE)
+            .strokeColor(COLORS.line)
+            .lineWidth(0.7)
+            .stroke()
 
-        doc
-          .fontSize(9)
-          .fillColor('#444444')
-          .text(`Référence : ${refNumber}`, MARGIN, pageHeight - 60, {
-            width: 300,
-            align: 'left',
-            lineBreak: false,
-          })
+          // Référence à gauche
+          doc
+            .font('Helvetica')
+            .fontSize(8)
+            .fillColor(COLORS.muted)
+            .text(`Référence : ${refNumber}`, MARGIN, pageHeight - 45, {
+              width: 220,
+              lineBreak: false,
+            })
 
-        doc.y = oldY
+          // Numéro de page à droite
+          doc
+            .font('Helvetica')
+            .fontSize(8)
+            .fillColor(COLORS.muted)
+            .text(
+              `Page ${currentPage}`,
+              pageWidth - MARGIN - 100,
+              pageHeight - 45,
+              {
+                width: 100,
+                align: 'right',
+                lineBreak: false,
+              },
+            )
+        } finally {
+          doc.restore()
+          doc.page.margins.bottom = oldBottomMargin
+          doc.y = oldY
+        }
       }
 
       // Passe à la page suivante (seul point d'ajout de page du document)
@@ -2042,7 +2060,8 @@ export const generateVehicleFullPDF = async (
       // AVD — ANALYSE DES VALEURS EN DOUANE
       // -------------------------------------------------------------------
 
-      ensureSpace(80)
+      // Réserve la place pour le titre AVD et le premier tableau complet
+      ensureSpace(30 + 30 + 8 * 24 + 20)
       sectionTitle('AVD - Analyse des valeurs en douane')
 
       const avdList = avdData || []
@@ -2051,7 +2070,10 @@ export const generateVehicleFullPDF = async (
         const a = avdList[i]
 
         // Le titre + le tableau de ce véhicule doivent tenir ensemble
-        ensureSpace(30 + 7 * 24 + 20)
+        // Titre + en-tête + 7 lignes de données + espace de respiration
+        const avdTableHeight = 8 * 24
+
+        ensureSpace(30 + avdTableHeight + 20)
 
         doc
           .font('Helvetica-Bold')

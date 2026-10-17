@@ -11,6 +11,8 @@ export const parseVehicleRequest = (req, res, next) => {
       console.log('✅ Vehicles parsé (était string)')
     }
 
+    // Vérifie que la propriété shipping existe et qu'elle n'est pas une valeur « falsy » :
+    // => undefined, null, '', 0, false, NaN
     if (req.body.shipping && typeof req.body.shipping === 'string') {
       req.body.shipping = JSON.parse(req.body.shipping)
       console.log('✅ Shipping parsé (était string)')
@@ -22,6 +24,7 @@ export const parseVehicleRequest = (req, res, next) => {
     }
 
     // Pour backward compatibility, créer les champs plats
+    // Vérifie que vehicles existe, vérifie que c'est bien un tableau JavaScript et vérifie que le tableau contient au moins un élément.
     if (
       req.body.vehicles &&
       Array.isArray(req.body.vehicles) &&
