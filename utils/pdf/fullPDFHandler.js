@@ -2178,23 +2178,25 @@ export const generateVehicleFullPDF = async (
  */
 function generateReference() {
   const year = new Date().getFullYear()
+  let last = 0
 
-  // Si le fichier n'existe pas → on le crée
-  if (!fs.existsSync(refPath)) {
-    fs.writeFileSync(refPath, JSON.stringify({ last: 0 }))
+  try {
+    last = JSON.parse(fs.readFileSync(refPath, 'utf8')).last
+  } catch {
+    last = 0 // absent ou corrompu → repart à 0
   }
 
-  // Lecture
-  const data = JSON.parse(fs.readFileSync(refPath, 'utf8'))
+  last++
 
-  // Incrémentation
-  data.last++
+  try {
+    fs.writeFileSync(refPath, JSON.stringify({ last }))
+  } catch (err) {
+    console.error('Impossible de sauvegarder le compteur :', err.message)
+    // on continue quand même : la référence est générée, elle sera juste
+    // ré-émise au prochain appel tant que le problème de disque persiste
+  }
 
-  // Sauvegarde
-  fs.writeFileSync(refPath, JSON.stringify(data))
-
-  // Retourne la référence
-  return `${year}-${String(data.last).padStart(3, '0')}`
+  return `${year}-${String(last).padStart(3, '0')}`
 }
 
 export default {
