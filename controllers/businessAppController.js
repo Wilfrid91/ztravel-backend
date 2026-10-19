@@ -197,7 +197,7 @@ export const submitCustomerForm = async (req, res, next) => {
       null,
       {
         params: {
-          secret: process.env.RECAPTCHA_SECRET,
+          secret: process.env.RECAPTCHA_SECRET_KEY,
           response: captchaToken,
         },
       },
