@@ -863,21 +863,16 @@ export const getVisitTracker = async (req, res) => {
       {
         $project: {
           _id: 0,
-
           visitorId: '$_id',
-
           userId: 1,
-
           nom: '$user.nom',
           prenom: '$user.prenom',
           email: '$user.email',
-
           visits: 1,
           pages: 1,
           distinctPages: 1,
           visitedHome: 1,
           isLoggedUser: 1,
-
           firstVisit: 1,
           lastVisit: 1,
         },

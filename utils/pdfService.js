@@ -690,7 +690,7 @@ export const computeAVD = async (products, shipping) => {
 }
 
 function computeCIFVehicle(shipping) {
-  const fob = Number(shipping.freeOnBoardFromOriginatePort_) || 0
+  const fob = Number(shipping.freeOnBoardFromOriginatePort) || 0
   const other = Number(shipping.otherCharges) || 0
   const freight = Number(shipping.oceanFreight) || 0
   const insurance = Number(shipping.insurance) || 0
@@ -726,7 +726,8 @@ function getTauxDD(vehicle) {
 
 export const computeAvdVehicle = async (vehicles, shipping) => {
   // Total en devise d'origine
-  const totalDevise = vehicles.reduce((s, v) => s + Number(v.prixTotal), 0)
+  //const totalDevise = vehicles.reduce((s, v) => s + Number(v.prixTotal), 0)
+
   // CIF en devise
   // Étape 1 — Calcul du CIF => CIF= Valeur FOB + Fret + Assurance
   const cifDevise = computeCIFVehicle(shipping)
