@@ -423,7 +423,7 @@ const generatePDF = async ({
           shipping,
           avdData,
         )
-        console.log(`📄 PDF reçu: ${fullVehiclePDF.length} bytes`)
+        //console.log(`📄 PDF reçu: ${fullVehiclePDF.length} bytes`)
         // Vérifiez que le buffer n'est pas vide
         if (!fullVehiclePDF || fullVehiclePDF.length === 0) {
           throw new Error('Buffer PDF vide')
