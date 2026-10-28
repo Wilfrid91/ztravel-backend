@@ -150,6 +150,7 @@ export const validateUploadedPhoto = async (req, res, next) => {
 }
 
 export const submitCustomerForm = async (req, res, next) => {
+  let filePath = null
   try {
     const {
       name,
@@ -166,7 +167,6 @@ export const submitCustomerForm = async (req, res, next) => {
     }
 
     let attachments = []
-    let filePath = null
 
     const productPhoto = req.file
 
@@ -183,6 +183,7 @@ export const submitCustomerForm = async (req, res, next) => {
         fs.mkdirSync(uploadDir, { recursive: true })
       }
 
+      // Gestion des fichiers temporaires : sauvegarde de l'image :
       fs.writeFileSync(filePath, cleanImage)
 
       attachments.push({
@@ -192,19 +193,31 @@ export const submitCustomerForm = async (req, res, next) => {
     }
 
     // Vérification reCAPTCHA
-    const googleVerify = await axios.post(
-      `https://www.google.com/recaptcha/api/siteverify`,
-      null,
-      {
-        params: {
-          secret: process.env.RECAPTCHA_SECRET_KEY,
-          response: captchaToken,
+    try {
+      const googleVerify = await axios.post(
+        `https://www.google.com/recaptcha/api/siteverify`,
+        null,
+        {
+          params: {
+            secret: process.env.RECAPTCHA_SECRET_KEY,
+            response: captchaToken,
+          },
         },
-      },
-    )
+      )
 
-    if (!googleVerify.data.success) {
-      return res.status(400).json({ error: 'CAPTCHA invalide' })
+      if (!googleVerify.data.success) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'CAPTCHA invalide' })
+      }
+    } catch (err) {
+      console.error(
+        'reCAPTCHA verify failed:',
+        err?.response?.data || err.message,
+      )
+      return res.status(503).json({
+        message: 'Service CAPTCHA momentanément indisponible.',
+      })
     }
 
     await sendEmail({
@@ -221,7 +234,8 @@ export const submitCustomerForm = async (req, res, next) => {
     })
 
     return res.status(200).json({
-      msg: 'Formulaire soumis avec succès. Nous vous contacterons dès que possible. Merci pour votre confiance !',
+      message:
+        'Formulaire soumis avec succès. Nous vous contacterons dès que possible. Merci pour votre confiance !',
     })
   } catch (error) {
     console.error('Erreur lors de la soumission du formulaire:', error)
@@ -229,6 +243,20 @@ export const submitCustomerForm = async (req, res, next) => {
       error:
         'Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer plus tard.',
     })
+  } finally {
+    // Si sendEmail() échoue, le fichier reste dans uploads/private et ne sera jamais supprimé => Il serait préférable d'ajouter un nettoyage.
+    // Le finally s'exécute toujours, même s'il y a un return res.status(...).
+    if (filePath) {
+      try {
+        // Utiliser les méthodes asynchrones de Node, ce qui évite de bloquer l'event loop.
+        await fs.promises.unlink(filePath)
+      } catch (err) {
+        console.error(
+          'Erreur lors de la suppression du fichier temporaire:',
+          err,
+        )
+      }
+    }
   }
 }
 
@@ -394,8 +422,8 @@ const generatePDF = async ({
 }) => {
   try {
     console.log('VEHICULES', vehicles)
-    console.log('SHIPPING', shipping)
-    console.log('PRODUCTS', products)
+    //log('SHIPPING', shipping)
+    //console.log('PRODUCTS', products)
 
     if (products.length > 0) {
       console.log('PDF pour produits')
@@ -423,7 +451,7 @@ const generatePDF = async ({
           shipping,
           avdData,
         )
-        //console.log(`📄 PDF reçu: ${fullVehiclePDF.length} bytes`)
+        console.log(`📄 PDF reçu: ${fullVehiclePDF.length} bytes`)
         // Vérifiez que le buffer n'est pas vide
         if (!fullVehiclePDF || fullVehiclePDF.length === 0) {
           throw new Error('Buffer PDF vide')
@@ -498,7 +526,7 @@ export const createVehicleListAndAVD = async (req, res) => {
       photos,
       user,
     })
-    console.log('PDF DATA', pdf)
+    //console.log('PDF DATA', pdf)
     // 3. Envoyer le PDF fusionné
     return res
       .status(StatusCodes.OK)
