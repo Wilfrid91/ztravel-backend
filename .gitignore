@@ -4,5 +4,5 @@ server/.env
 dist/
 build/
 npm-debug.log
-yarn-error.logutils/pdf/ref.json
+yarn-error.log
 utils/pdf/ref.json
