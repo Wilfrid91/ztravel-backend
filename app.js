@@ -144,7 +144,6 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/v1/auth', authenticationRouter)
 app.use('/api/v1/business', businessAppRouter)
-//app.use('/api/v1/users', userRouter)
 app.use('/api/v1/payment', authorizationRouter)
 //app.use('/mtn', mtnCallbackRouter)
 
