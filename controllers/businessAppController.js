@@ -8,6 +8,7 @@ import CGU from '../models/CGU.js'
 import JetonImpression from '../models/JetonImpression.js'
 import UserGuideAVD from '../models/UserGuideAVD.js'
 import CheckList from '../models/Checklist.js' // replace "avantDePartir.js" model
+import FreeSimulation from '../models/freeSimulation.js'
 import { StatusCodes } from 'http-status-codes'
 
 import dotenv from 'dotenv'
@@ -30,6 +31,9 @@ import fs from 'fs'
 import console from 'console'
 import jpeg from 'jpeg-js'
 import { PNG } from 'pngjs'
+
+const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png'])
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024 // 2 Mo
 
 export const getBeforeLeaving = async (req, res, next) => {
   try {
@@ -268,47 +272,59 @@ export const submitCustomerForm = async (req, res, next) => {
  */
 export const validateUploadedProductPhoto = async (req, res, next) => {
   try {
+    // files => On peut avoir une liste de produits, donc plusieurs images
     const files = req.files
     // Aucun fichier envoyé → continuer
-    if (!files || files.length === 0) return next()
+    if (!files?.length) {
+      return next()
+    }
 
     for (const file of files) {
-      const buffer = file.buffer
+      // const { buffer, size, originalname } = file equivalent à :
+      // const buffer = file.buffer;
+      // const size = file.size
+      // const originalname = file.originalname
+      const { buffer, size, originalname } = file
 
-      // 1) Vérifier le type MIME réel
-      const type = await fileTypeFromBuffer(buffer)
-      if (!type || !['image/jpeg', 'image/png'].includes(type.mime)) {
-        return res.status(400).json({
-          msg: `Fichier ${file.originalname} non valide (type interdit)`,
+      if (size > MAX_IMAGE_SIZE) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          msg: `L'image ${originalname} dépasse 2 Mo`,
         })
       }
 
-      // 2) Vérifier que l’image est décodable par PDFKit
+      // 1) Vérifier le type MIME réel
+      const type = await fileTypeFromBuffer(buffer)
+      if (!type || !ALLOWED_MIME_TYPES.has(type.mime)) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          msg: `Fichier ${originalname} non valide`,
+        })
+      }
+
       try {
-        if (type.mime === 'image/jpeg') {
-          const decoded = jpeg.decode(buffer, { useTArray: true })
-          if (!decoded || !decoded.width) throw new Error('Invalid JPEG')
-        }
+        switch (type.mime) {
+          case 'image/jpeg':
+            jpeg.decode(buffer, { useTArray: true })
+            break
 
-        if (type.mime === 'image/png') {
-          PNG.sync.read(buffer) // throws si PNG invalide
-        }
+          case 'image/png':
+            PNG.sync.read(buffer)
+            break
 
-        // 3) Vérifier la taille
-        if (file.size > 2 * 1024 * 1024) {
-          return res.status(400).json({
-            msg: `L'image ${file.originalname} dépasse 2 Mo`,
-          })
+          default:
+            throw new Error('Unsupported image type')
         }
-      } catch (err) {
-        return res.status(400).json({
-          msg: `Image ${file.originalname} corrompue ou non décodable`,
+      } catch (error) {
+        return res.status(StatusCodes.BAD_REQUEST).json({
+          msg: `Image ${originalname} corrompue ou non décodable`,
         })
       }
     }
     next()
   } catch (error) {
     console.error(error)
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: 'Erreur lors de la validation des images',
+    })
   }
 }
 
@@ -340,46 +356,86 @@ export const getCustomsData = async (req, res, next) => {
  */
 export const createProductListAndAVD = async (req, res) => {
   // vaut undefined si l'utilisateur n'est pas authentifié
-  const userId = req.user?.userId
-  // products est attendu comme une liste (0, 1, plusieurs véhicules/produits)
-  //  → le fallback est un tableau vide [] (ou '[]' dans votre version avec le bug des quotes)
-  const products = Array.isArray(req.body.products) ? req.body.products : []
-  // shipping est attendu comme un objet unique (un seul ensemble de données : incoterm, fret, assurance, CIF, devise)
-  //  → le fallback est un objet vide {} (ou '{}' bugué).
-  const shipping =
-    req.body.shipping &&
-    typeof req.body.shipping === 'object' &&
-    !Array.isArray(req.body.shipping)
-      ? req.body.shipping
-      : {}
-
-  const photos = req.files || []
-  const user = req.user?.name || 'client'
-  const username = req.user.username
-
-  if (!userId)
-    return res.status(401).json({ message: 'Authentification requise' })
-
-  const jeton = await JetonImpression.findOneAndUpdate(
-    {
-      userId,
-      jetons_restants: { $gt: 0 }, // Vérifie qu'il reste un jeton
-    },
-    {
-      $inc: { jetons_restants: -1, nbre_impressions: 1 },
-    },
-    { new: true },
-  )
-
-  if (!jeton) {
-    return res.status(403).json({
-      message:
-        "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
-    })
-  }
-
-  // Génération PDF
+  let userId = null
+  let user = 'Invité'
+  let username = 'guest'
   try {
+    // products est attendu comme une liste (0, 1, plusieurs véhicules/produits)
+    //  → le fallback est un tableau vide [] (ou '[]' dans votre version avec le bug des quotes)
+    const products = Array.isArray(req.body.products) ? req.body.products : []
+    // shipping est attendu comme un objet unique (un seul ensemble de données : incoterm, fret, assurance, CIF, devise)
+    //  → le fallback est un objet vide {} (ou '{}' bugué).
+    const shipping =
+      req.body.shipping &&
+      typeof req.body.shipping === 'object' &&
+      !Array.isArray(req.body.shipping)
+        ? req.body.shipping
+        : {}
+
+    const photos = req.files || []
+
+    /*
+    console.log('IS GUEST IN PRODUCT: ', req.isGuest)
+    if (req.isGuest) {
+      const simulation = await FreeSimulation.findOne({
+        anonymId: req.guest.anonymId,
+      })
+      console.log('Simulation trouvée', simulation)
+      console.log(
+        'Simulation value: ',
+        !simulation || simulation.freeSimulationUsed,
+      )
+      if (!simulation || simulation.freeSimulationUsed) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          error: 'Simulation gratuite déjà utilisée',
+        })
+      }
+      simulation.freeSimulationUsed = true
+      console.log('Simulation mise à jour')
+      await simulation.save()
+      console.log('Simulation data', simulation)*/
+
+    console.log('IS GUEST IN PRODUCT: ', req.guestSimulation)
+    //  Consommation atomique
+    if (req.guestSimulation) {
+      const result = await FreeSimulation.updateOne(
+        { _id: req.guestSimulation._id, freeSimulationUsed: false }, // ne consomme QUE si pas déjà consommé
+        { $set: { freeSimulationUsed: true } },
+      )
+      if (result.modifiedCount === 0) {
+        // Consommé entre-temps (double onglet, requête parallèle...) → refuser
+        return res.status(StatusCodes.FORBIDDEN).json({
+          error:
+            'Simulation gratuite déjà utilisée. Créez un compte pour continuer.',
+        })
+      }
+    } else {
+      userId = req.user?.userId
+      user = req.user?.name || 'client'
+      username = req.user.username
+      if (!userId) {
+        return res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ message: 'Authentification requise' })
+      }
+      const jeton = await JetonImpression.findOneAndUpdate(
+        {
+          userId,
+          jetons_restants: { $gt: 0 }, // Vérifie qu'il reste un jeton
+        },
+        {
+          $inc: { jetons_restants: -1, nbre_impressions: 1 },
+        },
+        { new: true },
+      )
+
+      if (!jeton) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          message:
+            "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
+        })
+      }
+    } //else
     const pdf = await generatePDF({
       products,
       shipping,
@@ -395,14 +451,14 @@ export const createProductListAndAVD = async (req, res) => {
       })
       .end(pdf)
   } catch (error) {
-    console.error('Erreur PDF:', error)
+    console.error("Erreur PDF pendant la génération de l'AVD:", error)
 
-    // 4) ROLLBACK jeton si erreur
+    // ROLLBACK jeton si erreur
     await JetonImpression.updateOne(
       { userId },
       { $inc: { jetons_restants: +1 } },
     )
-    return res.status(500).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       message:
         "Erreur lors de la génération du PDF. Aucun jeton n'a été consommé.",
     })
@@ -418,7 +474,6 @@ const generatePDF = async ({
   vehicles = [],
   shipping = {},
   photos = [],
-  user,
 }) => {
   try {
     console.log('VEHICULES', vehicles)
@@ -475,13 +530,10 @@ const generatePDF = async ({
  * @param {*} res
  */
 export const createVehicleListAndAVD = async (req, res) => {
+  let userId = null
+  let user = 'Invité'
+  let username = 'guest'
   try {
-    const userId = req.user?.userId
-    const user = req.user?.name || 'client'
-    const username = req.user.username
-    if (!userId)
-      return res.status(401).json({ message: 'Authentification requise' })
-
     // vehicles sont optionnels
     const vehicles = Array.isArray(req.body.vehicles) ? req.body.vehicles : []
     const shipping =
@@ -492,32 +544,86 @@ export const createVehicleListAndAVD = async (req, res) => {
         : {}
     const photos = req.files || []
 
-    // Trouve un document correspondant à userId dans la collection JetonImpression et mets-le à jour en même temps.
-    const jeton = await JetonImpression.findOneAndUpdate(
-      {
-        userId,
-        // $gt = “greater than” → “strictement supérieur à 0” => Vérifie qu'il reste un jeton
-        // Trouve le document du user X qui a encore des jetons disponibles.
-        jetons_restants: { $gt: 0 },
-      },
-      {
-        // $inc : incrémente/décrémente des champs numériques.
-        // On décrémente jetons_restants de 1 → on consomme un jeton.
-        // On incrémente nbre_impressions de 1 → on compte une impression de plus.
-        $inc: { jetons_restants: -1, nbre_impressions: 1 },
-      },
-      {
-        // Renvoie-moi le document après la mise à jour.
-        // Donc jeton contient les valeurs à jour (jetons_restants décrémenté, nbre_impressions incrémenté).
-        new: true,
-      },
-    )
+    //console.log('SHIPPING', Object.keys(req.body.shipping))
+    console.log('IS GUEST IN VEHICLE: ', req.isGuest)
+    /*if (req.isGuest) {
+      **
+       * simulation = {
+          anonymId: '123',
+          freeSimulationUsed: false
+          }
 
-    if (!jeton) {
-      return res.status(403).json({
-        message:
-          "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
+      const simulation = await FreeSimulation.findOne({
+        anonymId: req.guest.anonymId,
       })
+
+      console.log('Simulation trouvée', simulation)
+
+      // simulation || simulation.freeSimulationUsed => True || false => true
+      // Pas encore simulé
+      if (!simulation || simulation.freeSimulationUsed) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          error: 'Simulation gratuite déjà utilisée',
+        })
+      }
+      simulation.freeSimulationUsed = true
+      console.log('Simulation mise à jour')
+      await simulation.save()
+      console.log('Simulation data', simulation)
+    }*/
+    console.log('IS GUEST IN VEHICLE: ', req.guestSimulation)
+    if (req.guestSimulation) {
+      const result = await FreeSimulation.updateOne(
+        { _id: req.guestSimulation._id, freeSimulationUsed: false }, // ne consomme QUE si pas déjà consommé
+        { $set: { freeSimulationUsed: true } },
+      )
+      if (result.modifiedCount === 0) {
+        // Consommé entre-temps (double onglet, requête parallèle...) → refuser
+        return res.status(StatusCodes.FORBIDDEN).json({
+          error:
+            'Simulation gratuite déjà utilisée. Créez un compte pour continuer.',
+        })
+      }
+    } else {
+      console.log('req.user=', req.user)
+      console.log('req.guest=', req.guest)
+
+      userId = req.user?.userId
+      user = req.user?.name || 'client'
+      username = req.user.username
+      if (!userId) {
+        return res
+          .status(StatusCodes.UNAUTHORIZED)
+          .json({ message: 'Authentification requise' })
+      }
+
+      // Trouve un document correspondant à userId dans la collection JetonImpression et mets-le à jour en même temps.
+      const jeton = await JetonImpression.findOneAndUpdate(
+        {
+          userId,
+          // $gt = “greater than” → “strictement supérieur à 0” => Vérifie qu'il reste un jeton
+          // Trouve le document du user X qui a encore des jetons disponibles.
+          jetons_restants: { $gt: 0 },
+        },
+        {
+          // $inc : incrémente/décrémente des champs numériques.
+          // On décrémente jetons_restants de 1 → on consomme un jeton.
+          // On incrémente nbre_impressions de 1 → on compte une impression de plus.
+          $inc: { jetons_restants: -1, nbre_impressions: 1 },
+        },
+        {
+          // Renvoie-moi le document après la mise à jour.
+          // Donc jeton contient les valeurs à jour (jetons_restants décrémenté, nbre_impressions incrémenté).
+          new: true,
+        },
+      )
+
+      if (!jeton) {
+        return res.status(StatusCodes.FORBIDDEN).json({
+          message:
+            "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
+        })
+      }
     }
 
     const pdf = await generatePDF({
@@ -535,7 +641,21 @@ export const createVehicleListAndAVD = async (req, res) => {
         'Content-Disposition': `attachment; filename=AVD_${username}.pdf`,
       })
       .end(pdf)
-  } catch (error) {}
+  } catch (err) {
+    console.error(
+      "Erreur lors de Genèration PDF, etc... de l'attestation de validation documentaire:",
+      err,
+    )
+    // 4.) ROLLBACK jeton si erreur
+    await JetonImpression.updateOne(
+      { userId },
+      { $inc: { jetons_restants: +1 } },
+    )
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      message:
+        "Erreur lors de la génération du PDF. Aucun jeton n'a été consommé.",
+    })
+  }
 }
 
 /**
@@ -566,7 +686,7 @@ export const generateCGU = async (req, res, next) => {
  */
 export const submitJacceptCheckedStatus = async (req, res) => {
   try {
-    const userId = req.user.userId
+    const userId = req.user?.userId
 
     // attend un filtre + un update
     const acknowledge = await User.findByIdAndUpdate(
@@ -700,5 +820,49 @@ export const getSimulatorTab3 = async (req, res, next) => {
   } catch (error) {
     console.log(error)
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: error.message })
+  }
+}
+
+/**
+ * Get the available token for printing purpose.
+ * When the token is null, customer should pay again
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+export const checkCustomerToken = async (req, res, next) => {
+  const userId = req.user?.userId
+  try {
+    if (!userId) {
+      return res
+        .status(StatusCodes.UNAUTHORIZED)
+        .json({ error: 'Utilisateur non authentifié' })
+    }
+    // consultation de la base de données
+    //let jeton = await JetonImpression.findOne({ userId })
+
+    const jeton = await JetonImpression.findOne({
+      userId,
+      jetons_restants: { $gt: 0 }, // Vérifie qu'il reste un jeton
+    })
+
+    console.log('Nombre de jetons disponible=', jeton)
+
+    if (!jeton) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        message:
+          "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
+      })
+    }
+
+    return res.status(StatusCodes.OK).json({
+      message: 'Jeton disponible. Vous pouvez imprimer',
+      jeton,
+    })
+  } catch (error) {
+    console.error('checkCustomerToken :', error)
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'Erreur lors de la vérification des jetons' })
   }
 }

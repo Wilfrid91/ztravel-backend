@@ -55,6 +55,7 @@ import authorizationRouter from './routes/authorizationRoutes.js'
 import businessAppRouter from './routes/businessAppRoutes.js'
 import mtnCallbackRouter from './routes/mtnAppRoutes.js'
 import fedaPayCallbackRouter from './routes/FedaPayCallbackRoutes.js'
+import freemiumRouter from './routes/freemuimRoutes.js'
 
 // DB
 import connectDB from './db/connect.js'
@@ -85,7 +86,7 @@ app.use(
 
 app.use(sanitizeXSS) // Contre le XSS dans les champs utilisateur.
 // HTTP Parameter Pollution - Attaquant evoie: email=admin@example.com&email=hacker@evil.com
-// req.body.email = ['admin@example.com', 'hacker@evil.com'] => Compare un string = un tablea= => faux
+// req.body.email = ['admin@example.com', 'hacker@evil.com'] => Compare un string = un tableau => faux
 app.use(hpp())
 // express‑rate‑limit → “X‑Forwarded‑For header… trust proxy = false”
 // Obligatoire pour rate-limit
@@ -142,9 +143,11 @@ app.use((req, res, next) => {
 })
 
 // Routes
+app.use('/api/v1/freemium', freemiumRouter)
 app.use('/api/v1/auth', authenticationRouter)
 app.use('/api/v1/business', businessAppRouter)
 app.use('/api/v1/payment', authorizationRouter)
+
 //app.use('/mtn', mtnCallbackRouter)
 
 const startDbAndServer = async () => {

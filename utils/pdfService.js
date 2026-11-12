@@ -1,5 +1,4 @@
 import jaroWinkler from 'jaro-winkler'
-import { PDFDocument as PDFLibDocument } from 'pdf-lib'
 import { PassThrough } from 'stream'
 import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
@@ -7,7 +6,7 @@ const { PDFDocumentWithTables } = require('pdfkit-table') // Classe étendue de 
 
 import sharp from 'sharp'
 import removeAccents from 'remove-accents'
-import { loadCodeSHCache } from './loadCodeSHCache.js'
+import { loadCodeSHCache, getIdfIndex } from './loadCodeSHCache.js'
 
 // Elle supprime les mots grammaticaux inutiles
 const STOPWORDS = [
@@ -306,30 +305,12 @@ function normalize(text) {
     .trim()
 }
 
-/*Similarité Jaro‑Winkler (version simple)*/
-// Scoring Jaro-Winkler
-// Scoring Jaro-Winkler
+// Précalculé une fois sur tout le cache (pas à chaque requête !)
+/**
+ *
+ * @returns Tous les mots pèsent pareil : "pneumatiques" et "neufs" valent 5 points chacun. Or "neufs", "types", "utilises" apparaissent dans des centaines d'entrées SH. Ce sont les mots rares et spécifiques qui doivent peser lourd (moturation, porcine, engins...). C'est exactement le rôle d'un poids IDF.
+ */
 /*
-function computeScore(productDescription, codeDescription) {
-  if (!productDescription || !codeDescription) return
-  const pWords = extractKeywords(productDescription)
-  const dWords = extractKeywords(codeDescription)
-
-  let score = 0
-
-  for (const w1 of pWords) {
-    for (const w2 of dWords) {
-      const s = jaroWinkler(w1, w2)
-
-      if (s >= 0.9) score += 5
-      else if (s >= 0.8) score += 3
-      else if (s >= 0.7) score += 1
-    }
-  }
-
-  return score
-}*/
-
 function computeScore(productDescription, codeDescription) {
   if (!productDescription || !codeDescription) return 0
 
@@ -360,76 +341,60 @@ function computeScore(productDescription, codeDescription) {
   }
 
   return score
+} */
+
+function computeScore(productDescription, codeDescription, idf) {
+  if (!productDescription || !codeDescription) return 0
+
+  const pWords = extractKeywords(productDescription)
+  const dWords = new Set(extractKeywords(codeDescription))
+
+  const weightOf = (w) => idf?.get(w) ?? 1 // fallback si pas d'IDF
+
+  let score = 0
+  let matchedProductWeight = 0
+  let totalProductWeight = 0
+
+  for (const w1 of pWords) {
+    const w1Weight = weightOf(w1)
+    totalProductWeight += w1Weight
+
+    let bestMatch = 0
+    for (const w2 of dWords) {
+      bestMatch = Math.max(bestMatch, jaroWinkler(w1, w2))
+    }
+
+    if (bestMatch >= 0.9) {
+      score += 5 * w1Weight
+      matchedProductWeight += w1Weight
+    } else if (bestMatch >= 0.8) {
+      score += 3 * w1Weight
+      matchedProductWeight += w1Weight
+    } else if (bestMatch >= 0.7) {
+      score += 1 * w1Weight
+    }
+  }
+
+  // Sens inverse : les mots rares du code SH doivent être couverts
+  /*let matchedCodeWeight = 0
+  let totalCodeWeight = 0
+
+  for (const w2 of dWords) {
+    const w2Weight = weightOf(w2)
+    totalCodeWeight += w2Weight
+
+    const covered = pWords.some((w1) => jaroWinkler(w1, w2) >= 0.8)
+    if (covered) matchedCodeWeight += w2Weight
+  }*/
+
+  // Couverture : quel poids des mots du produit a été retrouvé ?
+  const coverage =
+    totalProductWeight > 0 ? matchedProductWeight / totalProductWeight : 0
+
+  // Pénalité si le code ne couvre que peu de mots du produit
+  return score * (0.5 + 0.5 * coverage)
+  //return score * (0.6 + 0.4 * coverage)
 }
-
-/*
-export const findBestCodeSH = async (productDescription) => {
-  const keywords = extractKeywords(productDescription)
-  if (keywords.length === 0) return null
-
-  const main = keywords[0]
-
-  // Charger le cache
-  const cache = await loadCodeSHCache()
-
-  console.log('Nombre de codes SH :', cache.length)
-
-  console.log('Exemples de codes SH :', cache.slice(0, 10))
-
-  console.log(
-    "Codes concernant l'aluminium :",
-    cache.filter((item) =>
-      /aluminium|aluminum|tubes et tuyaux/i.test(item.description || ''),
-    ),
-  )
-
-  // Récupérer les synonymes si disponibles
-  const searchTerms = SYNONYMS[main] || [main]
-
-  let candidates = []
-
-  // 1. Match principal (singulier/pluriel)
-  candidates = cache.filter((c) =>
-    searchTerms.some((t) => new RegExp(`\\b${t}\\b`, 'i').test(c.description)),
-  )
-
-  console.log('Candidats match principal:', candidates.length)
-
-  // 2. Match par mots clés (OR)
-  if (candidates.length === 0) {
-    console.log(`Aucun match direct pour "${main}", recherche par mots clés...`)
-
-    candidates = cache.filter((c) =>
-      keywords.some((k) => new RegExp(`\\b${k}\\b`, 'i').test(c.description)),
-    )
-  }
-
-  // 3. Aucun match → stop
-  if (candidates.length === 0) {
-    console.log(`Aucun match même par mots clés pour "${productDescription}"`)
-    return null
-  }
-
-  console.log(`Nombre de candidats trouvés: ${candidates.length}`)
-
-  // 4. Scoring
-  const scored = candidates.map((c) => ({
-    ...c,
-    score: computeScore(productDescription, c.description),
-  }))
-
-  // 5. Meilleur score
-  const best = scored.sort((a, b) => b.score - a.score)[0]
-
-  console.log(
-    `Meilleur candidat: ${best.code} (${best.description}) - Score: ${best.score}`,
-  )
-
-  // 6. Seuil de confiance
-  if (!best || best.score < 2) return null
-
-  return best
-}*/
 
 export const findBestCodeSH = async (productDescription) => {
   if (!productDescription?.trim()) return null
@@ -449,17 +414,17 @@ export const findBestCodeSH = async (productDescription) => {
   if (!keywords.length) return null
 
   const cache = await loadCodeSHCache()
+  const idf = getIdfIndex() // déjà prêt, coût nul
 
-  console.log('Nombre de codes SH :', cache.length)
+  //console.log('Nombre de codes SH :', cache.length)
+  //console.log('Exemples de codes SH :', cache.slice(0, 10))
 
-  console.log('Exemples de codes SH :', cache.slice(0, 10))
-
-  console.log(
+  /*console.log(
     "Codes concernant l'aluminium :",
     cache.filter((item) =>
       /aluminium|aluminum|tubes et tuyaux/i.test(item.description || ''),
     ),
-  )
+  )*/
 
   if (!Array.isArray(cache) || cache.length === 0) {
     return null
@@ -471,7 +436,7 @@ export const findBestCodeSH = async (productDescription) => {
     .map((item) => {
       const candidateDescription = normalize(item.description)
 
-      const score = computeScore(description, candidateDescription)
+      const score = computeScore(description, candidateDescription, idf)
 
       // Bonus de cohérence pour les termes importants.
       const keywordMatches = keywords.filter((keyword) =>
@@ -520,76 +485,6 @@ export const findBestCodeSH = async (productDescription) => {
   }
 }
 
-/*
-function normalizeText(text) {
-  return removeAccents(text.toLowerCase())
-    .replace(/[^a-z0-9 ]/g, ' ')
-    .split(' ')
-    .filter((w) => w.length > 2 && !STOP_WORDS.includes(w))
-}
-
-function levenshtein(a, b) {
-  if (!a || !b) return 999
-
-  const matrix = []
-
-  for (let i = 0; i <= b.length; i++) matrix[i] = [i]
-  for (let j = 0; j <= a.length; j++) matrix[0][j] = j
-
-  for (let i = 1; i <= b.length; i++) {
-    for (let j = 1; j <= a.length; j++) {
-      if (b[i - 1] === a[j - 1]) {
-        matrix[i][j] = matrix[i - 1][j - 1]
-      } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + 1,
-        )
-      }
-    }
-  }
-
-  return matrix[b.length][a.length]
-}
-
-export const findBestCodeSH = async (productDescription) => {
-  console.log('🔍 Produit :', productDescription)
-
-  const keywords = normalizeText(productDescription)
-
-  const allCodes = await CodeSH.find({})
-  console.log('📦 Codes SH trouvés :', allCodes.length)
-
-  const scored = allCodes.map((code) => {
-    const descWords = normalizeText(code.description)
-
-    let score = 0
-
-    for (const word of keywords) {
-      if (descWords.includes(word)) {
-        score += 2
-      } else {
-        for (const d of descWords) {
-          if (levenshtein(word, d) <= 2) {
-            score += 1
-            break
-          }
-        }
-      }
-    }
-
-    return { ...code._doc, score }
-  })
-
-  const best = scored.sort((a, b) => b.score - a.score)[0]
-  console.log('🏆 Best match :', best)
-
-  if (!best || best.score < 2) return null
-
-  return best
-}
-*/
 function computeArticleTaxes(productValueCFA, codeSH) {
   const {
     tauxPCS,

@@ -9,6 +9,7 @@ import {
   logout,
   register,
   verifyEmail,
+  refreshTokenHandler,
 } from '../controllers/userAuthentication.js'
 
 import {
@@ -33,24 +34,23 @@ import {
 } from '../validators/authenticationValidator.js'
 
 import { validate } from '../middleware/validate.js'
-
 import { loginLimiter, registerLimiter } from '../middleware/rateLimiter.js'
-
 import { trackVisit } from '../middleware/trackVisit.js'
 
 const router = Router()
 
 // Register
 router.post('/register', registerLimiter, registerValidator, validate, register)
-
 // Login
 router.post('/login', loginLimiter, loginValidator, validate, login)
-
 // Logout
 router.delete('/logout', authenticateUser, logout)
-
 // Verify email
 router.post('/verify-email', verifyEmailValidator, validate, verifyEmail)
+
+// refresh - to be used wuth refreshTone later
+// Backend : api/v1/auth/refresh => voir axiosInstance.js
+router.post('/refresh', validate, refreshTokenHandler)
 
 /**
  * Enregistrer une visite

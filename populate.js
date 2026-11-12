@@ -125,9 +125,9 @@ const importData = async () => {
     await CGU.create(jsonCGU)
 
     // Remove all existing products
-    //await codeSHModel.deleteMany()
+    await codeSHModel.deleteMany()
     // Insert new products
-    //await codeSHModel.create(codeSHjsonData)
+    await codeSHModel.create(codeSHjsonData)
 
     // Remove all existing products
     await douaneModel.deleteMany()

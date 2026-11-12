@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 /* The goal of this file is to generate a token to be sent to the user when he has forgotten his password */
 const TokenSchema = new mongoose.Schema(
   {
-    refreshToken: { type: String, required: true },
+    refreshToken: { type: String, required: false }, // to enable with subscription later
     ip: { type: String, required: true },
     userAgent: { type: String, required: true },
     isValid: { type: Boolean, default: true },

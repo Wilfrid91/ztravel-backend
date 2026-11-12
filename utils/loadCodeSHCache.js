@@ -1,5 +1,6 @@
 import CodeSH from '../models/CodeSH.js'
-let CODE_SH_CACHE = null
+let CODE_SH_CACHE = null // Cache est déjà mémoïser via CODE_SH_CACHE.
+let IDF_INDEX = null
 
 export async function loadCodeSHCache() {
   if (!CODE_SH_CACHE) {
@@ -8,3 +9,5 @@ export async function loadCodeSHCache() {
   }
   return CODE_SH_CACHE
 }
+
+export const getIdfIndex = () => IDF_INDEX

@@ -127,7 +127,7 @@ export const refundMomoMTN = async (req, res) => {
     return res.status(400).json({ error: 'payload manquant' })
   }
   console.log(payload)
-  const userId = req.user.userId
+  const userId = req.user?.userId
 
   try {
     // 1 - Generation du UUID
@@ -523,7 +523,7 @@ export const printRefundReceipt = async (req, res) => {
  */
 export const refundFedaPay = async (req, res) => {
   try {
-    const userId = req.user.userId
+    const userId = req.user?.userId
     const refundReferenceId = crypto.randomUUID() // ou votre fonction referenceId()
     const { amount, payerMessage, transactionId, currency } = req.body.payload
 

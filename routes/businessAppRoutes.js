@@ -7,13 +7,15 @@ const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 2 * 1024 * 1024 }, // 2 Mo max
 })
-export const uploadSecure = upload.single('productPhoto')
+
+export const uploadSecure = upload.single('Photo-de-produits')
 
 // Pour le pdf à changer après
 const uploadProductPhoto = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: 2 * 1024 * 1024 }, // 2 Mo max
 })
+
 export const uploadPdfFiles = uploadProductPhoto.any()
 
 import {
@@ -33,21 +35,17 @@ import {
   validateUploadedPhoto,
   validateUploadedProductPhoto,
   createVehicleListAndAVD,
+  checkCustomerToken,
 } from '../controllers/businessAppController.js'
 
 import { vehicleValidator } from '../validators/vehicleValidator.js'
-
 import { validate } from '../middleware/validate.js'
-
 import { parseVehicleRequest } from '../middleware/parseVehicleRequest.js'
-
 import { productValidator } from '../validators/productValidator.js'
-
 import { shippingValidator } from '../validators/shippingValidator.js'
-
 import { parseProductRequest } from '../middleware/parseProductRequest.js'
-
 import { contactValidator } from '../validators/contactValidator.js'
+import { consumeGuestSimulation } from '../middleware/consumeGuestSimulation.js'
 
 const router = Router()
 
@@ -68,6 +66,7 @@ router.post(
   authenticateUser,
   submitCustomerForm,
 ) //  SoumissionFormulaire,
+
 router.post(
   '/product/generatepdf',
   uploadPdfFiles,
@@ -95,6 +94,7 @@ router.post(
   ...shippingValidator, // Décompose le tableau en fonctions individuelles =>  TABLEAU de fonctions middleware
   validate,
   authenticateUser,
+  consumeGuestSimulation,
   createProductListAndAVD,
 ) //  generatePdf,
 
@@ -128,6 +128,7 @@ router.post(
   ...vehicleValidator,
   validate,
   authenticateUser,
+  consumeGuestSimulation,
   createVehicleListAndAVD,
 )
 
@@ -136,5 +137,7 @@ router.get('/check-cgu', authenticateUser, isCustomerConsent) //  Si l'utilisate
 router.get('/simulator-page', authenticateUser, simulatorPage) //  La page de simulation
 /* Récupère le user guide*/
 router.get('/user-guide', authenticateUser, getUserGuide)
+/* Verifie le nombre de jeton disponible pour l''impression*/
+router.get('/customer-token', authenticateUser, checkCustomerToken)
 
 export default router

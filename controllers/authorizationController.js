@@ -40,20 +40,23 @@ const s3 = new S3Client({
 export const momoAuthorizationRequest = async (req, res) => {
   const { payload } = req.body
   if (!payload) {
-    return res.status(400).json({ error: 'payload manquant' })
+    return res
+      .status(StatusCodes.BAD_REQUEST)
+      .json({ error: 'payload manquant' })
   }
 
-  const userId = req.user.userId
+  const userId = req.user?.userId
   const type = 'MTN_MOMO'
 
   try {
     // 1) Ajouter la carte
-    const paymentMethod = await PaymentMethod.findOneAndUpdate(
+    await PaymentMethod.findOneAndUpdate(
       { userId }, // critère
       {
         type,
       },
-      { new: true, upsert: true }, // upsert = update + insert - Si aucun document ne correspond → MongoDB crée un nouveau document
+      // // upsert = update + insert - Si aucun document ne correspond → MongoDB crée un nouveau document
+      { new: true, upsert: true },
     )
 
     const referenceId = generateUUID()
@@ -63,7 +66,7 @@ export const momoAuthorizationRequest = async (req, res) => {
       process.env.MTN_MOMO_SUB_KEY_REST,
     )
 
-    console.log('TOKEN DATA >>>>>>', tokenData)
+    //console.log('TOKEN DATA >>>>>>', tokenData)
 
     if (!tokenData.success) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -94,7 +97,7 @@ export const momoAuthorizationRequest = async (req, res) => {
     const externalId = `${userId}-${Date.now()}`
 
     // 2️⃣  Payment Request to MOMO
-    const mtnResponse = await axios.post(
+    await axios.post(
       `${process.env.MTN_MOMO_BASE_URL}/collection/v1_0/requesttopay`,
       {
         currency,
@@ -118,12 +121,12 @@ export const momoAuthorizationRequest = async (req, res) => {
       },
     )
 
-    console.log('MTN RESPONSE >>>>>>', mtnResponse)
+    //console.log('MTN RESPONSE >>>>>>', mtnResponse)
     // IMPORTANT: Attendre 2-3 secondes avant de vérifier le statut
     // MTN a besoin de temps pour traiter la transaction
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
-    // 3️⃣ Response sent to PaymentForm
+    // 3️⃣ Response sent to MobileMoneyMtn.jsx
     return res.status(StatusCodes.OK).json({
       success: true,
       referenceId,
@@ -139,7 +142,7 @@ export const momoAuthorizationRequest = async (req, res) => {
     console.log('➡️ error.config?.headers =', error.config?.headers)
     console.log('➡️ error.config?.data =', error.config?.data)
 
-    return res.status(500).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       message: 'Erreur lors du requestToPay',
       details: error.response?.data || error.message,
@@ -193,7 +196,7 @@ export const getMomoToken = async (tender, tenderKey) => {
  */
 export const getRequestToPayTransactionStatus = async (req, res) => {
   const { referenceId } = req.params
-  const userId = req.user.userId
+  const userId = req.user?.userId
 
   if (!req.user) {
     return res
@@ -300,10 +303,8 @@ export const getRequestToPayTransactionStatus = async (req, res) => {
 export const generateMomoMchtAndCustCopy = async (req, res) => {
   const { referenceId } = req.params
 
-  console.log('USENAME>>>>>>>>>>>>>', req.user)
-
-  const client = req.user.nom
-  console.log('REFERENCE ID REÇU DU FRONT REACT =', referenceId)
+  //console.log('USENAME>>>>>>>>>>>>>', req.user)
+  //console.log('REFERENCE ID REÇU DU FRONT REACT =', referenceId)
 
   if (!req.user) {
     return res
@@ -331,7 +332,7 @@ export const generateMomoMchtAndCustCopy = async (req, res) => {
 
     const accessToken = tokenData.accessToken
 
-    console.log(`Appel MTN pour referenceId: ${referenceId}`)
+    //console.log(`Appel MTN pour referenceId: ${referenceId}`)
 
     const response = await axios.get(
       `${process.env.MTN_MOMO_BASE_URL}/collection/v1_0/requesttopay/${referenceId}`,
@@ -344,7 +345,7 @@ export const generateMomoMchtAndCustCopy = async (req, res) => {
       },
     )
 
-    console.log('MOMO RESPONSE = >>>>>>>>>>>', response.data)
+    //console.log('MOMO RESPONSE = >>>>>>>>>>>', response.data)
 
     const transaction = await Transaction.findOneAndUpdate(
       { referenceId },
@@ -383,7 +384,7 @@ export const generateMomoMchtAndCustCopy = async (req, res) => {
         signature,
       }
       // Vérifiez que toBuffer existe
-      console.log('QRCode.toBuffer existe:', typeof QRCode.toBuffer)
+      //console.log('QRCode.toBuffer existe:', typeof QRCode.toBuffer)
 
       const qrString = JSON.stringify(qrObject)
 
@@ -393,7 +394,7 @@ export const generateMomoMchtAndCustCopy = async (req, res) => {
         errorCorrectionLevel: 'M',
       })
 
-      console.log('QR code généré, taille:', qrcode.length)
+      //console.log('QR code généré, taille:', qrcode.length)
 
       // Vérification que c'est un buffer valide
       if (!qrcode || qrcode.length < 100) {
@@ -406,21 +407,6 @@ export const generateMomoMchtAndCustCopy = async (req, res) => {
         'client',
         qrcode,
       )
-
-      //console.log('PDF BUFFER=', pdfBuffer.length)
-      //console.log(Buffer.isBuffer(pdfBuffer))
-      //fs.writeFileSync('test.pdf', pdfBuffer)
-
-      /*const upload = await s3.send(
-        new PutObjectCommand({
-          Bucket: process.env.HETZNER_BUCKET,
-          Key: `receipts/${transaction.id}.pdf`,
-          Body: pdfBuffer,
-          ContentType: 'application/pdf',
-          ACL: 'public-read', // si tu veux un lien public
-        }),
-      )
-      console.log(upload)*/
 
       // BusinessMainApp, line 427
       return res
@@ -464,9 +450,10 @@ export const generateMomoMchtAndCustCopy = async (req, res) => {
 
       return res.status(StatusCodes.OK).json({
         status: 'SUCCESS',
-        message: 'PDF envoyé au client',
+        message: 'ticket pdf envoyé au client',
         pdfBase64: pdfBuffer.toString('base64'), // Le client pourra décoder
         pdfSize: pdfBuffer.length,
+        firstName,
       })
     }
   } catch (error) {
@@ -520,7 +507,13 @@ export const createFedaPayTransaction = async (req, res) => {
     req.connection.remoteAddress ||
     req.socket.remoteAddress
 
-  const userId = req.user.userId
+  const userId = req.user?.userId
+  if (!userId) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ message: 'Authentification requise' })
+  }
+
   const type = 'MOMO_TEST'
   try {
     // 1) Ajouter la carte
@@ -634,11 +627,11 @@ export const fedaPaySaleCallback = async (req, res) => {
     // Donc quand tu fais la redirection GET → tu n’as pas encore le statut → tu rediriges vers /payment-error
 
     if (req.method === 'GET') {
-      console.log('GET reçu (retour utilisateur)')
+      //console.log('GET reçu (retour utilisateur)')
 
       // FedaPay renvoie souvent ?id=xxxx ou ?reference=xxxx
       const transactionId = req.query.id // FedaPay envoie TOUJOURS ?id=xxxx
-      console.log("(req.method === 'GET'): ", transactionId)
+      //console.log("(req.method === 'GET'): ", transactionId)
 
       // Toujours rediriger vers une page "processing"
       return res.redirect(
@@ -655,7 +648,7 @@ export const fedaPaySaleCallback = async (req, res) => {
     // transaction.created : contient : custom_metadata.userId ← le seul endroit où il existe
     // On stocke juste userId pour fetcher les jetons
     if (event.name === 'transaction.created') {
-      console.log('Webhook FedaPay vérifié :', event.name)
+      //console.log('Webhook FedaPay vérifié :', event.name)
 
       const metadata = event.entity.custom_metadata || {}
       const userId = metadata.userId
@@ -670,7 +663,7 @@ export const fedaPaySaleCallback = async (req, res) => {
 
     // On ne traite que les paiements approuvés
     if (event.name !== 'transaction.approved') {
-      console.log('Événement ignoré :', event.name)
+      //console.log('Événement ignoré :', event.name)
       // Même si tu as une erreur interne (tu logs, mais tu renvoies 200)
       // Parce que si tu ne renvoies pas 200, FedaPay considère que le webhook a échoué, je dois le renvoyer.”
       return res.status(200).json({ received: true })
@@ -683,8 +676,7 @@ export const fedaPaySaleCallback = async (req, res) => {
     const userId = metadata.userId
     const paymentMethod = event.entity?.payment_method
     const paymentSource = event.entity?.payment_source
-    console.log(transactionId)
-
+    //console.log(transactionId)
     //console.log('ISSUER ID METADATA=', transactionId)
 
     if (!userId) {
@@ -715,7 +707,7 @@ export const fedaPaySaleCallback = async (req, res) => {
       { upsert: true, new: true },
     )
 
-    console.log('Paiement validé pour userId:', userId)
+    //console.log('Paiement validé pour userId:', userId)
 
     // Vérification du statut réel MTN MoMo
     //const status = await checkFedaPayStatus(transactionId)
@@ -735,7 +727,7 @@ export const fedaPaySaleCallback = async (req, res) => {
       await jeton.save()
     }
 
-    console.log('🎉 Jetons ajoutés avec succès !')
+    //console.log('🎉 Jetons ajoutés avec succès !')
 
     return res.status(200).json({ received: true })
   } catch (error) {
@@ -832,7 +824,7 @@ export const checkFedaPayStatus = async (transactionId) => {
 
 export const checkFedaPayTransactionStatus = async (req, res) => {
   const { transactionId } = req.params
-  console.log(transactionId)
+  //console.log(transactionId)
 
   if (!transactionId) {
     return res
@@ -859,7 +851,7 @@ export const checkFedaPayTransactionStatus = async (req, res) => {
 }
 
 export const sendEmailToCustomer = async (req, res) => {
-  console.log('Je suis dans sendEmailToCustomer')
+  //console.log('Je suis dans sendEmailToCustomer')
 
   try {
     const { referenceId } = req.body
@@ -898,7 +890,7 @@ export const sendEmailToCustomer = async (req, res) => {
         signature,
       }
       // Vérifiez que toBuffer existe
-      console.log('QRCode.toBuffer existe:', typeof QRCode.toBuffer)
+      //console.log('QRCode.toBuffer existe:', typeof QRCode.toBuffer)
 
       const qrString = JSON.stringify(qrObject)
 
@@ -908,7 +900,7 @@ export const sendEmailToCustomer = async (req, res) => {
         errorCorrectionLevel: 'M',
       })
 
-      console.log('QR code généré, taille:', qrcode.length)
+      //console.log('QR code généré, taille:', qrcode.length)
 
       // Vérification que c'est un buffer valide
       if (!qrcode || qrcode.length < 100) {
@@ -1012,7 +1004,7 @@ export const getUserPaymentData = async (req, res) => {
       (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
     )
 
-    console.log(normalizedTransactions)
+    //console.log(normalizedTransactions)
     return res.status(200).json(normalizedTransactions)
   } catch (error) {
     console.error('Erreur getUserPaymentData:', error)
@@ -1042,7 +1034,7 @@ export const getUserPrintingToken = async (req, res) => {
  */
 export const getSubscriptionStatus = async (req, res) => {
   try {
-    const userId = req.user.userId
+    const userId = req.user?.userId
     // -1 = tri décroissant, donc le plus récent abonnement (celui qui expire le plus tard) arrive en premier
     const sub = await Subscription.findOne({ userId }).sort({ endDate: -1 })
 
@@ -1174,7 +1166,7 @@ const generateFedaPayTicket = async (referenceId) => {
       // =====================================================
       // EN-TÊTE : LOGO ET INFORMATIONS DE L'ENTREPRISE
       // =====================================================
-      console.log('Logo existe:', fs.existsSync('assets/logo.png'))
+      //console.log('Logo existe:', fs.existsSync('assets/logo.png'))
 
       doc.image('assets/logo.png', 40, 20, {
         width: 70,

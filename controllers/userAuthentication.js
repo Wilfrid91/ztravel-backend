@@ -4,7 +4,10 @@ import Token from '../models/Token.js'
 import crypto from 'crypto'
 import createTokenUser from '../utils/createTokenUser.js'
 import { sendEmail } from '../utils/mailer.js'
-import { attachCookiesToResponse } from '../utils/jwt.js'
+import {
+  attachCookiesToResponse,
+  attachCookiesToResponseWithRefreshToken,
+} from '../utils/jwt.js'
 
 export const register = async (req, res, next) => {
   console.log(req.body)
@@ -74,7 +77,7 @@ export const register = async (req, res, next) => {
   })
 }
 
-export const login = async (req, res, next) => {
+export const login = async (req, res) => {
   const { email, password } = req.body
   console.log(req.body)
 
@@ -112,7 +115,7 @@ export const login = async (req, res, next) => {
   const tokenUser = createTokenUser(user)
 
   // create refresh token
-  let refreshToken = ''
+  //let refreshToken = ''
   // check for existing token
   const existingToken = await Token.findOne({ user: user._id })
   if (existingToken) {
@@ -124,17 +127,26 @@ export const login = async (req, res, next) => {
     }
   }
 
-  refreshToken = crypto.randomBytes(30).toString('hex')
+  // refreshToken = crypto.randomBytes(30).toString('hex')
   // Signature du navigateur / appareil du client =>  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
   const userAgent = req.headers['user-agent']
   // Adresse IP du client qui fait la requête. Si app est derrière un proxy (Nginx, Vercel, Render, Railway…), activer :
   // app.set('trust proxy', 1)
   const ip = req.ip
-  const userToken = { refreshToken, ip, userAgent, user: user._id }
+  //const userToken = { refreshToken, ip, userAgent, user: user._id }
+  const userToken = { ip, userAgent, user: user._id }
   await Token.create(userToken)
 
-  console.log('TOKEN USER >>>>>>>>>>>', tokenUser)
-  attachCookiesToResponse({ res, user: tokenUser, refreshToken })
+  console.log('TOKEN USER :', tokenUser)
+
+  // ✅ L'utilisateur a un compte : on supprime toute trace d'invité
+  res.clearCookie('anonymousToken')
+  attachCookiesToResponse({ res, user: tokenUser })
+  /*attachCookiesToResponseWithRefreshToken({
+    res,
+    user: tokenUser,
+    refreshToken,
+  })*/
 
   return res.status(StatusCodes.OK).json({ user: tokenUser })
 }
@@ -194,4 +206,23 @@ export const verifyEmail = async (req, res) => {
   }
 }
 
-export default { register, login, logout, verifyEmail }
+export const refreshTokenHandler = async (res, req) => {
+  // Backend : route de refresh
+  const { refreshToken } = req.signedCookies
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Session expirée' })
+  }
+  try {
+    const payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
+    attachCookiesToResponseWithRefreshToken({
+      res,
+      user: payload.user,
+      refreshToken: payload.refreshToken,
+    })
+    return res.status(200).json({ user: payload.user })
+  } catch {
+    return res.status(401).json({ message: 'Session expirée' })
+  }
+}
+
+export default { register, login, logout, verifyEmail, refreshTokenHandler }

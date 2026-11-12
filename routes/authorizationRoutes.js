@@ -14,13 +14,6 @@ import {
   getFedaPayTicketPdf,
 } from '../controllers/authorizationController.js' // N'oublie pas l'extension .js
 const router = Router()
-/*
-import {
-  saleValidator,
-} from '../validators/authenticationValidator.js'
-
-import { validate } from '../middleware/validate.js'
-*/
 
 /**
  * MTN MOMO payment

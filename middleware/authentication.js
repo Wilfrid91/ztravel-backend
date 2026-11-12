@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { StatusCodes } from 'http-status-codes'
 
 export const authenticateUser = (req, res, next) => {
   /**
@@ -10,19 +11,33 @@ export const authenticateUser = (req, res, next) => {
     => Solution -> Ne jamais appeler les routes business si l’utilisateur n’est pas connecté
     => if (user) {...}
    */
-  const { refreshToken, accessToken } = req.signedCookies
 
-  if (!accessToken) {
-    return res.status(401).json({ error: 'Utilisateur non authentifié' })
-  }
+  const guestToken = req.signedCookies.anonymousToken
+  const { accessToken } = req.signedCookies
 
   try {
-    const payload = jwt.verify(accessToken, process.env.JWT_SECRET)
-    req.user = payload.user
-    console.log('user', req.user)
-    return next()
-  } catch (err) {
-    return res.status(401).json({ error: 'Token invalide ou expiré' })
+    if (accessToken) {
+      const payload = jwt.verify(accessToken, process.env.JWT_SECRET)
+      req.user = payload.user
+      req.isGuest = false // c'est un objet existant ou c'est moi qui l'ajoute
+      console.log('user', req.user)
+      return next()
+    }
+
+    if (guestToken) {
+      const payload = jwt.verify(guestToken, process.env.GUEST_SECRET)
+      req.guest = payload
+      req.isGuest = true
+      return next()
+    }
+
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: 'Utilisateur non authentifié' })
+  } catch (error) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: 'Utilisateur non authentifié' })
   }
 }
 
