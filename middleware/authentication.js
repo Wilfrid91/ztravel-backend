@@ -13,6 +13,7 @@ export const authenticateUser = (req, res, next) => {
    */
 
   const guestToken = req.signedCookies.anonymousToken
+  // accessToken: s:eyJhbGciOiJIUzI1Ni... => Le préfixe s: indique que le cookie est signé.
   const { accessToken } = req.signedCookies
 
   try {

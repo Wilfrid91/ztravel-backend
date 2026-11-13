@@ -33,7 +33,7 @@ export const attachCookiesToResponse = ({ res, user }) => {
     // Durées en millisecondes
     const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000 // 15 minutes
     const isProd = process.env.NODE_ENV === 'production'
-    const accessTokenJWT = createJWT({ payload: { user }, expiresIn: '15m' }) // plus tard expiresIn: '7d' }) // une semaine, disons
+    const accessTokenJWT = createJWT({ payload: { user }, expiresIn: '7d' }) // plus tard expiresIn: '7d' au lieu de 15m }) // une semaine, disons
 
     // Configuration commune des cookies
     const cookieOptions = {
