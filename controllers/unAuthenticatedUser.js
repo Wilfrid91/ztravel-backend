@@ -41,6 +41,8 @@ export const registerGuest = async (req, res, next) => {
       ipHash,
       freeSimulationUsed: false,
     })
+    console.log('RECORD=============', record)
+
     if (!record) {
       const anonymId = crypto.randomUUID()
       await FreeSimulation.create({ anonymId, ipHash })
@@ -52,13 +54,15 @@ export const registerGuest = async (req, res, next) => {
       anonymId: record.anonymId,
     })
     attachAnonymousCookie({ res, token: accessAnonymousToken })
+
     return res.status(StatusCodes.OK).json({ anonymous: true })
   } catch (error) {
+    console.log(error)
     next(error)
   }
 }
 
-export const simulate = async (req, res, next) => {
+/*export const simulate = async (req, res, next) => {
   // Dans le contrôleur de simulation, après le calcul :
   console.log(req)
   if (req.guestId) {
@@ -66,5 +70,4 @@ export const simulate = async (req, res, next) => {
       { anonymId: req.guestId },
       { $set: { freeSimulationUsed: true } },
     )
-  }
-}
+  */

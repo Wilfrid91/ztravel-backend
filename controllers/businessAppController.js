@@ -10,6 +10,7 @@ import UserGuideAVD from '../models/UserGuideAVD.js'
 import CheckList from '../models/Checklist.js' // replace "avantDePartir.js" model
 import FreeSimulation from '../models/freeSimulation.js'
 import { StatusCodes } from 'http-status-codes'
+import { findBestCodeSH } from '../../server/utils/pdfService.js'
 
 import dotenv from 'dotenv'
 dotenv.config()
@@ -830,7 +831,7 @@ export const getSimulatorTab3 = async (req, res, next) => {
  * @param {*} res
  * @param {*} next
  */
-export const checkCustomerToken = async (req, res, next) => {
+export const checkCustomerToken = async (req, res) => {
   const userId = req.user?.userId
   try {
     if (!userId) {
@@ -864,5 +865,27 @@ export const checkCustomerToken = async (req, res, next) => {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ error: 'Erreur lors de la vérification des jetons' })
+  }
+}
+
+/* Architecture recommandée
+Debounce : ne chercher qu'après une pause de saisie (~300-400 ms).
+Longueur minimum : ne chercher qu'à partir de 3-4 caractères.
+Requête allégée pour le lookup : le scoring complet (Jaro-Winkler mot à mot + IDF) est trop lourd pour de la saisie. Utilise une version rapide (match par préfixe/inclusion de tokens) pour les suggestions, et garde findBestCodeSH complet pour la validation finale à la sortie du champ.
+Annulation : si l'utilisateur continue de taper, annule la requête en cours (AbortController côté API, ou simple vérification de fraîcheur côté front). */
+export const searchCodeSH = async (req, res) => {
+  try {
+    const { description } = req.body
+    if (!description?.trim()) return res.json(null)
+
+    const best = await findBestCodeSH(description) // sans await, tu renvoies une Promise au lieu du résultat réel.
+    console.log('BEST :', best, '| description reçue :', description)
+
+    return res.status(StatusCodes.OK).json(best)
+  } catch (error) {
+    console.error(error)
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: 'Erreur recherche code SH' })
   }
 }

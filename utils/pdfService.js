@@ -9,7 +9,7 @@ import removeAccents from 'remove-accents'
 import { loadCodeSHCache, getIdfIndex } from './loadCodeSHCache.js'
 
 // Elle supprime les mots grammaticaux inutiles
-const STOPWORDS = [
+export const STOPWORDS = [
   'de',
   'du',
   'la',
@@ -32,6 +32,10 @@ const STOPWORDS = [
   'articles',
   'autre',
   'autres',
+  'chapitre',
+  'present',
+  'vises',
+  'produits',
 ]
 
 /**
@@ -343,13 +347,16 @@ function computeScore(productDescription, codeDescription) {
   return score
 } */
 
-function computeScore(productDescription, codeDescription, idf) {
-  if (!productDescription || !codeDescription) return 0
+function computeScore(productDescription, candidateKeywords, idf) {
+  if (!productDescription || !candidateKeywords) {
+    return 0
+  }
 
   const pWords = extractKeywords(productDescription)
-  const dWords = new Set(extractKeywords(codeDescription))
 
-  const weightOf = (w) => idf?.get(w) ?? 1 // fallback si pas d'IDF
+  const dWords = new Set(candidateKeywords)
+
+  const weightOf = (w) => idf?.get(w) ?? 1
 
   let score = 0
   let matchedProductWeight = 0
@@ -357,9 +364,18 @@ function computeScore(productDescription, codeDescription, idf) {
 
   for (const w1 of pWords) {
     const w1Weight = weightOf(w1)
+
     totalProductWeight += w1Weight
 
+    // Match exact ultra rapide
+    if (dWords.has(w1)) {
+      score += 20 * w1Weight
+      matchedProductWeight += w1Weight
+      continue
+    }
+
     let bestMatch = 0
+
     for (const w2 of dWords) {
       bestMatch = Math.max(bestMatch, jaroWinkler(w1, w2))
     }
@@ -375,29 +391,16 @@ function computeScore(productDescription, codeDescription, idf) {
     }
   }
 
-  // Sens inverse : les mots rares du code SH doivent être couverts
-  /*let matchedCodeWeight = 0
-  let totalCodeWeight = 0
-
-  for (const w2 of dWords) {
-    const w2Weight = weightOf(w2)
-    totalCodeWeight += w2Weight
-
-    const covered = pWords.some((w1) => jaroWinkler(w1, w2) >= 0.8)
-    if (covered) matchedCodeWeight += w2Weight
-  }*/
-
-  // Couverture : quel poids des mots du produit a été retrouvé ?
   const coverage =
     totalProductWeight > 0 ? matchedProductWeight / totalProductWeight : 0
 
-  // Pénalité si le code ne couvre que peu de mots du produit
   return score * (0.5 + 0.5 * coverage)
-  //return score * (0.6 + 0.4 * coverage)
 }
 
 export const findBestCodeSH = async (productDescription) => {
-  if (!productDescription?.trim()) return null
+  if (!productDescription?.trim()) {
+    return null
+  }
 
   const normalize = (value = '') =>
     value
@@ -409,79 +412,92 @@ export const findBestCodeSH = async (productDescription) => {
       .trim()
 
   const description = normalize(productDescription)
+
   const keywords = extractKeywords(productDescription)
 
-  if (!keywords.length) return null
+  if (!keywords.length) {
+    return null
+  }
+
+  const normalizedKeywords = keywords.map(normalize)
 
   const cache = await loadCodeSHCache()
-  const idf = getIdfIndex() // déjà prêt, coût nul
-
-  //console.log('Nombre de codes SH :', cache.length)
-  //console.log('Exemples de codes SH :', cache.slice(0, 10))
-
-  /*console.log(
-    "Codes concernant l'aluminium :",
-    cache.filter((item) =>
-      /aluminium|aluminum|tubes et tuyaux/i.test(item.description || ''),
-    ),
-  )*/
+  const idf = getIdfIndex()
 
   if (!Array.isArray(cache) || cache.length === 0) {
     return null
   }
 
-  // Recherche sur l'ensemble du cache, pas seulement
-  // sur le premier mot extrait.
-  const scored = cache
-    .map((item) => {
-      const candidateDescription = normalize(item.description)
+  const topCandidates = []
 
-      const score = computeScore(description, candidateDescription, idf)
+  for (const item of cache) {
+    const candidateDescription =
+      item.normalizedDescription || normalize(item.description || '')
+    // item.keywords from loadCodeSHCache.js
+    const baseScore = computeScore(description, item.keywords, idf)
 
-      // Bonus de cohérence pour les termes importants.
-      const keywordMatches = keywords.filter((keyword) =>
-        candidateDescription.includes(normalize(keyword)),
-      ).length
+    if (baseScore <= 0) {
+      continue
+    }
 
-      return {
-        ...item,
-        score: score + keywordMatches,
+    let keywordMatches = 0
+
+    for (const keyword of normalizedKeywords) {
+      if (candidateDescription.includes(keyword)) {
+        keywordMatches++
       }
-    })
-    .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score)
+    }
 
-  if (scored.length === 0) return null
+    const finalScore = baseScore + keywordMatches
 
-  const best = scored[0]
-  const second = scored[1]
+    if (finalScore <= 0) {
+      continue
+    }
 
-  console.log(
-    'Meilleurs candidats SH :',
-    scored.slice(0, 5).map(({ code, description, score }) => ({
-      code,
-      description,
-      score,
-    })),
-  )
+    const candidate = {
+      ...item,
+      score: finalScore,
+    }
 
-  // Seuil provisoire : à calibrer sur des cas vérifiés.
-  if (best.score < 2) return null
+    if (
+      topCandidates.length < 5 ||
+      finalScore > topCandidates[topCandidates.length - 1]?.score
+    ) {
+      topCandidates.push(candidate)
 
-  // Ne pas prétendre avoir trouvé un code fiable
-  // lorsque plusieurs candidats sont trop proches.
-  if (second && best.score - second.score < 2) {
-    return {
-      ...best,
-      needsReview: true,
-      candidates: scored.slice(0, 5),
+      topCandidates.sort((a, b) => b.score - a.score)
+
+      if (topCandidates.length > 5) {
+        topCandidates.pop()
+      }
     }
   }
 
+  if (topCandidates.length === 0) {
+    return null
+  }
+
+  const best = topCandidates[0]
+  const second = topCandidates[1]
+
+  console.log(
+    '[SH]',
+    productDescription,
+    '=>',
+    best.code,
+    `(score=${best.score})`,
+  )
+
+  if (best.score < 2) {
+    return null
+  }
+
+  const needsReview = !!second && best.score - second.score < 2
+
   return {
     ...best,
-    needsReview: true,
-    candidates: scored.slice(0, 5),
+    needsReview,
+    candidates: topCandidates,
   }
 }
 

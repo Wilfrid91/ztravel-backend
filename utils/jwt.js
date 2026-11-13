@@ -66,7 +66,7 @@ export const attachCookiesToResponseWithRefreshToken = ({
 }) => {
   try {
     // Durées en millisecondes
-    const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000 // 15 minutes
+    const ACCESS_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 jours
     const REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000 // 30 jours
 
     const isProd = process.env.NODE_ENV === 'production'

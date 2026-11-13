@@ -36,6 +36,7 @@ import {
   validateUploadedProductPhoto,
   createVehicleListAndAVD,
   checkCustomerToken,
+  searchCodeSH,
 } from '../controllers/businessAppController.js'
 
 import { vehicleValidator } from '../validators/vehicleValidator.js'
@@ -139,5 +140,8 @@ router.get('/simulator-page', authenticateUser, simulatorPage) //  La page de si
 router.get('/user-guide', authenticateUser, getUserGuide)
 /* Verifie le nombre de jeton disponible pour l''impression*/
 router.get('/customer-token', authenticateUser, checkCustomerToken)
+
+/** Autocomplétion de codes SH) */
+router.post('/codesh/best', authenticateUser, searchCodeSH)
 
 export default router
