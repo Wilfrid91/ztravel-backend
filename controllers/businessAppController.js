@@ -10,7 +10,7 @@ import UserGuideAVD from '../models/UserGuideAVD.js'
 import CheckList from '../models/Checklist.js' // replace "avantDePartir.js" model
 import FreeSimulation from '../models/freeSimulation.js'
 import { StatusCodes } from 'http-status-codes'
-import { findBestCodeSH } from '../../server/utils/pdfService.js'
+import { findBestCodeSH } from '../utils/pdfService.js'
 
 import dotenv from 'dotenv'
 dotenv.config()

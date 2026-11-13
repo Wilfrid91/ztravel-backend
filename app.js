@@ -49,7 +49,6 @@ const sanitizeXSS = (req, res, next) => {
   next()
 }
 
-import productsRouter from './routes/productsRoutes.js'
 import authenticationRouter from './routes/authenticationRoutes.js'
 import authorizationRouter from './routes/authorizationRoutes.js'
 import businessAppRouter from './routes/businessAppRoutes.js'
