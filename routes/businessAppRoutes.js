@@ -8,7 +8,9 @@ const upload = multer({
   limits: { fileSize: 2 * 1024 * 1024 }, // 2 Mo max
 })
 
-export const uploadSecure = upload.single('Photo-de-produits')
+// Pour le formulaire de contact. Doit correspondre exactement au name de votre <input type="file"> .
+//export const uploadSecure = upload.single('productPhoto')
+export const uploadSecure = upload.single('productPhoto')
 
 // Pour le pdf à changer après
 const uploadProductPhoto = multer({
@@ -61,6 +63,10 @@ router.get('/get-cgu', authenticateUser, generateCGU) //  condition générale d
 router.post(
   '/post-form',
   uploadSecure,
+  (req, res) => {
+    console.log('req.file:', req.file) // Vérifiez si le fichier est là
+    res.send('test')
+  },
   validateUploadedPhoto,
   contactValidator,
   validate,

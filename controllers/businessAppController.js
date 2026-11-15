@@ -107,6 +107,7 @@ export const validateUploadedPhoto = async (req, res, next) => {
     const file = req.file
     // Aucun fichier envoyé → continuer
     if (!file) return next()
+    console.log('1. file.buffer:', file.buffer?.length) // Vérifier que buffer existe
 
     const buffer = file.buffer
 
@@ -121,6 +122,9 @@ export const validateUploadedPhoto = async (req, res, next) => {
 
     // 1) Vérifier le type MIME réel
     const type = await fileTypeFromBuffer(buffer)
+
+    console.log('2. type détecté:', type) // Voir ce que fileType renvoie
+
     if (
       !type ||
       !['image/jpeg', 'image/png', 'image/webp'].includes(type.mime)
@@ -130,7 +134,9 @@ export const validateUploadedPhoto = async (req, res, next) => {
 
     // 2) Vérifier que l’image est décodable
     try {
+      console.log('3. Avant sharp...')
       await sharp(buffer).metadata()
+      console.log('4. Sharp OK')
     } catch (err) {
       return res.status(400).json({ msg: 'Image corrompue ou non décodable' })
     }
@@ -154,7 +160,7 @@ export const validateUploadedPhoto = async (req, res, next) => {
   }
 }
 
-export const submitCustomerForm = async (req, res, next) => {
+export const submitCustomerForm = async (req, res) => {
   let filePath = null
   try {
     const {
@@ -170,6 +176,22 @@ export const submitCustomerForm = async (req, res, next) => {
         .status(400)
         .json({ error: 'Tous les champs sont obligatoires.' })
     }
+
+    // Double vérification (ceinture + bretelles)
+    if (!message || message.trim().length < 10) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: 'Le message doit contenir au moins 10 caractères',
+      })
+    }
+
+    if (message.length > 500) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: 'Le message ne doit pas dépasser 500 caractères',
+      })
+    }
+
+    // Tronquer pour l'email si nécessaire (sécurité supplémentaire)
+    const safeMessage = message.slice(0, 500)
 
     let attachments = []
 
@@ -233,7 +255,7 @@ export const submitCustomerForm = async (req, res, next) => {
         <p><strong>Nom :</strong> ${name}</p>
         <p><strong>Email :</strong> ${email}</p>
         <p><strong>Téléphone :</strong> ${phone}</p>
-        <p><strong>Message :</strong><br>${message}</p>
+        <p><strong>Message :</strong><br>${safeMessage}</p>
       `,
       attachments,
     })
@@ -362,7 +384,7 @@ export const createProductListAndAVD = async (req, res) => {
   let username = 'guest'
   try {
     // products est attendu comme une liste (0, 1, plusieurs véhicules/produits)
-    //  → le fallback est un tableau vide [] (ou '[]' dans votre version avec le bug des quotes)
+    //  → le fallback est un tableau vide []
     const products = Array.isArray(req.body.products) ? req.body.products : []
     // shipping est attendu comme un objet unique (un seul ensemble de données : incoterm, fret, assurance, CIF, devise)
     //  → le fallback est un objet vide {} (ou '{}' bugué).
@@ -436,7 +458,7 @@ export const createProductListAndAVD = async (req, res) => {
             "Vous avez épuisé tous vos jetons d'impression. Veuiller recharger votre compte",
         })
       }
-    } //else
+    } // fin else
     const pdf = await generatePDF({
       products,
       shipping,
@@ -482,46 +504,67 @@ const generatePDF = async ({
     //console.log('PRODUCTS', products)
 
     if (products.length > 0) {
+      // Verifier si les devises  des autres produits sont identiques à la premiere devise séléctionnée
+      const deviseReference = products[0].devise
+      // every() : Vérifie qu'une condition est vraie pour tous les éléments :
+      const memeDevise = products.every(
+        (product) => product.devise === deviseReference,
+      )
+      if (!memeDevise) {
+        throw new Error('Tous les produits doivent avoir la même devise')
+      }
+
       console.log('PDF pour produits')
       // 2) Calcul métier AVD
       const avdData = await computeAVD(products, shipping) // avdData est une Promise
       console.log('AVD PRODUCT =', avdData)
+
       const fullProductPDF = await generateProductFullPDF(
         products,
         photos,
         shipping,
         avdData,
       )
+      if (!fullProductPDF || fullProductPDF.length === 0) {
+        throw new Error('Buffer PDF vide')
+      }
       return fullProductPDF
     }
 
     if (vehicles.length > 0) {
       console.log('PDF pour véhicules')
-      const avdData = await computeAvdVehicle(vehicles, shipping) // avdData est une Promise
-      console.log('AVD VEHICLE =', avdData)
-      try {
-        console.log('📄 Appel de generateVehicleFullPDF')
-        const fullVehiclePDF = await generateVehicleFullPDF(
-          vehicles,
-          photos,
-          shipping,
-          avdData,
-        )
-        console.log(`📄 PDF reçu: ${fullVehiclePDF.length} bytes`)
-        // Vérifiez que le buffer n'est pas vide
-        if (!fullVehiclePDF || fullVehiclePDF.length === 0) {
-          throw new Error('Buffer PDF vide')
-        }
-        return fullVehiclePDF
-      } catch (error) {
-        console.error('❌ Erreur génération PDF:', error)
-        res
-          .status(500)
-          .json({ error: 'Erreur génération PDF', details: error.message })
+
+      // Verifier si les devises  des autres produits sont identiques à la premiere devise séléctionnée
+      const deviseReference = vehicles[0].devise
+      // every() : Vérifie qu'une condition est vraie pour tous les éléments :
+      const memeDevise = vehicles.every(
+        (vehicle) => vehicle.devise === deviseReference,
+      )
+      if (!memeDevise) {
+        throw new Error('Tous les vehicles doivent avoir la même devise')
       }
+
+      const avdData = await computeAvdVehicle(vehicles, shipping) // avdData est une Promise
+
+      console.log('AVD VEHICLE =', avdData)
+      console.log('📄 Appel de generateVehicleFullPDF')
+
+      const fullVehiclePDF = await generateVehicleFullPDF(
+        vehicles,
+        photos,
+        shipping,
+        avdData,
+      )
+      console.log(`📄 PDF reçu: ${fullVehiclePDF.length} bytes`)
+      // Vérifiez que le buffer n'est pas vide
+      if (!fullVehiclePDF || fullVehiclePDF.length === 0) {
+        throw new Error('Buffer PDF vide')
+      }
+      return fullVehiclePDF
     }
   } catch (error) {
-    console.error(error)
+    console.error('❌ Erreur génération PDF:', error)
+    throw error
   }
 }
 

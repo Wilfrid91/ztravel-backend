@@ -18,7 +18,7 @@ export const contactValidator = [
     .withMessage('L’email est requis')
     .isEmail()
     .withMessage('Veuillez fournir un email valide')
-    .isLength({ max: 100 })
+    .isLength({ max: 254 })
     .withMessage('L’email ne doit pas dépasser 100 caractères')
     .normalizeEmail(),
 
@@ -27,7 +27,7 @@ export const contactValidator = [
     .trim()
     .notEmpty()
     .withMessage('Le numéro de téléphone est requis')
-    .isLength({ min: 6, max: 15 })
+    .isLength({ min: 6, max: 20 })
     .withMessage('Le numéro doit contenir entre 6 et 15 chiffres')
     .matches(/^[0-9+\s-]+$/)
     .withMessage('Le numéro contient des caractères invalides'),

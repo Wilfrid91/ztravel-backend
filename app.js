@@ -141,7 +141,6 @@ app.use((req, res, next) => {
   next()
 })
 
-// Routes
 app.use('/api/v1/freemium', freemiumRouter)
 app.use('/api/v1/auth', authenticationRouter)
 app.use('/api/v1/business', businessAppRouter)
