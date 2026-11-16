@@ -107,23 +107,23 @@ export const validateUploadedPhoto = async (req, res, next) => {
     const file = req.file
     // Aucun fichier envoyé → continuer
     if (!file) return next()
-    console.log('1. file.buffer:', file.buffer?.length) // Vérifier que buffer existe
+    // console.log('1. file.buffer:', file.buffer?.length) // Vérifier que buffer existe
 
     const buffer = file.buffer
 
-    console.log('Fichier reçu:', {
+    /*console.log('Fichier reçu:', {
       fieldname: file.fieldname,
       originalname: file.originalname,
       size: file.size,
       mimetype: file.mimetype,
-    })
+    })*/
 
-    console.log('Données formulaire:', req.body)
+    /*console.log('Données formulaire:', req.body)*/
 
     // 1) Vérifier le type MIME réel
     const type = await fileTypeFromBuffer(buffer)
 
-    console.log('2. type détecté:', type) // Voir ce que fileType renvoie
+    //console.log('2. type détecté:', type) // Voir ce que fileType renvoie
 
     if (
       !type ||

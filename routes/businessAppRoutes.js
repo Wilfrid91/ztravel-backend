@@ -63,10 +63,6 @@ router.get('/get-cgu', authenticateUser, generateCGU) //  condition générale d
 router.post(
   '/post-form',
   uploadSecure,
-  (req, res) => {
-    console.log('req.file:', req.file) // Vérifiez si le fichier est là
-    res.send('test')
-  },
   validateUploadedPhoto,
   contactValidator,
   validate,

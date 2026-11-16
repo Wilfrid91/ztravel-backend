@@ -2,6 +2,11 @@ import { StatusCodes } from 'http-status-codes'
 import FreeSimulation from '../models/freeSimulation.js'
 import { attachAnonymousCookie, signAnonymous } from '../utils/jwt.js'
 import crypto from 'crypto'
+import sharp from 'sharp'
+import path from 'path'
+import fs from 'fs'
+import axios from 'axios'
+import { sendEmail } from '../utils/mailer.js'
 
 /**
  * Ne doit JAMAIS créer de record consommable si l'IP en a déjà un
@@ -62,12 +67,129 @@ export const registerGuest = async (req, res, next) => {
   }
 }
 
-/*export const simulate = async (req, res, next) => {
-  // Dans le contrôleur de simulation, après le calcul :
-  console.log(req)
-  if (req.guestId) {
-    await FreeSimulation.updateOne(
-      { anonymId: req.guestId },
-      { $set: { freeSimulationUsed: true } },
-    )
-  */
+export const NonAuthCustomerForm = async (req, res) => {
+  let filePath = null
+  try {
+    const {
+      name,
+      email,
+      phone,
+      message,
+      'g-recaptcha-response': captchaToken,
+    } = req.body
+
+    if (!name || !email || !message || !phone || !captchaToken) {
+      return res
+        .status(400)
+        .json({ error: 'Tous les champs sont obligatoires.' })
+    }
+
+    // Double vérification (ceinture + bretelles)
+    if (!message || message.trim().length < 10) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: 'Le message doit contenir au moins 10 caractères',
+      })
+    }
+
+    if (message.length > 500) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: 'Le message ne doit pas dépasser 500 caractères',
+      })
+    }
+
+    // Tronquer pour l'email si nécessaire (sécurité supplémentaire)
+    const safeMessage = message.slice(0, 500)
+
+    let attachments = []
+
+    const productPhoto = req.file
+
+    if (productPhoto) {
+      const cleanImage = await sharp(productPhoto.buffer)
+        .jpeg({ quality: 90 })
+        .toBuffer()
+
+      const fileName = `photo_${Date.now()}_${productPhoto.originalname}.jpg`
+      filePath = path.join('uploads/private', fileName)
+
+      const uploadDir = path.join('uploads/private')
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true })
+      }
+
+      // Gestion des fichiers temporaires : sauvegarde de l'image :
+      fs.writeFileSync(filePath, cleanImage)
+
+      attachments.push({
+        filename: fileName,
+        path: filePath,
+      })
+    }
+
+    // Vérification reCAPTCHA
+    try {
+      const googleVerify = await axios.post(
+        `https://www.google.com/recaptcha/api/siteverify`,
+        null,
+        {
+          params: {
+            secret: process.env.RECAPTCHA_SECRET_KEY,
+            response: captchaToken,
+          },
+        },
+      )
+
+      if (!googleVerify.data.success) {
+        return res
+          .status(400)
+          .json({ success: false, message: 'CAPTCHA invalide' })
+      }
+    } catch (err) {
+      console.error(
+        'reCAPTCHA verify failed:',
+        err?.response?.data || err.message,
+      )
+      return res.status(503).json({
+        message: 'Service CAPTCHA momentanément indisponible.',
+      })
+    }
+
+    await sendEmail({
+      to: process.env.GMAIL_USER,
+      subject: `Nouveau message de ${name}`,
+      html: `
+        <h2>Nouveau message du formulaire</h2>
+        <p><strong>Nom :</strong> ${name}</p>
+        <p><strong>Email :</strong> ${email}</p>
+        <p><strong>Téléphone :</strong> ${phone}</p>
+        <p><strong>Message :</strong><br>${safeMessage}</p>
+      `,
+      attachments,
+    })
+
+    return res.status(200).json({
+      message:
+        'Formulaire soumis avec succès. Nous vous contacterons dès que possible. Merci pour votre confiance !',
+    })
+  } catch (error) {
+    console.error('Erreur lors de la soumission du formulaire:', error)
+    res.status(500).json({
+      error:
+        'Une erreur est survenue lors de la soumission du formulaire. Veuillez réessayer plus tard.',
+    })
+  } finally {
+    // Si sendEmail() échoue, le fichier reste dans uploads/private et ne sera jamais supprimé => Il serait préférable d'ajouter un nettoyage.
+    // Le finally s'exécute toujours, même s'il y a un return res.status(...).
+    if (filePath) {
+      try {
+        // Utiliser les méthodes asynchrones de Node, ce qui évite de bloquer l'event loop.
+        await fs.promises.unlink(filePath)
+      } catch (err) {
+        console.error(
+          'Erreur lors de la suppression du fichier temporaire:',
+          err,
+        )
+      }
+    }
+  }
+}
