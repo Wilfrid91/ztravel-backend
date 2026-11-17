@@ -5,7 +5,7 @@ import crypto from 'crypto'
 import createTokenUser from '../utils/createTokenUser.js'
 import { sendEmail } from '../utils/mailer.js'
 import {
-  attachCookiesToResponse,
+  isTokenValid,
   attachCookiesToResponseWithRefreshToken,
 } from '../utils/jwt.js'
 
@@ -79,7 +79,7 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body
-  console.log(req.body)
+  //console.log(req.body)
 
   if (!email || !password) {
     return res
@@ -111,42 +111,51 @@ export const login = async (req, res) => {
   // Mise à jour de la dernière connexion
   user.lastLogin = new Date()
   await user.save()
-  /*   return { lastname: user.lastname, userId: user._id, role: user.role } */
+
   const tokenUser = createTokenUser(user)
 
-  // create refresh token
-  //let refreshToken = ''
-  // check for existing token
-  const existingToken = await Token.findOne({ user: user._id })
-  if (existingToken) {
-    const { isValid } = existingToken
-    if (!isValid) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ msg: 'Le jeton de vérification est invalide ou expiré' })
-    }
-  }
-
-  // refreshToken = crypto.randomBytes(30).toString('hex')
+  // Informations de session
   // Signature du navigateur / appareil du client =>  "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)...",
   const userAgent = req.headers['user-agent']
-  // Adresse IP du client qui fait la requête. Si app est derrière un proxy (Nginx, Vercel, Render, Railway…), activer :
-  // app.set('trust proxy', 1)
+  // Adresse IP du client qui fait la requête. app est derrière un proxy Nginx-> app.set('trust proxy', 1)
   const ip = req.ip
-  //const userToken = { refreshToken, ip, userAgent, user: user._id }
-  const userToken = { ip, userAgent, user: user._id }
-  await Token.create(userToken)
 
-  console.log('TOKEN USER :', tokenUser)
+  // check for existing token
+  const existingToken = await Token.findOne({ user: user._id })
+  const refreshToken = crypto.randomBytes(40).toString('hex')
 
-  // ✅ L'utilisateur a un compte : on supprime toute trace d'invité
+  // Second connexion...
+  if (existingToken) {
+    if (!existingToken.isValid) {
+      existingToken.isValid = true
+    }
+    existingToken.ip = ip
+    existingToken.userAgent = userAgent
+    // Rotation du refresh token à chaque login. Même lors de la 2e connexion, tu génères un nouveau refresh token :
+    existingToken.refreshToken = refreshToken
+    existingToken.lastUsedAt = new Date()
+    await existingToken.save()
+  } else {
+    // 1er connexion
+    await Token.create({
+      user: user._id,
+      refreshToken,
+      ip,
+      userAgent,
+      isValid: true,
+    })
+  }
+
+  // L'utilisateur a un compte : on supprime toute trace d'invité
   res.clearCookie('anonymousToken')
-  attachCookiesToResponse({ res, user: tokenUser })
-  /*attachCookiesToResponseWithRefreshToken({
+
+  // Création du cookie JWT
+  // attachCookiesToResponse({ res, user: tokenUser })
+  attachCookiesToResponseWithRefreshToken({
     res,
-    user: tokenUser,
-    refreshToken,
-  })*/
+    user: tokenUser, // signé -> accessToken
+    refreshToken, // signé
+  })
 
   return res.status(StatusCodes.OK).json({ user: tokenUser })
 }
@@ -208,21 +217,58 @@ export const verifyEmail = async (req, res) => {
 
 export const refreshTokenHandler = async (res, req) => {
   // Backend : route de refresh
-  const { refreshToken } = req.signedCookies
-  if (!refreshToken) {
-    return res.status(401).json({ message: 'Session expirée' })
-  }
-  try {
-    const payload = jwt.verify(refreshToken, process.env.JWT_SECRET)
-    attachCookiesToResponseWithRefreshToken({
-      res,
-      user: payload.user,
-      refreshToken: payload.refreshToken,
+  // const { refreshToken } = req.signedCookies
+  // 1) cookie reçu
+  const refreshTokenCookie = req.signedCookies.refreshToken
+
+  console.log('refreshTokenCookie', refreshTokenCookie)
+
+  if (!refreshTokenCookie) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      msg: 'Authentication invalid',
     })
-    return res.status(200).json({ user: payload.user })
-  } catch {
-    return res.status(401).json({ message: 'Session expirée' })
   }
+
+  let payload
+  try {
+    // 2) Decodage du cookie puis recherche dans la DB
+    payload = isTokenValid(refreshTokenCookie)
+  } catch (error) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      msg: 'Authentication invalid',
+    })
+  }
+  // 3) on retrouve ABC123...
+  const existingToken = await Token.findOne({
+    user: payload.user.userId,
+    refreshToken: payload.refreshToken,
+  })
+
+  if (!existingToken || !existingToken.isValid) {
+    return res.status(StatusCodes.UNAUTHORIZED).json({
+      msg: 'Authentication invalid',
+    })
+  }
+  // Rotation du refresh token
+  const newRefreshToken = crypto.randomBytes(40).toString('hex')
+
+  existingToken.refreshToken = newRefreshToken
+  existingToken.ip = req.ip
+  existingToken.userAgent = req.headers['user-agent']
+  existingToken.lastUsedAt = new Date()
+
+  await existingToken.save()
+
+  const tokenUser = payload.user
+  attachCookiesToResponseWithRefreshToken({
+    res,
+    user: tokenUser,
+    refreshToken: newRefreshToken,
+  })
+
+  return res.status(StatusCodes.OK).json({
+    user: tokenUser,
+  })
 }
 
 export default { register, login, logout, verifyEmail, refreshTokenHandler }

@@ -33,7 +33,7 @@ export const attachCookiesToResponse = ({ res, user }) => {
     // Durées en millisecondes
     const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000 // 15 minutes
     const isProd = process.env.NODE_ENV === 'production'
-    const accessTokenJWT = createJWT({ payload: { user }, expiresIn: '15m' }) // plus tard expiresIn: '7d' au lieu de 15m }) // une semaine, disons
+    const accessTokenJWT = createJWT({ payload: { user }, expiresIn: '7d' }) // plus tard expiresIn: '7d' au lieu de 15m }) // une semaine, disons
 
     // Configuration commune des cookies
     const cookieOptions = {
@@ -65,46 +65,49 @@ export const attachCookiesToResponseWithRefreshToken = ({
   refreshToken,
 }) => {
   try {
-    // Durées en millisecondes
-    const ACCESS_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 jours
-    const REFRESH_TOKEN_TTL_MS = 30 * 24 * 60 * 60 * 1000 // 30 jours
-
     const isProd = process.env.NODE_ENV === 'production'
 
-    const accessTokenJWT = createJWT({ payload: { user }, expiresIn: '15m' })
+    // Durée réelle des JWT
+    const ACCESS_TOKEN_EXPIRES_IN = '15m'
+    const REFRESH_TOKEN_EXPIRES_IN = '7d'
 
-    const refreshTokenJWT = createJWT({
-      payload: { user, refreshToken },
-      expiresIn: '30d',
+    // Durée des cookies (alignée sur les JWT)
+    const ACCESS_TOKEN_TTL_MS = 15 * 60 * 1000 // 15 min
+    const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000 // 7 jours
+
+    // Signature du accessTokenJWT
+    const accessTokenJWT = createJWT({
+      payload: { user },
+      expiresIn: ACCESS_TOKEN_EXPIRES_IN,
     })
 
-    // Configuration commune des cookies
-    const cookieOptions = {
+    // Signature du refreshTokenJWT
+    const refreshTokenJWT = createJWT({
+      payload: { user, refreshToken },
+      expiresIn: REFRESH_TOKEN_EXPIRES_IN,
+    })
+    // Options communes à accessTokenJWT && refreshTokenJWT
+    const commonOptions = {
       httpOnly: true,
       secure: isProd,
       signed: true,
-      sameSite: isProd ? 'None' : 'Lax', // DEV = Lax, PROD = None
-      path: '/',
+      sameSite: isProd ? 'None' : 'Lax',
     }
 
-    // Durée : 30 minutes
-    // Usage : authentification rapide
-    // Risque : faible (expire vite)
+    // Access token : disponible pour toute l'application
     res.cookie('accessToken', accessTokenJWT, {
-      ...cookieOptions,
+      ...commonOptions,
+      path: '/',
       expires: new Date(Date.now() + ACCESS_TOKEN_TTL_MS),
     })
 
-    // RefreshToken (longue durée)
-    // Durée : 30 jours
-    // Usage : renouveler l’accessToken
-    // Risque : très faible (httpOnly + secure + rotation possible)
+    // Refresh token : envoyé uniquement sur l'endpoint de refresh
     res.cookie('refreshToken', refreshTokenJWT, {
-      ...cookieOptions,
+      ...commonOptions,
+      path: '/api/v1/auth/refresh',
       expires: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
     })
 
-    // Optionnel: retourner quelque chose pour debugging
     return { accessTokenJWT, refreshTokenJWT }
   } catch (error) {
     throw new Error(`Error attaching cookies: ${error.message}`)
