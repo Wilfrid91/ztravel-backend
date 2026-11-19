@@ -215,60 +215,64 @@ export const verifyEmail = async (req, res) => {
   }
 }
 
-export const refreshTokenHandler = async (res, req) => {
+export const refreshTokenHandler = async (req, res) => {
   // Backend : route de refresh
   // const { refreshToken } = req.signedCookies
   // 1) cookie reçu
-  const refreshTokenCookie = req.signedCookies.refreshToken
-
-  console.log('refreshTokenCookie', refreshTokenCookie)
-
-  if (!refreshTokenCookie) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: 'Authentication invalid',
-    })
-  }
-
-  let payload
   try {
-    // 2) Decodage du cookie puis recherche dans la DB
-    payload = isTokenValid(refreshTokenCookie)
+    const refreshTokenCookie = req.signedCookies.refreshToken
+
+    console.log('refreshTokenCookie', refreshTokenCookie)
+
+    if (!refreshTokenCookie) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        msg: 'Authentication invalid',
+      })
+    }
+
+    let payload
+    try {
+      // 2) Decodage du cookie puis recherche dans la DB
+      payload = isTokenValid(refreshTokenCookie)
+    } catch (error) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        msg: 'Authentication invalid',
+      })
+    }
+    // 3) on retrouve ABC123...
+    const existingToken = await Token.findOne({
+      user: payload.user.userId,
+      refreshToken: payload.refreshToken,
+    })
+
+    if (!existingToken || !existingToken.isValid) {
+      return res.status(StatusCodes.UNAUTHORIZED).json({
+        msg: 'Authentication invalid',
+      })
+    }
+    // Rotation du refresh token
+    const newRefreshToken = crypto.randomBytes(40).toString('hex')
+
+    existingToken.refreshToken = newRefreshToken
+    existingToken.ip = req.ip
+    existingToken.userAgent = req.headers['user-agent']
+    existingToken.lastUsedAt = new Date()
+
+    await existingToken.save()
+
+    const tokenUser = payload.user
+    attachCookiesToResponseWithRefreshToken({
+      res,
+      user: tokenUser,
+      refreshToken: newRefreshToken,
+    })
+
+    return res.status(StatusCodes.OK).json({
+      user: tokenUser,
+    })
   } catch (error) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: 'Authentication invalid',
-    })
+    console.error(error)
   }
-  // 3) on retrouve ABC123...
-  const existingToken = await Token.findOne({
-    user: payload.user.userId,
-    refreshToken: payload.refreshToken,
-  })
-
-  if (!existingToken || !existingToken.isValid) {
-    return res.status(StatusCodes.UNAUTHORIZED).json({
-      msg: 'Authentication invalid',
-    })
-  }
-  // Rotation du refresh token
-  const newRefreshToken = crypto.randomBytes(40).toString('hex')
-
-  existingToken.refreshToken = newRefreshToken
-  existingToken.ip = req.ip
-  existingToken.userAgent = req.headers['user-agent']
-  existingToken.lastUsedAt = new Date()
-
-  await existingToken.save()
-
-  const tokenUser = payload.user
-  attachCookiesToResponseWithRefreshToken({
-    res,
-    user: tokenUser,
-    refreshToken: newRefreshToken,
-  })
-
-  return res.status(StatusCodes.OK).json({
-    user: tokenUser,
-  })
 }
 
 export default { register, login, logout, verifyEmail, refreshTokenHandler }

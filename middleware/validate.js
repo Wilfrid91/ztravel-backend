@@ -2,7 +2,9 @@
 import { validationResult } from 'express-validator'
 
 /**
- * le middleware qui renvoie les erreurs
+ * Le middleware validate sert à vérifier le résultat de express-validator (validationResult(req)).
+ * Or, sur la route /refresh, Il n'y a aucun validateur (body(...), cookie(...), param(...), etc.) avant validate.
+ * Donc validationResult(req) sera toujours vide
  * @param {*} req
  * @param {*} res
  * @param {*} next

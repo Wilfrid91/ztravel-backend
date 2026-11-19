@@ -50,7 +50,7 @@ router.post('/verify-email', verifyEmailValidator, validate, verifyEmail)
 
 // refresh - to be used wuth refreshTone later
 // Backend : api/v1/auth/refresh => voir axiosInstance.js
-router.post('/refresh', validate, refreshTokenHandler)
+router.post('/refresh', refreshTokenHandler)
 
 /**
  * Enregistrer une visite
