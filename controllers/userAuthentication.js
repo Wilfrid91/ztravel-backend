@@ -254,7 +254,7 @@ export const refreshTokenHandler = async (req, res) => {
       refreshToken: payload.refreshToken,
     })
 
-    console.log('existingToken', existingToken)
+    //console.log('existingToken', existingToken)
 
     if (!existingToken || !existingToken.isValid) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
