@@ -79,7 +79,6 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res) => {
   const { email, password } = req.body
-  //console.log(req.body)
 
   if (!email || !password) {
     return res
@@ -222,8 +221,6 @@ export const refreshTokenHandler = async (req, res) => {
   try {
     const refreshTokenCookie = req.signedCookies.refreshToken
 
-    console.log('refreshTokenCookie', refreshTokenCookie)
-
     if (!refreshTokenCookie) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
         msg: 'Authentication invalid',
@@ -233,17 +230,31 @@ export const refreshTokenHandler = async (req, res) => {
     let payload
     try {
       // 2) Decodage du cookie puis recherche dans la DB
-      payload = isTokenValid(refreshTokenCookie)
+      payload = isTokenValid({ token: refreshTokenCookie })
+      //console.log('payload', payload)
     } catch (error) {
+      console.error(error)
       return res.status(StatusCodes.UNAUTHORIZED).json({
         msg: 'Authentication invalid',
       })
     }
+
+    //console.log('payload.user.userId', payload.user.userId)
+    //console.log('payload.refreshToken', payload.refreshToken)
+
+    /*const tokenByUser = await Token.findOne({
+      user: payload.user.userId,
+    })*/
+
+    //console.log('tokenByUser', tokenByUser)
+
     // 3) on retrouve ABC123...
     const existingToken = await Token.findOne({
       user: payload.user.userId,
       refreshToken: payload.refreshToken,
     })
+
+    console.log('existingToken', existingToken)
 
     if (!existingToken || !existingToken.isValid) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
