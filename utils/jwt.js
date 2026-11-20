@@ -20,7 +20,7 @@ export const createJWT = ({ payload, expiresIn }) => {
   }
 }
 
-export const isTokenValid = ({ token }) => {
+export const isTokenValid = (token) => {
   try {
     return jwt.verify(token, process.env.JWT_SECRET)
   } catch (error) {

@@ -51,9 +51,8 @@ export const register = async (req, res, next) => {
     verificationToken,
   })
 
-  //const verifyEmail = `${process.env.BASE_URL_FRONT}/verify-email?token=${verificationToken}&email=${email}`
-
-  const verificationLink = `${process.env.BASE_URL_FRONT}/verify-email?token=${user.verificationToken}&email=${user.email}`
+  //const verificationLink = `${process.env.BASE_URL_FRONT}/verify-email?token=${user.verificationToken}&email=${user.email}`
+  const verificationLink = `${process.env.BASE_URL_FRONT}/verify-email?token=${user.verificationToken}`
 
   const message = `Pour finaliser votre inscription, veuillez confirmer votre adresse e‑mail en cliquant sur le lien ci‑dessous : ${verificationLink}`
 
@@ -167,7 +166,14 @@ export const login = async (req, res) => {
  */
 export const logout = async (req, res) => {
   try {
-    res.status(StatusCodes.OK).json({ msg: 'Deconnexion' })
+    res.clearCookie('accessToken', { path: '/' })
+    res.clearCookie('refreshToken', {
+      path: '/api/v1/auth/refresh',
+    })
+
+    await Token.findOneAndUpdate({ user: req.user.userId }, { isValid: false })
+
+    return res.status(StatusCodes.OK).json({ msg: 'Deconnexion' })
   } catch (error) {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
@@ -230,7 +236,8 @@ export const refreshTokenHandler = async (req, res) => {
     let payload
     try {
       // 2) Decodage du cookie puis recherche dans la DB
-      payload = isTokenValid({ token: refreshTokenCookie })
+      //payload = isTokenValid({ token: refreshTokenCookie })
+      payload = isTokenValid(refreshTokenCookie)
       //console.log('payload', payload)
     } catch (error) {
       console.error(error)
@@ -242,11 +249,11 @@ export const refreshTokenHandler = async (req, res) => {
     //console.log('payload.user.userId', payload.user.userId)
     //console.log('payload.refreshToken', payload.refreshToken)
 
-    /*const tokenByUser = await Token.findOne({
+    const tokenByUser = await Token.findOne({
       user: payload.user.userId,
-    })*/
+    })
 
-    //console.log('tokenByUser', tokenByUser)
+    console.log('tokenByUser', tokenByUser)
 
     // 3) on retrouve ABC123...
     const existingToken = await Token.findOne({
@@ -254,7 +261,7 @@ export const refreshTokenHandler = async (req, res) => {
       refreshToken: payload.refreshToken,
     })
 
-    //console.log('existingToken', existingToken)
+    console.log('existingToken', existingToken)
 
     if (!existingToken || !existingToken.isValid) {
       return res.status(StatusCodes.UNAUTHORIZED).json({
