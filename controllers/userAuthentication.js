@@ -10,70 +10,74 @@ import {
 } from '../utils/jwt.js'
 
 export const register = async (req, res, next) => {
-  console.log(req.body)
-  const { nom, prenom, email, password, repassword } = req.body
-  if (!nom || !prenom || !email || !password || !repassword) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: 'Veuillez remplir tous les champs' })
+  try {
+    //console.log(req.body)
+    const { nom, prenom, email, password, repassword } = req.body
+    if (!nom || !prenom || !email || !password || !repassword) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: 'Veuillez remplir tous les champs' })
+    }
+
+    // Check for same passwords
+    if (password !== repassword) {
+      return res
+        .status(StatusCodes.BAD_REQUEST)
+        .json({ msg: 'Les mots de passe ne correspondent pas' })
+    }
+
+    // Vérification unicité email
+    const emailAlreadyExists = await User.findOne({ email })
+
+    if (emailAlreadyExists) {
+      return res.status(StatusCodes.BAD_REQUEST).json({
+        msg: 'Un compte utilisant cette adresse e‑mail existe déjà',
+      })
+    }
+
+    // Détermination du rôle
+    // ATTENTION : ceci n'est pas totalement sûr en cas de créations simultanées
+    const userCount = await User.countDocuments()
+    const role = userCount === 0 ? 'admin' : 'user'
+
+    const verificationToken = crypto.randomBytes(20).toString('hex')
+
+    // Création utilisateur
+    const user = await User.create({
+      nom,
+      prenom,
+      email,
+      password,
+      role,
+      verificationToken,
+    })
+    const verificationLink = `${process.env.BASE_URL_FRONT}/verify-email?token=${user.verificationToken}&email=${user.email}`
+    const message = `Pour finaliser votre inscription, veuillez confirmer votre adresse e‑mail en cliquant sur le lien ci‑dessous : ${verificationLink}`
+
+    const html = `
+        <p>Bonjour ${user.prenom},</p>
+        <p>Merci d'avoir crée votre compte sur SIMUDOUANE.COM</p>
+        <p>Pour finaliser votre inscription, veuillez confirmer votre adresse e‑mail :</p>
+        <p><a href="${verificationLink}" style="color:#007aff;font-weight:bold;">Confirmer mon adresse e‑mail</a></p>
+        <p>Si vous n'êtes pas à l'origine de cette demande, ignorez cet e‑mail.</p>
+      `
+
+    await sendEmail({
+      to: user.email,
+      subject: 'Validation de votre adresse e‑mail',
+      text: message,
+      html: html,
+    })
+
+    return res.status(StatusCodes.CREATED).json({
+      msg: ` Votre inscription a bien été prise en compte. Vous devez vérifier votre courriel ${email} pour activer votre compte`,
+    })
+  } catch (error) {
+    console.error(error)
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      msg: "Une erreur est survenue lors de l'inscription",
+    })
   }
-  const emailAlreadyExists = await User.findOne({ email })
-
-  if (emailAlreadyExists) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: 'Un compte utilisant cette adresse e‑mail existe déjà' })
-  }
-
-  // Check for same passwords
-  if (password != repassword) {
-    return res
-      .status(StatusCodes.BAD_REQUEST)
-      .json({ msg: 'Les mots de passe ne correspondent pas' })
-  }
-
-  // verrouillage de la création du premier admin avec une condition atomique :
-  // au cas où Les deux requêtes arrivent avant que la base ne soit mise à jour
-  const userCount = await User.countDocuments()
-  const role = userCount === 0 ? 'admin' : 'user'
-
-  //const isFirstAccount = (await User.countDocuments({})) === 0
-  //const role = isFirstAccount ? 'admin' : 'user'
-
-  const verificationToken = crypto.randomBytes(20).toString('hex')
-  // The create function fires 'save' hooks.
-  const user = await User.create({
-    nom,
-    prenom,
-    email,
-    password,
-    role,
-    verificationToken,
-  })
-
-  //const verificationLink = `${process.env.BASE_URL_FRONT}/verify-email?token=${user.verificationToken}&email=${user.email}`
-  const verificationLink = `${process.env.BASE_URL_FRONT}/verify-email?token=${user.verificationToken}`
-
-  const message = `Pour finaliser votre inscription, veuillez confirmer votre adresse e‑mail en cliquant sur le lien ci‑dessous : ${verificationLink}`
-
-  const html = `
-  <p>Bonjour ${user.prenom},</p>
-  <p>Merci de créer un compte sur zTravel consulting.</p>
-  <p>Pour finaliser votre inscription, veuillez confirmer votre adresse e‑mail :</p>
-  <p><a href="${verificationLink}" style="color:#007aff;font-weight:bold;">Confirmer mon adresse e‑mail</a></p>
-  <p>Si vous n'êtes pas à l'origine de cette demande, ignorez cet e‑mail.</p>
-`
-
-  await sendEmail({
-    to: user.email,
-    subject: 'Validation de votre adresse e‑mail',
-    text: message,
-    html: html,
-  })
-
-  return res.status(StatusCodes.OK).json({
-    msg: ` Votre inscription a bien été prise en compte. Vous devez vérifier votre courriel ${email} pour activer votre compte`,
-  })
 }
 
 export const login = async (req, res) => {
@@ -96,7 +100,7 @@ export const login = async (req, res) => {
   if (!isPasswordCorrect) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
-      .json({ msg: 'Le mot de passe saisi est incorrect' })
+      .json({ msg: 'Email ou mot de passe incorrect' })
   }
 
   // L'utilisateur a recu le mail et a validé
