@@ -35,3 +35,22 @@ export const registerLimiter = rateLimit({
   max: 10,
   message: { error: "Trop de tentatives d'inscription" },
 })
+
+// Soit 3 tentatives par heure minutes et par IP.
+export const forgotPasswordLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 heure
+  max: 3,
+  message: {
+    error: 'Trop de demandes de réinitialisation. Réessayez plus tard.',
+  },
+})
+
+// Soit 5 tentatives par 15 minutes et par IP.
+// Car l'utilisateur peut se tromper plusieurs fois de mot de passe ou rencontrer des problèmes de formulaire
+export const resetPasswordLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  message: {
+    error: 'Trop de demandes de réinitialisation. Réessayez plus tard.',
+  },
+})

@@ -10,6 +10,8 @@ import {
   register,
   verifyEmail,
   refreshTokenHandler,
+  resetPassword,
+  forgotPassword,
 } from '../controllers/userAuthentication.js'
 
 import {
@@ -31,10 +33,17 @@ import {
   loginValidator,
   registerValidator,
   verifyEmailValidator,
+  forgotPasswordValidator,
+  resetPasswordValidator,
 } from '../validators/authenticationValidator.js'
 
 import { validate } from '../middleware/validate.js'
-import { loginLimiter, registerLimiter } from '../middleware/rateLimiter.js'
+import {
+  loginLimiter,
+  registerLimiter,
+  forgotPasswordLimiter,
+  resetPasswordLimiter,
+} from '../middleware/rateLimiter.js'
 import { trackVisit } from '../middleware/trackVisit.js'
 
 const router = Router()
@@ -47,6 +56,23 @@ router.post('/login', loginLimiter, loginValidator, validate, login)
 router.delete('/logout', authenticateUser, logout)
 // Verify email
 router.post('/verify-email', verifyEmailValidator, validate, verifyEmail)
+
+// Forgot password
+router.post(
+  '/forgot-password',
+  forgotPasswordLimiter,
+  forgotPasswordValidator,
+  validate,
+  forgotPassword,
+)
+
+router.post(
+  '/reset-password',
+  resetPasswordLimiter,
+  resetPasswordValidator,
+  validate,
+  resetPassword,
+)
 
 // refresh - to be used wuth refreshTone later
 // Backend : api/v1/auth/refresh => voir axiosInstance.js

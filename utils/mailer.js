@@ -9,7 +9,7 @@ const sesClient = new SESv2Client({
 })
 
 export const sendEmail = async ({ to, subject, text, html, attachments }) => {
-  console.log('🔍 DANS sendEmail - Attachments reçus:', {
+  /*console.log('🔍 DANS sendEmail - Attachments reçus:', {
     type: typeof attachments,
     isArray: Array.isArray(attachments),
     length: attachments?.length,
@@ -21,7 +21,7 @@ export const sendEmail = async ({ to, subject, text, html, attachments }) => {
           isBuffer: Buffer.isBuffer(attachments[0].content),
         }
       : null,
-  })
+  })*/
   try {
     const params = {
       FromEmailAddress: process.env.SMTP_FROM,

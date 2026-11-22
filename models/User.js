@@ -83,7 +83,9 @@ await User.create({
 Etape 2: pre('save') => this pointe sur l'instance utilisateur :
 this.email     // john@test.com
 this.password  // 123456
+
 Etape3: this.isModified('password') renvoie true car un nouveau document a été insérré
+
 Etape4: const salt = await bcrypt.genSalt(10)
 */
 
@@ -92,7 +94,7 @@ UserSchema.pre('save', async function () {
   // Si le mot de passe n’a pas été modifié, ne fais rien
   if (!this.isModified('password')) return
   const salt = await bcrypt.genSalt(10)
-  // bcrypt.hash() est asynchrone et retourne une Promise, sans await, return une Promise { <pending> }
+  // bcrypt.hash() est asynchrone et retourne une Promise. Sans await, retourne une "Promise { <pending> }""
   this.password = await bcrypt.hash(this.password, salt)
 })
 

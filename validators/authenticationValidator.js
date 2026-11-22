@@ -44,3 +44,11 @@ export const verifyEmailValidator = [
 
   body('verificationToken').trim().notEmpty().withMessage('Token requis'),
 ]
+
+export const forgotPasswordValidator = [
+  body('email').trim().normalizeEmail().isEmail().withMessage('Email invalide'),
+]
+
+export const resetPasswordValidator = [
+  body('email').trim().normalizeEmail().isEmail().withMessage('Email invalide'),
+]
